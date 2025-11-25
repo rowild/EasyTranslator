@@ -1,0 +1,28 @@
+{
+  "name": "easytranslator",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "Robert Wildling <robertwildling@gmail.com> (https://rowild.at/)",
+  "license": "GNU GPL",
+  "dependencies": {
+    "@vitejs/plugin-vue": "^6.0.2",
+    "dexie": "^4.2.1",
+    "lucide-vue-next": "^0.554.0",
+    "pinia": "^3.0.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-pwa": "^1.1.0",
+    "vue": "^3.5.25",
+    "vue-tsc": "^3.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1"
+  }
+}
