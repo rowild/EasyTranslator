@@ -80,13 +80,13 @@ export function useAudioRecorder() {
             updateVolume();
 
             // Setup Recorder with codec detection
-            // Safari doesn't support webm, so we need to detect and use appropriate format
+            // Prioritize WAV first (required by Voxtral chat/completions), then fallback to other formats
             const supportedTypes = [
-                'audio/webm',
-                'audio/webm;codecs=opus',
+                'audio/wav',
                 'audio/mp4',
                 'audio/mp4;codecs=mp4a.40.2',
-                'audio/wav'
+                'audio/webm',
+                'audio/webm;codecs=opus'
             ];
 
             mimeType = supportedTypes.find(type => MediaRecorder.isTypeSupported(type)) || '';
