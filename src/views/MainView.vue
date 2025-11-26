@@ -6,7 +6,7 @@ import LanguageColumn from '../components/LanguageColumn.vue';
 import RecordButton from '../components/RecordButton.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import { languages, type Language } from '../config/languages';
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2, Trash2 } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const {
@@ -118,6 +118,12 @@ const handleRecordToggle = async () => {
     }
   }
 };
+
+const handleDeleteRecording = () => {
+  console.log('Deleting current recording...');
+  recordedBlob.value = null;
+  setTranscript('');
+};
 </script>
 
 <template>
@@ -167,10 +173,15 @@ const handleRecordToggle = async () => {
             </div>
             <AudioPlayer :audio-blob="recordedBlob" />
           </div>
+
+          <!-- Delete button to the right of the transcript field -->
+          <button class="delete-btn" @click="handleDeleteRecording" title="Delete recording and start over">
+            <Trash2 :size="24" />
+          </button>
         </div>
 
-        <!-- Record Button -->
-        <div class="controls">
+        <!-- Record Button (only show when NO recording exists) -->
+        <div v-if="canRecord && !recordedBlob" class="controls">
           <div v-if="store.isProcessing" class="processing">
             <Loader2 class="spin" :size="48" />
             <span>Processing...</span>
@@ -180,7 +191,7 @@ const handleRecordToggle = async () => {
             <RecordButton
               :is-recording="isRecording"
               :volume="volume"
-              :disabled="!canRecord || isOffline || permissionStatus === 'denied'"
+              :disabled="isOffline || permissionStatus === 'denied'"
               @toggle="handleRecordToggle"
             />
           </div>
@@ -290,6 +301,8 @@ main {
   width: 100%;
   display: flex;
   justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
   /* Align to the left edge, near the left column */
   margin-left: 0;
   padding-left: 0;
@@ -302,8 +315,32 @@ main {
   border-radius: 8px;
   border: 3px solid var(--input-language-border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* Position field close to the left column */
-  margin-right: auto;
+}
+
+.delete-btn {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid #ff4757;
+  background: white;
+  color: #ff4757;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.delete-btn:hover {
+  background: #ff4757;
+  color: white;
+  transform: scale(1.05);
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
 }
 
 .transcript-content {
