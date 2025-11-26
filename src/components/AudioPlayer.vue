@@ -62,21 +62,26 @@ const initWavesurfer = () => {
   }
 };
 
+let initializationScheduled = false;
+
 watch(() => props.audioBlob, (newBlob, oldBlob) => {
   console.log('AudioPlayer: audioBlob changed', {
     newBlob: newBlob ? `${newBlob.size} bytes, ${newBlob.type}` : 'null',
     oldBlob: oldBlob ? `${oldBlob.size} bytes, ${oldBlob.type}` : 'null',
-    wavesurferExists: !!wavesurfer.value
+    wavesurferExists: !!wavesurfer.value,
+    initScheduled: initializationScheduled
   });
 
   if (newBlob) {
-    if (!wavesurfer.value) {
-      console.log('AudioPlayer: Initializing WaveSurfer from watch');
+    if (!wavesurfer.value && !initializationScheduled) {
+      console.log('AudioPlayer: Scheduling WaveSurfer initialization');
+      initializationScheduled = true;
       // Wait for next tick to ensure DOM is ready
       setTimeout(() => {
         initWavesurfer();
+        initializationScheduled = false;
       }, 0);
-    } else {
+    } else if (wavesurfer.value) {
       console.log('AudioPlayer: Loading blob into existing WaveSurfer');
       // Load new blob into existing instance
       wavesurfer.value.loadBlob(newBlob);
@@ -85,11 +90,7 @@ watch(() => props.audioBlob, (newBlob, oldBlob) => {
 }, { immediate: true });
 
 onMounted(() => {
-  console.log('AudioPlayer: Component mounted, audioBlob:', props.audioBlob ? `${props.audioBlob.size} bytes` : 'null');
-  // Only initialize if we have a blob
-  if (props.audioBlob) {
-    initWavesurfer();
-  }
+  console.log('AudioPlayer: Component mounted');
 });
 
 onUnmounted(() => {

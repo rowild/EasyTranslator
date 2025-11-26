@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
-import LanguageSelector from '../components/LanguageSelector.vue';
+import LanguageColumn from '../components/LanguageColumn.vue';
 import RecordButton from '../components/RecordButton.vue';
-import ConversationList from '../components/ConversationList.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
-import { Volume2, Loader2 } from 'lucide-vue-next';
+import { languages, type Language } from '../config/languages';
+import { Loader2 } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const {
@@ -17,19 +17,63 @@ const {
   permissionStatus,
   checkPermission,
   transcript,
-  isSpeechRecognitionSupported
+  isSpeechRecognitionSupported,
+  setRecognitionLanguage,
+  setTranscript
 } = useAudioRecorder();
 
 const isOffline = ref(!navigator.onLine);
 const recordedBlob = ref<Blob | null>(null);
+const inputLanguage = ref<Language | null>(null);
+const outputLanguage = ref<Language | null>(null);
 
 window.addEventListener('online', () => isOffline.value = false);
 window.addEventListener('offline', () => isOffline.value = true);
 
+// Load saved language preferences from localStorage
 onMounted(() => {
   store.loadHistory();
   checkPermission();
+
+  const savedInputCode = localStorage.getItem('inputLanguage');
+  const savedOutputCode = localStorage.getItem('outputLanguage');
+
+  if (savedInputCode) {
+    inputLanguage.value = languages.find(lang => lang.code === savedInputCode) || null;
+  }
+
+  if (savedOutputCode) {
+    outputLanguage.value = languages.find(lang => lang.code === savedOutputCode) || null;
+  }
 });
+
+// Watch input language changes and update SpeechRecognition
+watch(inputLanguage, (newLang) => {
+  if (newLang) {
+    localStorage.setItem('inputLanguage', newLang.code);
+    setRecognitionLanguage(newLang.speechCode);
+  }
+});
+
+// Watch output language changes
+watch(outputLanguage, (newLang) => {
+  if (newLang) {
+    localStorage.setItem('outputLanguage', newLang.code);
+  }
+});
+
+// Record button is only enabled when both languages are selected
+const canRecord = computed(() => {
+  return !!(inputLanguage.value && outputLanguage.value);
+});
+
+const handleInputLanguageSelect = (language: Language) => {
+  inputLanguage.value = language;
+};
+
+const handleOutputLanguageSelect = (language: Language) => {
+  outputLanguage.value = language;
+};
 
 const handleRecordToggle = async () => {
   if (isRecording.value) {
@@ -45,19 +89,28 @@ const handleRecordToggle = async () => {
 
       recordedBlob.value = blob;
 
-      // NOTE: Voxtral integration is disabled for now as per user request
-      // The transcript from Web Speech API is already displayed in the first field
-      // Future: Send blob to Voxtral and show result in SECOND field (translation panel)
+      // Show transcribing status
+      setTranscript('Transcribing with Voxtral...');
+
+      // Send to Voxtral for transcription
+      if (inputLanguage.value) {
+        await store.transcribeAudio(blob, inputLanguage.value.code);
+        // Update transcript from store
+        setTranscript(store.currentSourceText);
+      } else {
+        await store.transcribeAudio(blob);
+        setTranscript(store.currentSourceText);
+      }
 
     } catch (e) {
       console.error('Error during processing:', e);
+      setTranscript('Error: Could not transcribe audio');
     }
   } else {
     try {
       console.log('Starting recording...');
-      store.currentSourceText = '';
-      store.currentTranslatedText = '';
       recordedBlob.value = null;
+      setTranscript('');
       await startRecording();
     } catch (e) {
       console.error('Start recording failed:', e);
@@ -65,190 +118,205 @@ const handleRecordToggle = async () => {
     }
   }
 };
-
-const playTranslation = () => {
-  if (store.currentTranslatedText && store.currentTranslatedText !== 'Translating...') {
-    const utter = new SpeechSynthesisUtterance(store.currentTranslatedText);
-    utter.lang = store.targetLang; 
-    speechSynthesis.speak(utter);
-  }
-};
 </script>
 
 <template>
   <div class="main-view">
-    <header>
-      <h1>EasyTranslator</h1>
-      <div class="header-controls">
-         <LanguageSelector />
-         <div v-if="isOffline" class="offline-badge">Offline</div>
-      </div>
-    </header>
+    <!-- Left Column: Input Language -->
+    <LanguageColumn
+      :languages="languages"
+      :selectedLanguage="inputLanguage"
+      type="input"
+      @select="handleInputLanguageSelect"
+    />
 
-    <main>
-      <!-- Permission Warning -->
-      <div v-if="permissionStatus === 'denied'" class="permission-warning">
-        <p>Microphone access is denied. Please enable it in your browser settings.</p>
-      </div>
-      <div v-else-if="permissionStatus === 'prompt'" class="permission-warning">
-        <p>Please allow microphone access when prompted.</p>
-      </div>
+    <!-- Center Content -->
+    <div class="center-content">
+      <!-- Header -->
+      <header>
+        <h1>EasyTranslator</h1>
+        <div v-if="isOffline" class="offline-badge">Offline</div>
+      </header>
 
-      <!-- Speech Recognition Warning -->
-      <div v-if="!isSpeechRecognitionSupported" class="permission-warning">
-        <p>Real-time transcription is not supported in this browser. Audio will still be recorded.</p>
-      </div>
+      <!-- Main Content Area -->
+      <main>
+        <!-- Permission Warnings -->
+        <div v-if="permissionStatus === 'denied'" class="warning-box">
+          <p>Microphone access is denied. Please enable it in your browser settings.</p>
+        </div>
+        <div v-else-if="permissionStatus === 'prompt'" class="warning-box">
+          <p>Please allow microphone access when prompted.</p>
+        </div>
 
-      <!-- Current Turn Display -->
-      <div class="current-turn">
-        <div class="panel source">
-          <label>You said:</label>
-          <div class="content" :class="{ placeholder: !transcript && !isRecording }">
-            {{ transcript || (isRecording ? 'Listening...' : 'Press record and speak...') }}
+        <!-- Speech Recognition Warning -->
+        <div v-if="!isSpeechRecognitionSupported" class="warning-box">
+          <p>Real-time transcription is not supported in this browser. Audio will still be recorded.</p>
+        </div>
+
+        <!-- Language Selection Prompt -->
+        <div v-if="!canRecord" class="language-prompt">
+          <p>👈 Select an input language (left) and output language (right) 👉</p>
+          <p class="language-prompt-sub">to start recording</p>
+        </div>
+
+        <!-- Transcript Display (only show AFTER recording has stopped) -->
+        <div v-if="canRecord && recordedBlob" class="transcript-section">
+          <div class="transcript-field">
+            <div class="transcript-content" :class="{ placeholder: !transcript && !store.isProcessing }">
+              {{ transcript || (store.isProcessing ? 'Processing...' : 'Transcription will appear here...') }}
+            </div>
+            <AudioPlayer :audio-blob="recordedBlob" />
           </div>
-          <AudioPlayer :audio-blob="recordedBlob" />
         </div>
 
-        <div class="panel target">
-          <label>Translation:</label>
-          <div class="content" :class="{ placeholder: !store.currentTranslatedText }">
-            {{ store.currentTranslatedText || 'Translation will appear here...' }}
+        <!-- Record Button -->
+        <div class="controls">
+          <div v-if="store.isProcessing" class="processing">
+            <Loader2 class="spin" :size="48" />
+            <span>Processing...</span>
           </div>
-          <button 
-            v-if="store.currentTranslatedText && store.currentTranslatedText !== 'Translating...'" 
-            class="play-btn" 
-            @click="playTranslation"
-          >
-            <Volume2 :size="32" />
-            <span>Play</span>
-          </button>
-        </div>
-      </div>
 
-      <!-- Controls -->
-      <div class="controls">
-        <div v-if="store.isProcessing" class="processing">
-          <Loader2 class="spin" :size="48" />
-          <span>Processing...</span>
+          <div v-else class="actions">
+            <RecordButton
+              :is-recording="isRecording"
+              :volume="volume"
+              :disabled="!canRecord || isOffline || permissionStatus === 'denied'"
+              @toggle="handleRecordToggle"
+            />
+          </div>
         </div>
-        
-        <div v-else class="actions">
-          <RecordButton 
-            :is-recording="isRecording" 
-            :volume="volume"
-            :disabled="isOffline || permissionStatus === 'denied'"
-            @toggle="handleRecordToggle" 
-          />
-        </div>
-      </div>
+      </main>
+    </div>
 
-      <!-- History -->
-      <div class="history-section">
-        <h3>History</h3>
-        <ConversationList />
-      </div>
-    </main>
+    <!-- Right Column: Output Language -->
+    <LanguageColumn
+      :languages="languages"
+      :selectedLanguage="outputLanguage"
+      type="output"
+      @select="handleOutputLanguageSelect"
+    />
   </div>
 </template>
 
 <style scoped>
 .main-view {
   display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.center-content {
+  flex: 1;
+  margin: 0 140px; /* Space for fixed columns */
+  display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 600px;
-  margin: 0 auto;
-  background-color: #fff;
-  color: #333;
+  overflow: hidden;
 }
 
 header {
-  padding: 1rem;
+  padding: 1rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #eee;
+  background: white;
+  z-index: 5;
 }
 
 h1 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #42b883;
-}
-
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .offline-badge {
   background: #666;
   color: white;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 main {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
+  /* Don't center items - allow left alignment for transcript */
+  align-items: stretch;
 }
 
-.current-turn {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.warning-box {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ffeeba;
+  max-width: 600px;
+  width: 100%;
+  align-self: center;
 }
 
-.panel {
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid #eee;
-  min-height: 100px;
-  display: flex;
-  flex-direction: column;
+.warning-box p {
+  margin: 0;
 }
 
-.panel label {
-  font-size: 0.9rem;
-  color: #888;
-  margin-bottom: 0.5rem;
+.language-prompt {
+  text-align: center;
+  padding: 3rem 2rem;
+  max-width: 600px;
+  align-self: center;
 }
 
-.panel.target {
-  background: #eafaf1;
-  border-color: #ccebd6;
-}
-
-.content {
+.language-prompt p {
   font-size: 1.3rem;
-  line-height: 1.4;
+  color: #666;
+  margin: 0.5rem 0;
 }
 
-.content.placeholder {
-  color: #ccc;
+.language-prompt-sub {
+  font-size: 1rem !important;
+  color: #999 !important;
   font-style: italic;
 }
 
-.play-btn {
-  margin-top: 1rem;
-  align-self: flex-end; /* Move to right */
-  background: #42b883;
-  color: white;
-  border: none;
-  border-radius: 24px;
-  padding: 0.5rem 1.5rem;
-  font-size: 1.1rem;
+.transcript-section {
+  width: 100%;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
+  justify-content: flex-start;
+  /* Align to the left edge, near the left column */
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.transcript-field {
+  width: 78%;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 3px solid var(--input-language-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Position field close to the left column */
+  margin-right: auto;
+}
+
+.transcript-content {
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: #333;
+  min-height: 60px;
+  margin-bottom: 1rem;
+}
+
+.transcript-content.placeholder {
+  color: #bbb;
+  font-style: italic;
 }
 
 .controls {
@@ -256,8 +324,8 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  padding: 1rem 0;
-  /* Removed borders to make it cleaner */
+  padding: 2rem 0;
+  align-self: center;
 }
 
 .processing {
@@ -266,7 +334,7 @@ main {
   align-items: center;
   gap: 0.5rem;
   color: #42b883;
-  min-height: 200px; /* Keep space occupied */
+  min-height: 200px;
   justify-content: center;
 }
 
@@ -279,20 +347,8 @@ main {
   to { transform: rotate(360deg); }
 }
 
-.permission-warning {
-  background-color: #fff3cd;
-  color: #856404;
-  padding: 1rem;
-  border-radius: 8px;
-  text-align: center;
-  border: 1px solid #ffeeba;
-}
-
-.history-section h3 {
-  margin-top: 0;
-  color: #888;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.actions {
+  display: flex;
+  justify-content: center;
 }
 </style>

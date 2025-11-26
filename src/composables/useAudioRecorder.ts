@@ -15,8 +15,6 @@ export function useAudioRecorder() {
     let source: MediaStreamAudioSourceNode | null = null;
     let animationFrame: number | null = null;
     let mimeType: string = '';
-    let recognition: any = null;
-    let finalTranscriptAccumulator = '';
 
     const checkPermission = async () => {
         try {
@@ -31,71 +29,8 @@ export function useAudioRecorder() {
         }
     };
 
-    const initSpeechRecognition = () => {
-        // Check for Speech Recognition API support (Chrome, Safari, Edge)
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-        if (!SpeechRecognition) {
-            console.warn('Speech Recognition API not supported');
-            isSpeechRecognitionSupported.value = false;
-            return null;
-        }
-
-        isSpeechRecognitionSupported.value = true;
-        recognition = new SpeechRecognition();
-
-        // Configure recognition
-        recognition.continuous = true; // Keep listening until we stop it
-        recognition.interimResults = true; // Get results as user speaks
-        recognition.lang = 'en-US'; // Default language, can be changed
-
-        recognition.onresult = (event: any) => {
-            let interimTranscript = '';
-
-            // Process only new results starting from resultIndex
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-                const transcriptPart = event.results[i][0].transcript;
-                if (event.results[i].isFinal) {
-                    // Add finalized text to accumulator
-                    finalTranscriptAccumulator += transcriptPart + ' ';
-                } else {
-                    // Collect interim results (not yet finalized)
-                    interimTranscript += transcriptPart;
-                }
-            }
-
-            // Display: final transcript + current interim
-            transcript.value = (finalTranscriptAccumulator + interimTranscript).trim();
-
-            console.log('Speech recognition result:', transcript.value);
-        };
-
-        recognition.onstart = () => {
-            console.log('Speech recognition started');
-        };
-
-        recognition.onerror = (event: any) => {
-            console.error('Speech recognition error:', event.error);
-            if (event.error === 'no-speech') {
-                console.log('No speech detected, continuing...');
-            }
-        };
-
-        recognition.onend = () => {
-            console.log('Speech recognition ended');
-            // If we're still recording, restart recognition
-            if (isRecording.value) {
-                console.log('Restarting speech recognition...');
-                try {
-                    recognition.start();
-                } catch (e) {
-                    console.warn('Could not restart recognition:', e);
-                }
-            }
-        };
-
-        return recognition;
-    };
+    // Speech Recognition API is no longer used for real-time transcription
+    // We now use Voxtral API for post-recording transcription
 
     const updateVolume = () => {
         if (!analyser || !isRecording.value) return;
@@ -125,21 +60,8 @@ export function useAudioRecorder() {
 
             // Clear previous transcript
             transcript.value = '';
-            finalTranscriptAccumulator = '';
 
-            // Start Speech Recognition for real-time transcription
-            if (!recognition) {
-                recognition = initSpeechRecognition();
-            }
-
-            if (recognition) {
-                try {
-                    recognition.start();
-                    console.log('Attempting to start speech recognition...');
-                } catch (e) {
-                    console.warn('Could not start speech recognition:', e);
-                }
-            }
+            // NOTE: Transcription is done via Voxtral API after recording stops
 
             // Setup Audio Analysis
             audioContext = new AudioContext();
@@ -215,16 +137,6 @@ export function useAudioRecorder() {
                 console.log('Audio blob created:', blob.size, 'bytes', blob.type);
                 chunks = [];
 
-                // Stop speech recognition
-                if (recognition) {
-                    try {
-                        recognition.stop();
-                        console.log('Speech recognition stopped');
-                    } catch (e) {
-                        console.warn('Could not stop speech recognition:', e);
-                    }
-                }
-
                 // Cleanup Audio Context
                 if (animationFrame) cancelAnimationFrame(animationFrame);
                 if (source) source.disconnect();
@@ -238,6 +150,7 @@ export function useAudioRecorder() {
                     mediaRecorder.stream.getTracks().forEach(track => track.stop());
                 }
 
+                // NOTE: Transcription will be done by MainView using Voxtral API
                 resolve(blob);
             };
 
@@ -247,23 +160,23 @@ export function useAudioRecorder() {
     };
 
     onMounted(() => {
-        // Check Speech Recognition support on mount
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        isSpeechRecognitionSupported.value = !!SpeechRecognition;
-        console.log('Speech Recognition supported:', isSpeechRecognitionSupported.value);
+        // Speech Recognition is no longer used - Voxtral handles transcription
+        isSpeechRecognitionSupported.value = true; // Always true since we use Voxtral
     });
 
     onUnmounted(() => {
         if (animationFrame) cancelAnimationFrame(animationFrame);
         if (audioContext) audioContext.close();
-        if (recognition) {
-            try {
-                recognition.stop();
-            } catch (e) {
-                // Ignore errors on cleanup
-            }
-        }
     });
+
+    const setTranscript = (text: string) => {
+        transcript.value = text;
+    };
+
+    const setRecognitionLanguage = (languageCode: string) => {
+        // This is now used to track the language for Voxtral, not SpeechRecognition
+        console.log('Input language set to:', languageCode);
+    };
 
     return {
         isRecording,
@@ -274,6 +187,8 @@ export function useAudioRecorder() {
         isSpeechRecognitionSupported,
         startRecording,
         stopRecording,
-        checkPermission
+        checkPermission,
+        setRecognitionLanguage,
+        setTranscript
     };
 }

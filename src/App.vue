@@ -7,6 +7,14 @@ import MainView from './views/MainView.vue';
 </template>
 
 <style>
+/* CSS Custom Properties */
+:root {
+  --input-language-color: #e8f5e9;
+  --input-language-border: #4caf50;
+  --output-language-color: #fff3e0;
+  --output-language-border: #ff6f00;
+}
+
 /* Reset some basics if not covered by style.css */
 html, body {
   margin: 0;

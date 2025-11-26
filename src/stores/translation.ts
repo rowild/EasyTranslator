@@ -34,28 +34,28 @@ export const useTranslationStore = defineStore('translation', () => {
         }
     };
 
-    const transcribeAudio = async (audioBlob: Blob) => {
+    const transcribeAudio = async (audioBlob: Blob, languageCode?: string) => {
         isProcessing.value = true;
         error.value = null;
-        currentSourceText.value = ''; // Clear previous text
+        currentSourceText.value = '';
 
         try {
             const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
             if (!apiKey) throw new Error('Missing VITE_MISTRAL_API_KEY');
 
             const formData = new FormData();
-            formData.append('file', audioBlob);
-            formData.append('model', 'mistral-small-latest'); // User reported "voxtral-mini" worked or was requested.
-            // Wait, in the previous turn I fixed it to 'voxtral-mini'.
-            // But wait, the user said "Invalid model: mistral-embedvoxtral-mini".
-            // And I fixed it to 'voxtral-mini'.
-            // HOWEVER, for the client-side call, I should use the same.
-            // Let's use 'mistral-small-latest' for text, but for AUDIO?
-            // The user said "Use Mistral’s Voxtral model".
-            // I will use 'voxtral-mini' as I did in the fix.
-            formData.append('model', 'voxtral-mini');
-            // formData.append('language', 'en'); // Optional, let it auto-detect
+            formData.append('file', audioBlob, 'audio.webm');
+            formData.append('model', 'voxtral-mini-latest');
 
+            // Add language if provided (improves accuracy)
+            if (languageCode) {
+                // Extract 2-letter code from full code (e.g., "de-DE" -> "de")
+                const langCode = languageCode.split('-')[0];
+                formData.append('language', langCode);
+                console.log('Transcribing with language:', langCode);
+            }
+
+            console.log('Sending audio to Voxtral API...');
             const res = await fetch('https://api.mistral.ai/v1/audio/transcriptions', {
                 method: 'POST',
                 headers: {
@@ -66,32 +66,25 @@ export const useTranslationStore = defineStore('translation', () => {
 
             if (!res.ok) {
                 const errText = await res.text();
-                throw new Error(`Mistral STT Error: ${errText}`);
+                throw new Error(`Voxtral API Error: ${errText}`);
             }
 
             const data = await res.json();
             currentSourceText.value = data.text;
-            // Mistral transcription response might not include language in the simple format?
-            // If it does, it's usually in a verbose mode.
-            // For now, default to 'en' or keep previous if not provided.
-            // We'll assume 'en' if not detected, or maybe we can't get it easily without verbose_json.
-            // Let's just set it to 'en' or 'auto' for now.
-            currentSourceLang.value = 'en';
+            console.log('Voxtral transcription:', data.text);
+            console.log('Usage:', data.usage);
+
+            // Set source language from input
+            if (languageCode) {
+                currentSourceLang.value = languageCode.split('-')[0];
+            }
 
             return data;
         } catch (e: any) {
-            console.error(e);
+            console.error('Transcription error:', e);
             error.value = e.message;
             throw e;
         } finally {
-            // Do not set isProcessing to false yet if we are going to translate immediately?
-            // The UI handles the sequence. But here we just finished transcription.
-            // We'll let the caller handle the flow or keep it true?
-            // The user wants "indicator that the file is sent and the translation progress is ongoing".
-            // So we should probably keep isProcessing true if we chain them.
-            // But for this function, it's done.
-            // Let's set it to false, and the UI can re-set it or we manage a global state.
-            // Better: have separate states or a status string.
             isProcessing.value = false;
         }
     };
