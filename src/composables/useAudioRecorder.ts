@@ -47,7 +47,9 @@ export function useAudioRecorder() {
 
     const startRecording = async () => {
         try {
+            console.log('Requesting microphone access...');
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            console.log('Microphone access granted');
             permissionStatus.value = 'granted';
 
             // Setup Audio Analysis
@@ -64,13 +66,38 @@ export function useAudioRecorder() {
             chunks = [];
 
             mediaRecorder.ondataavailable = (e) => {
+                console.log('Data available:', e.data.size, 'bytes');
                 if (e.data.size > 0) {
                     chunks.push(e.data);
                 }
             };
 
+            // The onstop event handler is now set within stopRecording to resolve a Promise
+            // mediaRecorder.onstop = () => { ... }; // This block is removed as it's handled by stopRecording
+
+            mediaRecorder.start();
+            isRecording.value = true;
+            console.log('MediaRecorder started');
+        } catch (error) {
+            console.error('Error accessing microphone:', error);
+            permissionStatus.value = 'denied';
+            throw error;
+        }
+    };
+
+    const stopRecording = (): Promise<Blob> => {
+        return new Promise((resolve, reject) => {
+            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+                console.warn('Cannot stop: Recorder is inactive or null');
+                reject(new Error('Recorder is inactive'));
+                return;
+            }
+
             mediaRecorder.onstop = () => {
-                audioBlob.value = new Blob(chunks, { type: 'audio/webm' });
+                console.log('MediaRecorder stopped');
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                audioBlob.value = blob;
+                console.log('Audio blob created:', blob.size, 'bytes', blob.type);
                 chunks = [];
 
                 // Cleanup Audio Context
@@ -82,23 +109,16 @@ export function useAudioRecorder() {
                 volume.value = 0;
 
                 // Stop all tracks
-                stream.getTracks().forEach(track => track.stop());
+                if (mediaRecorder && mediaRecorder.stream) {
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+
+                resolve(blob);
             };
 
-            mediaRecorder.start();
-            isRecording.value = true;
-        } catch (error) {
-            console.error('Error accessing microphone:', error);
-            permissionStatus.value = 'denied';
-            throw error;
-        }
-    };
-
-    const stopRecording = () => {
-        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
             mediaRecorder.stop();
             isRecording.value = false;
-        }
+        });
     };
 
     onUnmounted(() => {

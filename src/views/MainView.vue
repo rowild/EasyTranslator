@@ -5,12 +5,14 @@ import { useAudioRecorder } from '../composables/useAudioRecorder';
 import LanguageSelector from '../components/LanguageSelector.vue';
 import RecordButton from '../components/RecordButton.vue';
 import ConversationList from '../components/ConversationList.vue';
+import AudioPlayer from '../components/AudioPlayer.vue';
 import { Volume2, Loader2 } from 'lucide-vue-next';
 
 const store = useTranslationStore();
-const { isRecording, startRecording, stopRecording, audioBlob, volume, permissionStatus, checkPermission } = useAudioRecorder();
+const { isRecording, startRecording, stopRecording, volume, permissionStatus, checkPermission } = useAudioRecorder();
 
 const isOffline = ref(!navigator.onLine);
+const recordedBlob = ref<Blob | null>(null);
 
 window.addEventListener('online', () => isOffline.value = false);
 window.addEventListener('offline', () => isOffline.value = true);
@@ -22,32 +24,41 @@ onMounted(() => {
 
 const handleRecordToggle = async () => {
   if (isRecording.value) {
-    stopRecording();
-    // Wait for blob to be populated
-    setTimeout(async () => {
-      if (audioBlob.value) {
-        try {
-          // 1. Transcribe
-          store.currentSourceText = 'Transcribing...';
-          await store.transcribeAudio(audioBlob.value);
-          
-          // 2. Translate
-          if (store.currentSourceText) {
-             store.currentTranslatedText = 'Translating...';
-             await store.translateText();
-          }
-        } catch (e) {
-          console.error(e);
-          store.currentSourceText = 'Error during processing.';
-        }
+    try {
+      console.log('Stopping recording...');
+      const blob = await stopRecording();
+      console.log('Recording stopped. Blob received:', blob);
+      
+      if (blob.size === 0) {
+        console.error('Blob is empty!');
+        store.currentSourceText = 'Error: Recorded audio is empty.';
+        return;
       }
-    }, 200);
+      
+      recordedBlob.value = blob;
+
+      // 1. Transcribe
+      store.currentSourceText = `Audio captured (${Math.round(blob.size / 1024)}KB). Transcribing...`;
+      await store.transcribeAudio(blob);
+      
+      // 2. Translate
+      if (store.currentSourceText) {
+         store.currentTranslatedText = 'Translating...';
+         await store.translateText();
+      }
+    } catch (e) {
+      console.error('Error during processing:', e);
+      store.currentSourceText = 'Error during processing.';
+    }
   } else {
     try {
+      console.log('Starting recording...');
       store.currentSourceText = '';
       store.currentTranslatedText = '';
+      recordedBlob.value = null;
       await startRecording();
     } catch (e) {
+      console.error('Start recording failed:', e);
       alert('Could not access microphone');
     }
   }
@@ -88,6 +99,7 @@ const playTranslation = () => {
           <div class="content" :class="{ placeholder: !store.currentSourceText }">
             {{ store.currentSourceText || 'Press record and speak...' }}
           </div>
+          <AudioPlayer :audio-blob="recordedBlob" />
         </div>
 
         <div class="panel target">
