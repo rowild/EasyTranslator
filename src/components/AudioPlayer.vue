@@ -20,7 +20,12 @@ const formatTime = (seconds: number) => {
 };
 
 const initWavesurfer = () => {
-  if (!waveformContainer.value) return;
+  if (!waveformContainer.value) {
+    console.warn('AudioPlayer: waveformContainer not available');
+    return;
+  }
+
+  console.log('AudioPlayer: Initializing WaveSurfer...');
 
   wavesurfer.value = WaveSurfer.create({
     container: waveformContainer.value,
@@ -37,8 +42,9 @@ const initWavesurfer = () => {
   wavesurfer.value.on('play', () => isPlaying.value = true);
   wavesurfer.value.on('pause', () => isPlaying.value = false);
   wavesurfer.value.on('finish', () => isPlaying.value = false);
-  
+
   wavesurfer.value.on('ready', () => {
+    console.log('AudioPlayer: WaveSurfer ready, duration:', wavesurfer.value?.getDuration());
     duration.value = formatTime(wavesurfer.value?.getDuration() || 0);
   });
 
@@ -46,19 +52,44 @@ const initWavesurfer = () => {
     currentTime.value = formatTime(wavesurfer.value?.getCurrentTime() || 0);
   });
 
+  wavesurfer.value.on('error', (err) => {
+    console.error('AudioPlayer: WaveSurfer error:', err);
+  });
+
   if (props.audioBlob) {
+    console.log('AudioPlayer: Loading blob on init:', props.audioBlob.size, 'bytes');
     wavesurfer.value.loadBlob(props.audioBlob);
   }
 };
 
-watch(() => props.audioBlob, (newBlob) => {
-  if (wavesurfer.value && newBlob) {
-    wavesurfer.value.loadBlob(newBlob);
+watch(() => props.audioBlob, (newBlob, oldBlob) => {
+  console.log('AudioPlayer: audioBlob changed', {
+    newBlob: newBlob ? `${newBlob.size} bytes, ${newBlob.type}` : 'null',
+    oldBlob: oldBlob ? `${oldBlob.size} bytes, ${oldBlob.type}` : 'null',
+    wavesurferExists: !!wavesurfer.value
+  });
+
+  if (newBlob) {
+    if (!wavesurfer.value) {
+      console.log('AudioPlayer: Initializing WaveSurfer from watch');
+      // Wait for next tick to ensure DOM is ready
+      setTimeout(() => {
+        initWavesurfer();
+      }, 0);
+    } else {
+      console.log('AudioPlayer: Loading blob into existing WaveSurfer');
+      // Load new blob into existing instance
+      wavesurfer.value.loadBlob(newBlob);
+    }
   }
-});
+}, { immediate: true });
 
 onMounted(() => {
-  initWavesurfer();
+  console.log('AudioPlayer: Component mounted, audioBlob:', props.audioBlob ? `${props.audioBlob.size} bytes` : 'null');
+  // Only initialize if we have a blob
+  if (props.audioBlob) {
+    initWavesurfer();
+  }
 });
 
 onUnmounted(() => {

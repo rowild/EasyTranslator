@@ -13,9 +13,10 @@ defineEmits<{
 }>();
 
 const volumeScale = computed(() => {
-  if (!props.isRecording || !props.volume) return 1;
-  // Map 0-100 to 1.0-1.3
-  return 1 + (props.volume / 100) * 0.3;
+  if (!props.isRecording) return 1;
+  // Map 0-100 to 1.0-1.3 (allow volume to be 0, which is a valid value)
+  const vol = props.volume ?? 0;
+  return 1 + (vol / 100) * 0.3;
 });
 </script>
 

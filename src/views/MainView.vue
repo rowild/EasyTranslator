@@ -9,7 +9,16 @@ import AudioPlayer from '../components/AudioPlayer.vue';
 import { Volume2, Loader2 } from 'lucide-vue-next';
 
 const store = useTranslationStore();
-const { isRecording, startRecording, stopRecording, volume, permissionStatus, checkPermission } = useAudioRecorder();
+const {
+  isRecording,
+  startRecording,
+  stopRecording,
+  volume,
+  permissionStatus,
+  checkPermission,
+  transcript,
+  isSpeechRecognitionSupported
+} = useAudioRecorder();
 
 const isOffline = ref(!navigator.onLine);
 const recordedBlob = ref<Blob | null>(null);
@@ -28,27 +37,20 @@ const handleRecordToggle = async () => {
       console.log('Stopping recording...');
       const blob = await stopRecording();
       console.log('Recording stopped. Blob received:', blob);
-      
+
       if (blob.size === 0) {
         console.error('Blob is empty!');
-        store.currentSourceText = 'Error: Recorded audio is empty.';
         return;
       }
-      
+
       recordedBlob.value = blob;
 
-      // 1. Transcribe
-      store.currentSourceText = `Audio captured (${Math.round(blob.size / 1024)}KB). Transcribing...`;
-      await store.transcribeAudio(blob);
-      
-      // 2. Translate
-      if (store.currentSourceText) {
-         store.currentTranslatedText = 'Translating...';
-         await store.translateText();
-      }
+      // NOTE: Voxtral integration is disabled for now as per user request
+      // The transcript from Web Speech API is already displayed in the first field
+      // Future: Send blob to Voxtral and show result in SECOND field (translation panel)
+
     } catch (e) {
       console.error('Error during processing:', e);
-      store.currentSourceText = 'Error during processing.';
     }
   } else {
     try {
@@ -92,12 +94,17 @@ const playTranslation = () => {
         <p>Please allow microphone access when prompted.</p>
       </div>
 
+      <!-- Speech Recognition Warning -->
+      <div v-if="!isSpeechRecognitionSupported" class="permission-warning">
+        <p>Real-time transcription is not supported in this browser. Audio will still be recorded.</p>
+      </div>
+
       <!-- Current Turn Display -->
       <div class="current-turn">
         <div class="panel source">
           <label>You said:</label>
-          <div class="content" :class="{ placeholder: !store.currentSourceText }">
-            {{ store.currentSourceText || 'Press record and speak...' }}
+          <div class="content" :class="{ placeholder: !transcript && !isRecording }">
+            {{ transcript || (isRecording ? 'Listening...' : 'Press record and speak...') }}
           </div>
           <AudioPlayer :audio-blob="recordedBlob" />
         </div>

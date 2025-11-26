@@ -1,10 +1,12 @@
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, onMounted } from 'vue';
 
 export function useAudioRecorder() {
     const isRecording = ref(false);
     const audioBlob = ref<Blob | null>(null);
     const volume = ref(0);
     const permissionStatus = ref<PermissionState | 'unknown'>('unknown');
+    const transcript = ref('');
+    const isSpeechRecognitionSupported = ref(false);
 
     let mediaRecorder: MediaRecorder | null = null;
     let chunks: Blob[] = [];
@@ -12,6 +14,9 @@ export function useAudioRecorder() {
     let analyser: AnalyserNode | null = null;
     let source: MediaStreamAudioSourceNode | null = null;
     let animationFrame: number | null = null;
+    let mimeType: string = '';
+    let recognition: any = null;
+    let finalTranscriptAccumulator = '';
 
     const checkPermission = async () => {
         try {
@@ -24,6 +29,72 @@ export function useAudioRecorder() {
             console.warn('Permissions API not supported', e);
             permissionStatus.value = 'unknown';
         }
+    };
+
+    const initSpeechRecognition = () => {
+        // Check for Speech Recognition API support (Chrome, Safari, Edge)
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            console.warn('Speech Recognition API not supported');
+            isSpeechRecognitionSupported.value = false;
+            return null;
+        }
+
+        isSpeechRecognitionSupported.value = true;
+        recognition = new SpeechRecognition();
+
+        // Configure recognition
+        recognition.continuous = true; // Keep listening until we stop it
+        recognition.interimResults = true; // Get results as user speaks
+        recognition.lang = 'en-US'; // Default language, can be changed
+
+        recognition.onresult = (event: any) => {
+            let interimTranscript = '';
+
+            // Process only new results starting from resultIndex
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcriptPart = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    // Add finalized text to accumulator
+                    finalTranscriptAccumulator += transcriptPart + ' ';
+                } else {
+                    // Collect interim results (not yet finalized)
+                    interimTranscript += transcriptPart;
+                }
+            }
+
+            // Display: final transcript + current interim
+            transcript.value = (finalTranscriptAccumulator + interimTranscript).trim();
+
+            console.log('Speech recognition result:', transcript.value);
+        };
+
+        recognition.onstart = () => {
+            console.log('Speech recognition started');
+        };
+
+        recognition.onerror = (event: any) => {
+            console.error('Speech recognition error:', event.error);
+            if (event.error === 'no-speech') {
+                console.log('No speech detected, continuing...');
+            }
+        };
+
+        recognition.onend = () => {
+            console.log('Speech recognition ended');
+            // If we're still recording, restart recognition
+            if (isRecording.value) {
+                console.log('Restarting speech recognition...');
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.warn('Could not restart recognition:', e);
+                }
+            }
+        };
+
+        return recognition;
     };
 
     const updateVolume = () => {
@@ -52,8 +123,33 @@ export function useAudioRecorder() {
             console.log('Microphone access granted');
             permissionStatus.value = 'granted';
 
+            // Clear previous transcript
+            transcript.value = '';
+            finalTranscriptAccumulator = '';
+
+            // Start Speech Recognition for real-time transcription
+            if (!recognition) {
+                recognition = initSpeechRecognition();
+            }
+
+            if (recognition) {
+                try {
+                    recognition.start();
+                    console.log('Attempting to start speech recognition...');
+                } catch (e) {
+                    console.warn('Could not start speech recognition:', e);
+                }
+            }
+
             // Setup Audio Analysis
             audioContext = new AudioContext();
+
+            // Resume AudioContext if suspended (required by some browsers)
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+                console.log('AudioContext resumed');
+            }
+
             analyser = audioContext.createAnalyser();
             analyser.fftSize = 256;
             source = audioContext.createMediaStreamSource(stream);
@@ -61,8 +157,25 @@ export function useAudioRecorder() {
 
             updateVolume();
 
-            // Setup Recorder
-            mediaRecorder = new MediaRecorder(stream);
+            // Setup Recorder with codec detection
+            // Safari doesn't support webm, so we need to detect and use appropriate format
+            const supportedTypes = [
+                'audio/webm',
+                'audio/webm;codecs=opus',
+                'audio/mp4',
+                'audio/mp4;codecs=mp4a.40.2',
+                'audio/wav'
+            ];
+
+            mimeType = supportedTypes.find(type => MediaRecorder.isTypeSupported(type)) || '';
+
+            if (!mimeType) {
+                throw new Error('No supported audio format found');
+            }
+
+            console.log('Using audio format:', mimeType);
+
+            mediaRecorder = new MediaRecorder(stream, { mimeType });
             chunks = [];
 
             mediaRecorder.ondataavailable = (e) => {
@@ -75,9 +188,11 @@ export function useAudioRecorder() {
             // The onstop event handler is now set within stopRecording to resolve a Promise
             // mediaRecorder.onstop = () => { ... }; // This block is removed as it's handled by stopRecording
 
-            mediaRecorder.start();
+            // Start with timeslice to ensure ondataavailable fires during recording
+            // This is critical for Safari/WebKit browsers
+            mediaRecorder.start(100); // Collect data every 100ms
             isRecording.value = true;
-            console.log('MediaRecorder started');
+            console.log('MediaRecorder started with 100ms timeslice');
         } catch (error) {
             console.error('Error accessing microphone:', error);
             permissionStatus.value = 'denied';
@@ -95,10 +210,20 @@ export function useAudioRecorder() {
 
             mediaRecorder.onstop = () => {
                 console.log('MediaRecorder stopped');
-                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const blob = new Blob(chunks, { type: mimeType });
                 audioBlob.value = blob;
                 console.log('Audio blob created:', blob.size, 'bytes', blob.type);
                 chunks = [];
+
+                // Stop speech recognition
+                if (recognition) {
+                    try {
+                        recognition.stop();
+                        console.log('Speech recognition stopped');
+                    } catch (e) {
+                        console.warn('Could not stop speech recognition:', e);
+                    }
+                }
 
                 // Cleanup Audio Context
                 if (animationFrame) cancelAnimationFrame(animationFrame);
@@ -121,9 +246,23 @@ export function useAudioRecorder() {
         });
     };
 
+    onMounted(() => {
+        // Check Speech Recognition support on mount
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        isSpeechRecognitionSupported.value = !!SpeechRecognition;
+        console.log('Speech Recognition supported:', isSpeechRecognitionSupported.value);
+    });
+
     onUnmounted(() => {
         if (animationFrame) cancelAnimationFrame(animationFrame);
         if (audioContext) audioContext.close();
+        if (recognition) {
+            try {
+                recognition.stop();
+            } catch (e) {
+                // Ignore errors on cleanup
+            }
+        }
     });
 
     return {
@@ -131,6 +270,8 @@ export function useAudioRecorder() {
         audioBlob,
         volume,
         permissionStatus,
+        transcript,
+        isSpeechRecognitionSupported,
         startRecording,
         stopRecording,
         checkPermission
