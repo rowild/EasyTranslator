@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { db, type Conversation } from '../db/db';
+import { languages, type Language } from '../config/languages';
 
 export const useTranslationStore = defineStore('translation', () => {
     const currentSourceText = ref('');
@@ -10,6 +11,7 @@ export const useTranslationStore = defineStore('translation', () => {
     const isProcessing = ref(false);
     const error = ref<string | null>(null);
     const history = ref<Conversation[]>([]);
+    const detectedLanguage = ref<Language | null>(null);
 
     const setTargetLang = (lang: string) => {
         targetLang.value = lang;
@@ -34,34 +36,160 @@ export const useTranslationStore = defineStore('translation', () => {
         }
     };
 
-    const transcribeAudio = async (audioBlob: Blob, languageCode?: string) => {
+    // Helper function to convert Blob to base64
+    const blobToBase64 = (blob: Blob): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                // Remove the data URL prefix (e.g., "data:audio/webm;base64,")
+                const base64Data = base64String.split(',')[1];
+                resolve(base64Data);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    };
+
+    // Helper function to encode AudioBuffer to WAV format
+    const audioBufferToWav = (buffer: AudioBuffer): ArrayBuffer => {
+        const length = buffer.length * buffer.numberOfChannels * 2;
+        const arrayBuffer = new ArrayBuffer(44 + length);
+        const view = new DataView(arrayBuffer);
+        const channels: Float32Array[] = [];
+        let offset = 0;
+        let pos = 0;
+
+        // Write WAV header
+        const setUint16 = (data: number) => {
+            view.setUint16(pos, data, true);
+            pos += 2;
+        };
+        const setUint32 = (data: number) => {
+            view.setUint32(pos, data, true);
+            pos += 4;
+        };
+
+        // "RIFF" chunk descriptor
+        setUint32(0x46464952); // "RIFF"
+        setUint32(36 + length); // file length - 8
+        setUint32(0x45564157); // "WAVE"
+
+        // "fmt " sub-chunk
+        setUint32(0x20746d66); // "fmt "
+        setUint32(16); // length = 16
+        setUint16(1); // PCM
+        setUint16(buffer.numberOfChannels);
+        setUint32(buffer.sampleRate);
+        setUint32(buffer.sampleRate * buffer.numberOfChannels * 2); // byte rate
+        setUint16(buffer.numberOfChannels * 2); // block align
+        setUint16(16); // bits per sample
+
+        // "data" sub-chunk
+        setUint32(0x61746164); // "data"
+        setUint32(length);
+
+        // Write interleaved PCM samples
+        for (let i = 0; i < buffer.numberOfChannels; i++) {
+            channels.push(buffer.getChannelData(i));
+        }
+
+        while (pos < arrayBuffer.byteLength) {
+            for (let i = 0; i < buffer.numberOfChannels; i++) {
+                let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                sample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
+                view.setInt16(pos, sample, true);
+                pos += 2;
+            }
+            offset++;
+        }
+
+        return arrayBuffer;
+    };
+
+    // Helper function to convert audio blob to WAV format
+    const convertToWav = async (blob: Blob): Promise<Blob> => {
+        const audioContext = new AudioContext();
+        const arrayBuffer = await blob.arrayBuffer();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+        // Convert to WAV
+        const wavBuffer = audioBufferToWav(audioBuffer);
+        await audioContext.close();
+
+        return new Blob([wavBuffer], { type: 'audio/wav' });
+    };
+
+    // Combined transcription and translation in one API call
+    const transcribeAndTranslate = async (audioBlob: Blob) => {
         isProcessing.value = true;
         error.value = null;
         currentSourceText.value = '';
+        currentTranslatedText.value = '';
 
         try {
             const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
             if (!apiKey) throw new Error('Missing VITE_MISTRAL_API_KEY');
 
-            const formData = new FormData();
-            formData.append('file', audioBlob, 'audio.webm');
-            formData.append('model', 'voxtral-mini-latest');
-
-            // Add language if provided (improves accuracy)
-            if (languageCode) {
-                // Extract 2-letter code from full code (e.g., "de-DE" -> "de")
-                const langCode = languageCode.split('-')[0];
-                formData.append('language', langCode);
-                console.log('Transcribing with language:', langCode);
+            // Convert audio blob to WAV format if needed
+            let wavBlob: Blob;
+            if (audioBlob.type === 'audio/wav') {
+                console.log('Audio already in WAV format, skipping conversion');
+                wavBlob = audioBlob;
+            } else {
+                console.log('Converting audio from', audioBlob.type, 'to WAV format...');
+                wavBlob = await convertToWav(audioBlob);
+                console.log('WAV conversion complete:', wavBlob.size, 'bytes');
             }
 
-            console.log('Sending audio to Voxtral API...');
-            const res = await fetch('https://api.mistral.ai/v1/audio/transcriptions', {
+            // Convert WAV blob to base64
+            console.log('Converting audio to base64...');
+            const audioBase64 = await blobToBase64(wavBlob);
+
+            // Get target language name
+            const targetLanguage = languages.find(lang => lang.displayCode === targetLang.value);
+            const targetLangName = targetLanguage?.nativeName || targetLang.value;
+
+            console.log('Sending audio to Voxtral for transcription and translation...');
+            const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${apiKey}`,
                 },
-                body: formData,
+                body: JSON.stringify({
+                    model: 'voxtral-small-latest',
+                    response_format: { type: 'json_object' },
+                    messages: [
+                        {
+                            role: 'system',
+                            content: `You are a transcription and translation assistant. Listen to the audio and:
+1. Transcribe exactly what was said
+2. Detect the source language (return ISO 639-1 code like 'en', 'de', 'fr', etc.)
+3. Translate the transcription to ${targetLangName}
+
+Return a JSON object with this exact structure:
+{
+  "sourceText": "the transcribed text",
+  "sourceLanguage": "ISO 639-1 language code",
+  "translatedText": "the translation in ${targetLangName}"
+}`
+                        },
+                        {
+                            role: 'user',
+                            content: [
+                                {
+                                    type: 'input_audio',
+                                    input_audio: audioBase64
+                                },
+                                {
+                                    type: 'text',
+                                    text: `Please transcribe this audio, detect the language, and translate it to ${targetLangName}.`
+                                }
+                            ]
+                        }
+                    ]
+                }),
             });
 
             if (!res.ok) {
@@ -70,77 +198,52 @@ export const useTranslationStore = defineStore('translation', () => {
             }
 
             const data = await res.json();
-            currentSourceText.value = data.text;
-            console.log('Voxtral transcription:', data.text);
-            console.log('Usage:', data.usage);
+            console.log('Voxtral full response:', data);
 
-            // Set source language from input
-            if (languageCode) {
-                currentSourceLang.value = languageCode.split('-')[0];
+            // Parse the JSON response
+            const result = JSON.parse(data.choices[0]?.message?.content || '{}');
+            console.log('Parsed result:', result);
+
+            currentSourceText.value = result.sourceText || '';
+            currentTranslatedText.value = result.translatedText || '';
+
+            // Match the detected language code to our language list
+            if (result.sourceLanguage) {
+                console.log('Detected language code:', result.sourceLanguage);
+
+                const detected = languages.find(lang => {
+                    const match = lang.displayCode === result.sourceLanguage ||
+                                  lang.displayCode.toLowerCase() === result.sourceLanguage.toLowerCase() ||
+                                  lang.code.toLowerCase().startsWith(result.sourceLanguage.toLowerCase() + '-');
+                    if (match) {
+                        console.log('Matched language:', lang.nativeName, lang.code);
+                    }
+                    return match;
+                });
+
+                if (detected) {
+                    console.log('Setting detectedLanguage to:', detected.nativeName, detected.flag);
+                    detectedLanguage.value = detected;
+                    currentSourceLang.value = detected.displayCode;
+                } else {
+                    console.warn('Could not find language for code:', result.sourceLanguage);
+                    detectedLanguage.value = null;
+                    currentSourceLang.value = result.sourceLanguage;
+                }
             }
-
-            return data;
-        } catch (e: any) {
-            console.error('Transcription error:', e);
-            error.value = e.message;
-            throw e;
-        } finally {
-            isProcessing.value = false;
-        }
-    };
-
-    const translateText = async () => {
-        if (!currentSourceText.value) return;
-
-        isProcessing.value = true;
-        error.value = null;
-        currentTranslatedText.value = ''; // Clear previous
-
-        try {
-            const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
-            if (!apiKey) throw new Error('Missing VITE_MISTRAL_API_KEY');
-
-            const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                },
-                body: JSON.stringify({
-                    model: 'mistral-small-latest',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: `You are a translation engine. Translate from ${currentSourceLang.value || 'auto'} to ${targetLang.value}. Output only the translated text.`
-                        },
-                        {
-                            role: 'user',
-                            content: currentSourceText.value
-                        }
-                    ]
-                }),
-            });
-
-            if (!res.ok) {
-                const errText = await res.text();
-                throw new Error(`Mistral Translate Error: ${errText}`);
-            }
-
-            const data = await res.json();
-            const translated = data.choices[0]?.message?.content || '';
-            currentTranslatedText.value = translated;
 
             // Save to DB
             await addConversation({
                 createdAt: Date.now(),
                 sourceText: currentSourceText.value,
                 sourceLang: currentSourceLang.value,
-                translatedText: translated,
+                translatedText: currentTranslatedText.value,
                 targetLang: targetLang.value,
             });
 
+            return result;
         } catch (e: any) {
-            console.error(e);
+            console.error('Transcription and translation error:', e);
             error.value = e.message;
             throw e;
         } finally {
@@ -156,9 +259,9 @@ export const useTranslationStore = defineStore('translation', () => {
         isProcessing,
         error,
         history,
+        detectedLanguage,
         setTargetLang,
         loadHistory,
-        transcribeAudio,
-        translateText,
+        transcribeAndTranslate,
     };
 });

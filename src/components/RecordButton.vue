@@ -36,7 +36,6 @@ const volumeScale = computed(() => {
         <Square v-if="isRecording" class="icon" />
         <Mic v-else class="icon" />
       </div>
-      <span class="label">{{ isRecording ? 'Stop' : 'Record' }}</span>
     </button>
   </div>
 </template>
@@ -71,13 +70,11 @@ const volumeScale = computed(() => {
   background-color: #42b883;
   color: white;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(66, 184, 131, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .record-btn.recording {
@@ -93,8 +90,8 @@ const volumeScale = computed(() => {
 }
 
 .icon-wrapper {
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,12 +100,5 @@ const volumeScale = computed(() => {
 .icon {
   width: 100%;
   height: 100%;
-}
-
-.label {
-  font-size: 1.2rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 </style>
