@@ -27,6 +27,7 @@ const recordedBlob = ref<Blob | null>(null);
 const inputLanguage = ref<Language | null>(null);
 const outputLanguage = ref<Language | null>(null);
 const isTranslated = ref(false); // Track if current recording has been translated
+const currentTranslationOutputLang = ref<Language | null>(null); // Locked output language for current translation
 
 // Conversation history
 interface ConversationPair {
@@ -63,14 +64,20 @@ onMounted(() => {
   checkPermission();
 
   const savedInputCode = localStorage.getItem('inputLanguage');
-  const savedOutputCode = localStorage.getItem('outputLanguage');
+  // Use 'targetLang' key to match the store
+  const savedOutputCode = localStorage.getItem('targetLang');
 
   if (savedInputCode) {
     inputLanguage.value = languages.find(lang => lang.code === savedInputCode) || null;
   }
 
   if (savedOutputCode) {
-    outputLanguage.value = languages.find(lang => lang.code === savedOutputCode) || null;
+    // Find by displayCode since that's what's stored in the store
+    outputLanguage.value = languages.find(lang => lang.displayCode === savedOutputCode) || null;
+    // Make sure store is in sync
+    if (outputLanguage.value) {
+      store.setTargetLang(outputLanguage.value.displayCode);
+    }
   }
 });
 
@@ -82,10 +89,11 @@ watch(inputLanguage, (newLang) => {
   }
 });
 
-// Watch output language changes
+// Watch output language changes and sync with store and localStorage
 watch(outputLanguage, (newLang) => {
   if (newLang) {
-    localStorage.setItem('outputLanguage', newLang.code);
+    // This will also save to localStorage as 'targetLang'
+    store.setTargetLang(newLang.displayCode);
   }
 });
 
@@ -100,6 +108,8 @@ const handleInputLanguageSelect = (language: Language) => {
 
 const handleOutputLanguageSelect = (language: Language) => {
   outputLanguage.value = language;
+  // Note: The watcher will automatically sync with store.setTargetLang()
+  console.log('Output language set to:', language.nativeName, language.displayCode);
 };
 
 const handleRecordToggle = async () => {
@@ -128,10 +138,14 @@ const handleRecordToggle = async () => {
       // Mark as translated since we got both in one call
       isTranslated.value = true;
 
+      // Lock the output language for this translation (create a copy to prevent reactivity)
+      currentTranslationOutputLang.value = outputLanguage.value ? { ...outputLanguage.value } : null;
+
       console.log('After transcription & translation:');
       console.log('- Source text:', store.currentSourceText);
       console.log('- Detected language:', store.detectedLanguage);
       console.log('- Translated text:', store.currentTranslatedText);
+      console.log('- Locked output language:', currentTranslationOutputLang.value?.nativeName);
 
     } catch (e) {
       console.error('Error during processing:', e);
@@ -144,6 +158,7 @@ const handleRecordToggle = async () => {
       recordedBlob.value = null;
       setTranscript('');
       isTranslated.value = false;
+      currentTranslationOutputLang.value = null; // Reset locked language
 
       // Close both language columns when starting recording
       isInputColumnOpen.value = false;
@@ -162,6 +177,7 @@ const handleDeleteRecording = () => {
   recordedBlob.value = null;
   setTranscript('');
   isTranslated.value = false;
+  currentTranslationOutputLang.value = null; // Reset locked language
   store.currentTranslatedText = '';
   store.detectedLanguage = null;
 };
@@ -171,22 +187,24 @@ const handleNewRecording = () => {
   console.log('Starting new recording...');
 
   // Save current conversation pair to history
-  if (recordedBlob.value && inputLanguage.value && outputLanguage.value) {
+  if (recordedBlob.value && inputLanguage.value && currentTranslationOutputLang.value) {
     // Use detected language if available, otherwise use selected input language
     const actualInputLang = store.detectedLanguage || inputLanguage.value;
 
+    // Use the locked output language (already a copy, no need to spread again)
     conversationHistory.value.push({
       sourceText: transcript.value,
       translatedText: store.currentTranslatedText,
       audioBlob: recordedBlob.value,
-      inputLang: actualInputLang,
-      outputLang: outputLanguage.value,
+      inputLang: { ...actualInputLang },
+      outputLang: currentTranslationOutputLang.value,
     });
     console.log('Saved to history. Total pairs:', conversationHistory.value.length);
   }
 
   // Reset for new recording
   recordedBlob.value = null;
+  currentTranslationOutputLang.value = null; // Reset locked language
   setTranscript('');
   isTranslated.value = false;
   store.currentTranslatedText = '';
@@ -291,9 +309,9 @@ const handleNewRecording = () => {
 
           <!-- Output (Translation) Section (only show AFTER translation) -->
           <div v-if="isTranslated" class="input-output-row output-row">
-            <div class="language-indicator" v-if="outputLanguage">
-              <span class="lang-flag">{{ outputLanguage.flag }}</span>
-              <span class="lang-name">{{ outputLanguage.nativeName }}</span>
+            <div class="language-indicator" v-if="currentTranslationOutputLang">
+              <span class="lang-flag">{{ currentTranslationOutputLang.flag }}</span>
+              <span class="lang-name">{{ currentTranslationOutputLang.nativeName }}</span>
             </div>
             <div class="transcript-field output-field">
               <div class="transcript-content">
@@ -523,7 +541,7 @@ main {
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .lang-flag {

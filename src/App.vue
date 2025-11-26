@@ -11,7 +11,7 @@ import './assets/fonts.css';
 /* CSS Custom Properties */
 :root {
   /* Color scheme */
-  --primary-color: #9d1744; /* Darker magenta */
+  --primary-color: #ff2d77; /* Bright magenta */
   --secondary-color: #074369; /* Dark petrol */
   --secondary-light: #146284; /* Less dark petrol */
 
@@ -20,7 +20,7 @@ import './assets/fonts.css';
   --input-language-border: #42b883;
 
   /* Output language colors */
-  --output-language-color: rgba(157, 23, 68, 0.1);
+  --output-language-color: rgba(255, 45, 119, 0.1);
   --output-language-border: var(--primary-color);
 }
 

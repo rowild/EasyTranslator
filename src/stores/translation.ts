@@ -146,11 +146,14 @@ export const useTranslationStore = defineStore('translation', () => {
             console.log('Converting audio to base64...');
             const audioBase64 = await blobToBase64(wavBlob);
 
-            // Get target language name
+            // Get target language info
             const targetLanguage = languages.find(lang => lang.displayCode === targetLang.value);
-            const targetLangName = targetLanguage?.nativeName || targetLang.value;
+            const targetLangCode = targetLanguage?.displayCode || targetLang.value;
+            const targetLangName = targetLanguage?.name || targetLang.value;
 
             console.log('Sending audio to Voxtral for transcription and translation...');
+            console.log('Target language:', targetLangName, '(' + targetLangCode + ')');
+
             const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -166,7 +169,7 @@ export const useTranslationStore = defineStore('translation', () => {
                             content: `You are a transcription and translation assistant. Listen to the audio and:
 1. Transcribe exactly what was said
 2. Detect the source language (return ISO 639-1 code like 'en', 'de', 'fr', etc.)
-3. Translate the transcription to ${targetLangName}
+3. Translate the transcription to ${targetLangName} (language code: ${targetLangCode})
 
 Return a JSON object with this exact structure:
 {
@@ -184,7 +187,7 @@ Return a JSON object with this exact structure:
                                 },
                                 {
                                     type: 'text',
-                                    text: `Please transcribe this audio, detect the language, and translate it to ${targetLangName}.`
+                                    text: `Please transcribe this audio, detect the source language, and translate it to ${targetLangName} (${targetLangCode}).`
                                 }
                             ]
                         }
