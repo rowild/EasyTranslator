@@ -32,13 +32,13 @@ const currentLangName = () => {
 <template>
   <div class="language-selector">
     <button class="selector-btn" @click="isOpen = true">
-      <Globe class="icon" />
-      <span>Translate to: <strong>{{ currentLangName() }}</strong></span>
+      <Globe class="icon" :size="16" />
+      <span>{{ currentLangName() }}</span>
     </button>
 
     <div v-if="isOpen" class="modal-overlay" @click="isOpen = false">
       <div class="modal-content" @click.stop>
-        <h2>Select Language</h2>
+        <h2>Translate to...</h2>
         <div class="grid">
           <button
             v-for="lang in languages"
@@ -59,32 +59,31 @@ const currentLangName = () => {
 
 <style scoped>
 .language-selector {
-  width: 100%;
+  /* No width 100% */
 }
 
 .selector-btn {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1.2rem;
-  background-color: #f0f0f0;
-  color: #333;
-  border: 2px solid #ddd;
-  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
-.selector-btn:active {
-  background-color: #e0e0e0;
+.selector-btn:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
 }
 
 .icon {
-  width: 24px;
-  height: 24px;
+  /* handled by size prop */
 }
 
 .modal-overlay {
@@ -118,6 +117,7 @@ const currentLangName = () => {
 h2 {
   margin: 0;
   text-align: center;
+  font-size: 1.2rem;
 }
 
 .grid {

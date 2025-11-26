@@ -1,36 +1,70 @@
 <script setup lang="ts">
 import { Mic, Square } from 'lucide-vue-next';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   isRecording: boolean;
   disabled?: boolean;
+  volume?: number;
 }>();
 
 defineEmits<{
   (e: 'toggle'): void;
 }>();
+
+const volumeScale = computed(() => {
+  if (!props.isRecording || !props.volume) return 1;
+  // Map 0-100 to 1.0-1.3
+  return 1 + (props.volume / 100) * 0.3;
+});
 </script>
 
 <template>
-  <button
-    class="record-btn"
-    :class="{ recording: isRecording, disabled: disabled }"
-    @click="$emit('toggle')"
-    :disabled="disabled"
-  >
-    <div class="icon-wrapper">
-      <Square v-if="isRecording" class="icon" />
-      <Mic v-else class="icon" />
-    </div>
-    <span class="label">{{ isRecording ? 'Stop' : 'Record' }}</span>
-  </button>
+  <div class="record-wrapper">
+    <div 
+      class="volume-ring" 
+      :style="{ transform: `scale(${volumeScale})`, opacity: isRecording ? 0.5 : 0 }"
+    ></div>
+    <button
+      class="record-btn"
+      :class="{ recording: isRecording, disabled: disabled }"
+      @click="$emit('toggle')"
+      :disabled="disabled"
+    >
+      <div class="icon-wrapper">
+        <Square v-if="isRecording" class="icon" />
+        <Mic v-else class="icon" />
+      </div>
+      <span class="label">{{ isRecording ? 'Stop' : 'Record' }}</span>
+    </button>
+  </div>
 </template>
 
 <style scoped>
-.record-btn {
+.record-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+}
+
+.volume-ring {
+  position: absolute;
   width: 100%;
-  max-width: 200px;
-  aspect-ratio: 1;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #42b883;
+  z-index: 0;
+  transition: transform 0.1s ease-out;
+}
+
+.record-btn {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   border: none;
   background-color: #42b883;
@@ -48,7 +82,7 @@ defineEmits<{
 .record-btn.recording {
   background-color: #ff4757;
   box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
-  animation: pulse 1.5s infinite;
+  /* Remove pulse animation as we use volume ring */
 }
 
 .record-btn.disabled {
@@ -75,11 +109,5 @@ defineEmits<{
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
 }
 </style>
