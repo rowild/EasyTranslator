@@ -1,0 +1,178 @@
+Piper TTS Documentation
+========================
+
+Version Information
+-------------------
+Piper Version: 1.3.0
+Release Date: July 2025
+License: GPL-3.0
+
+Repository Information
+----------------------
+GitHub: https://github.com/OHF-Voice/piper1-gpl
+Stars: 1,800+
+Forks: 183
+Projects Using Piper: 396+
+
+Voice Models
+------------
+Repository: https://huggingface.co/rhasspy/piper-voices
+Languages Supported: 40+
+Total Voices: 200+
+Voice License: Mostly MIT (check individual licenses)
+
+Documentation Fetch Details
+----------------------------
+Fetched: 2025-11-27
+Fetched From:
+  - https://github.com/OHF-Voice/piper1-gpl
+  - https://github.com/OHF-Voice/piper1-gpl/tree/main/docs
+  - https://huggingface.co/rhasspy/piper-voices
+Documentation Version: 1.0
+
+Files Included in This Documentation
+-------------------------------------
+1. README.md - Overview and getting started guide
+2. CLI.md - Command-line interface documentation
+3. HTTP_API.md - HTTP server API reference
+4. PYTHON_API.md - Python API reference and examples
+5. VOICES.md - Complete voice models catalog
+6. examples/easytranslator-integration.md - Integration guide for EasyTranslator
+7. version.txt - This file
+
+Key Features
+------------
+- Fast local neural text-to-speech
+- 40+ languages supported
+- Multiple interfaces (CLI, HTTP, Python, C++)
+- GPU acceleration support (CUDA)
+- Multi-speaker voices available
+- ONNX Runtime for cross-platform compatibility
+- Embedded espeak-ng for phonemization
+
+Technology Stack
+----------------
+- Core: C++ (92.8%)
+- Python Bindings: Python (6.6%)
+- Model Format: ONNX Runtime
+- Phonemization: espeak-ng (embedded)
+- Voice Training: VITS (Variational Inference TTS)
+
+Installation
+------------
+Quick Install:
+  pip install piper-tts
+
+With HTTP Support:
+  pip install piper-tts[http]
+
+With GPU Support:
+  pip install piper-tts onnxruntime-gpu
+
+System Requirements
+-------------------
+Minimum:
+  - Python 3.7+
+  - 512 MB RAM
+  - 50 MB disk space per voice model
+
+Recommended:
+  - Python 3.11+
+  - 2 GB RAM
+  - 500 MB disk space (for multiple voices)
+
+Optional:
+  - CUDA-capable GPU for acceleration
+  - 8 GB GPU RAM for high-quality synthesis
+
+Performance Benchmarks
+----------------------
+CPU (Medium Quality):
+  - Modern Desktop: 1-2x real-time
+  - Raspberry Pi 4: ~1x real-time
+  - Embedded (ARM): 0.5-1x real-time
+
+GPU (CUDA):
+  - All Quality Levels: 3-10x real-time
+
+Memory Usage:
+  - Typical Runtime: 50-200 MB RAM
+  - Per Voice Model: 5-100 MB (depends on quality)
+
+Notable Projects Using Piper
+-----------------------------
+- Home Assistant (smart home automation)
+- NVDA (screen reader for visually impaired)
+- Open Voice OS (voice assistant platform)
+- LocalAI (local AI inference framework)
+- RuneLite OSRS (gaming client)
+- JetsonGPT (edge AI)
+- And 390+ more projects
+
+Quick Start Examples
+--------------------
+
+CLI:
+  python3 -m piper -m en_US-lessac-medium -f output.wav -- 'Hello, world!'
+
+HTTP Server:
+  python3 -m piper.http_server --model en_US-lessac-medium
+  curl -X POST -H 'Content-Type: text/plain' --data 'Test' -o test.wav http://localhost:5000/
+
+Python API:
+  from piper import PiperVoice
+  voice = PiperVoice.load('en_US-lessac-medium.onnx')
+  voice.synthesize('Hello from Python!', 'output.wav')
+
+Docker:
+  docker run -d -p 5000:5000 piper-tts-server
+
+Important Notes
+---------------
+1. License: GPL-3.0 for software, check individual voice licenses
+2. Usage: "Intended for personal use and text to speech research only"
+3. Privacy: All processing is local, no cloud dependencies
+4. Models: Each voice requires both .onnx and .onnx.json files
+5. Quality: Medium quality recommended for most use cases
+
+Links
+-----
+Official Repository: https://github.com/OHF-Voice/piper1-gpl
+Voice Models: https://huggingface.co/rhasspy/piper-voices
+Voice Samples: https://rhasspy.github.io/piper-samples/
+Home Assistant Integration: https://www.home-assistant.io/integrations/piper/
+Open Home Foundation: https://www.openhomefoundation.org/
+
+Support & Community
+-------------------
+GitHub Issues: https://github.com/OHF-Voice/piper1-gpl/issues
+Discussions: https://github.com/OHF-Voice/piper1-gpl/discussions
+Contributors: 15+ active contributors
+Community: Part of Rhasspy voice ecosystem
+
+Updates & Maintenance
+---------------------
+Latest Release: v1.3.0 (July 2025)
+Update Frequency: Active development
+Commit History: 137+ commits
+Maintenance Status: Actively maintained
+
+EasyTranslator Integration Notes
+---------------------------------
+For integration with the EasyTranslator project:
+1. See examples/easytranslator-integration.md for detailed guide
+2. Recommended deployment: Docker container on Fly.io (~$1.50/month)
+3. Required voices: 11 languages (see VOICES.md)
+4. Estimated total size: ~280 MB for all voice models
+5. Integration approach: Serverless function proxy pattern
+
+Recommended Reading Order
+-------------------------
+1. README.md - Start here for overview
+2. CLI.md - Quick testing and basic usage
+3. HTTP_API.md - Web application integration
+4. PYTHON_API.md - Advanced Python integration
+5. VOICES.md - Voice selection and management
+6. examples/easytranslator-integration.md - Specific integration guide
+
+Last Updated: 2025-11-27
