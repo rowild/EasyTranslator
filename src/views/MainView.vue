@@ -5,6 +5,7 @@ import { useAudioRecorder } from '../composables/useAudioRecorder';
 import LanguageColumn from '../components/LanguageColumn.vue';
 import RecordButton from '../components/RecordButton.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
+import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import { languages, getSortedLanguages, type Language } from '../config/languages';
 import { Loader2, Trash2, Plus } from 'lucide-vue-next';
 
@@ -18,6 +19,7 @@ const {
   checkPermission,
   transcript,
   isSpeechRecognitionSupported,
+  analyserNode,
   setRecognitionLanguage,
   setTranscript
 } = useAudioRecorder();
@@ -282,6 +284,17 @@ const handleNewRecording = () => {
           </div>
         </div>
 
+        <!-- Recording Visualizer (only show WHILE recording) -->
+        <div v-if="isRecording" class="conversation-pair">
+          <div class="input-output-row">
+            <div class="language-indicator" v-if="inputLanguage">
+              <span class="lang-flag">{{ inputLanguage.flag }}</span>
+              <span class="lang-name">{{ inputLanguage.nativeName }}</span>
+            </div>
+            <RecordingVisualizer :is-recording="isRecording" :analyser="analyserNode" />
+          </div>
+        </div>
+
         <!-- Current Input/Output Pair (only show AFTER recording has stopped) -->
         <div v-if="canRecord && recordedBlob" class="conversation-pair">
           <!-- Input (Source) Section -->
@@ -491,7 +504,6 @@ main {
   gap: 2rem;
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  border-bottom: 2px dashed #ddd;
 }
 
 .conversation-pair {
@@ -503,8 +515,6 @@ main {
 
 .history-pair {
   opacity: 0.8;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
 }
 
 .input-output-row {
@@ -512,7 +522,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.25rem;
   padding-left: 2rem;
 }
 
@@ -541,7 +551,7 @@ main {
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0;
 }
 
 .lang-flag {
@@ -599,12 +609,16 @@ main {
 }
 
 .delete-btn {
-  border-color: #d70f20;
-  color: #d70f20;
+  width: 40px;
+  height: 40px;
+  border-color: white;
+  color: white;
+  background: transparent;
 }
 
 .delete-btn:hover {
-  background: #d70f20;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
   color: white;
   transform: scale(1.05);
 }
@@ -634,6 +648,7 @@ main {
   display: flex;
   justify-content: center;
   padding: 1rem 0;
+  margin-bottom: 2rem;
 }
 
 .plus-btn {

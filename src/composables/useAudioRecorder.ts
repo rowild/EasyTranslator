@@ -7,6 +7,7 @@ export function useAudioRecorder() {
     const permissionStatus = ref<PermissionState | 'unknown'>('unknown');
     const transcript = ref('');
     const isSpeechRecognitionSupported = ref(false);
+    const analyserNode = ref<AnalyserNode | null>(null);
 
     let mediaRecorder: MediaRecorder | null = null;
     let chunks: Blob[] = [];
@@ -74,8 +75,12 @@ export function useAudioRecorder() {
 
             analyser = audioContext.createAnalyser();
             analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.5;
             source = audioContext.createMediaStreamSource(stream);
             source.connect(analyser);
+
+            // Expose analyser for visualizer
+            analyserNode.value = analyser;
 
             updateVolume();
 
@@ -144,6 +149,7 @@ export function useAudioRecorder() {
                 if (audioContext) audioContext.close();
 
                 volume.value = 0;
+                analyserNode.value = null;
 
                 // Stop all tracks
                 if (mediaRecorder && mediaRecorder.stream) {
@@ -185,6 +191,7 @@ export function useAudioRecorder() {
         permissionStatus,
         transcript,
         isSpeechRecognitionSupported,
+        analyserNode,
         startRecording,
         stopRecording,
         checkPermission,
