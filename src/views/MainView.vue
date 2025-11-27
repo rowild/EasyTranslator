@@ -3,18 +3,16 @@ import { onMounted, ref, computed, watch, nextTick } from 'vue';
 import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
 import LanguageColumn from '../components/LanguageColumn.vue';
-import RecordButton from '../components/RecordButton.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import { languages, getSortedLanguages, type Language } from '../config/languages';
-import { Loader2, Trash2, Plus, Mic, Square } from 'lucide-vue-next';
+import { Trash2, Plus, Mic, Square } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const {
   isRecording,
   startRecording,
   stopRecording,
-  volume,
   permissionStatus,
   checkPermission,
   transcript,
