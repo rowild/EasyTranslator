@@ -7,7 +7,7 @@ import RecordButton from '../components/RecordButton.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import { languages, getSortedLanguages, type Language } from '../config/languages';
-import { Loader2, Trash2, Plus } from 'lucide-vue-next';
+import { Loader2, Trash2, Plus, Mic, Square } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const {
@@ -301,7 +301,7 @@ const handleNewRecording = async () => {
     console.warn('No output language selected!');
   }
 
-  // Automatically start recording
+  // Automatically start recording (button will appear as red/active)
   try {
     await startRecording();
     console.log('Auto-started new recording');
@@ -381,14 +381,26 @@ const handleNewRecording = async () => {
           </div>
         </div>
 
-        <!-- Recording Visualizer (only show WHILE recording) -->
-        <div v-if="isRecording" class="conversation-pair" ref="recordingVisualizerRef">
+        <!-- Recording Visualizer with inline record button (show while recording OR ready to record and no result) -->
+        <div v-if="(isRecording || (canRecord && !recordedBlob)) && !store.isProcessing" class="conversation-pair" ref="recordingVisualizerRef">
           <div class="input-output-row">
             <div class="language-indicator" v-if="inputLanguage">
               <span class="lang-flag">{{ inputLanguage.flag }}</span>
               <span class="lang-name">{{ inputLanguage.nativeName }}</span>
             </div>
-            <RecordingVisualizer :is-recording="isRecording" :analyser="analyserNode" />
+            <div class="visualizer-with-button">
+              <RecordingVisualizer :is-recording="isRecording" :analyser="analyserNode" />
+              <button
+                class="inline-record-btn"
+                :class="{ recording: isRecording }"
+                @click="handleRecordToggle"
+                :disabled="isOffline || permissionStatus === 'denied'"
+                :title="isRecording ? 'Stop recording' : 'Start recording'"
+              >
+                <Square v-if="isRecording" :size="24" />
+                <Mic v-else :size="24" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -464,19 +476,9 @@ const handleNewRecording = async () => {
         <span class="footer-flag">{{ inputLanguage?.flag || '🇩🇪' }}</span>
       </button>
 
-      <!-- Record Button (always visible, disabled when recording exists) -->
-      <div v-if="canRecord" class="footer-record-container">
-        <div v-if="store.isProcessing" class="processing-footer">
-          <Loader2 class="spin" :size="32" />
-        </div>
-        <div v-else>
-          <RecordButton
-            :is-recording="isRecording"
-            :volume="volume"
-            :disabled="isOffline || permissionStatus === 'denied' || recordedBlob !== null"
-            @toggle="handleRecordToggle"
-          />
-        </div>
+      <!-- Record Button (now inline with VUMeter, footer button hidden) -->
+      <div v-if="false" class="footer-record-container">
+        <!-- Inline record button is now shown next to VUMeter instead -->
       </div>
 
       <!-- Output Language Button -->
@@ -795,6 +797,51 @@ main {
 .transcript-content.placeholder {
   color: rgba(255, 255, 255, 0.5);
   font-style: italic;
+}
+
+.visualizer-with-button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.inline-record-btn {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #42b883;
+  background: #42b883;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(66, 184, 131, 0.4);
+}
+
+.inline-record-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(66, 184, 131, 0.5);
+}
+
+.inline-record-btn.recording {
+  background: #ff4757;
+  border-color: #ff4757;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+}
+
+.inline-record-btn.recording:hover {
+  box-shadow: 0 6px 16px rgba(255, 71, 87, 0.5);
+}
+
+.inline-record-btn:disabled {
+  background: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .spin {
