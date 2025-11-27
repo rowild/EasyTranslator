@@ -58,6 +58,25 @@ body {
   background-attachment: fixed;
 }
 
+/* Global scrollbar styling */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-light);
+}
+
 #app {
   height: 100%;
   min-height: 100vh;
