@@ -5,6 +5,7 @@ export interface Language {
   nativeName: string; // Native language name
   flag: string; // Emoji flag
   speechCode: string; // Code for SpeechRecognition API
+  isRTL?: boolean; // Right-to-left text direction (for Arabic, Hebrew, etc.)
 }
 
 const languageList: Language[] = [
@@ -54,6 +55,10 @@ const languageList: Language[] = [
   { code: 'zh-TW', displayCode: 'zh', name: 'Chinese (Traditional)', nativeName: '繁體中文', flag: '🇹🇼', speechCode: 'zh-TW' },
   { code: 'ja-JP', displayCode: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵', speechCode: 'ja-JP' },
   { code: 'ko-KR', displayCode: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷', speechCode: 'ko-KR' },
+
+  // Middle Eastern Languages (RTL)
+  { code: 'ar-SA', displayCode: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', speechCode: 'ar-SA', isRTL: true },
+  { code: 'he-IL', displayCode: 'he', name: 'Hebrew', nativeName: 'עברית', flag: '🇮🇱', speechCode: 'he-IL', isRTL: true },
 ];
 
 // Don't sort by default - will sort dynamically based on selected language

@@ -74,7 +74,7 @@ const volumeScale = computed(() => {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(66, 184, 131, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .record-btn.recording {

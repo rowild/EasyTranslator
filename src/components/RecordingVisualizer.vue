@@ -179,7 +179,7 @@ onUnmounted(() => {
 .recording-visualizer {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 8px;
   border: 3px solid var(--input-language-border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -187,18 +187,18 @@ onUnmounted(() => {
   flex-direction: row;
   align-items: center;
   gap: 1rem;
-  min-height: 120px;
+  min-height: 70px;
 }
 
 .waveform-wrapper {
   position: relative;
   width: 100%;
-  height: 60px;
+  height: 50px;
 }
 
 .visualizer-canvas {
   width: 100%;
-  height: 60px;
+  height: 50px;
   display: block;
 }
 

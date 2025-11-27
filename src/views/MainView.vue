@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue';
+import { onMounted, ref, computed, watch, nextTick } from 'vue';
 import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
 import LanguageColumn from '../components/LanguageColumn.vue';
@@ -99,6 +99,83 @@ watch(outputLanguage, (newLang) => {
   }
 });
 
+// Ref for main container to control scrolling
+const mainContainerRef = ref<HTMLElement | null>(null);
+const currentPairRef = ref<HTMLElement | null>(null);
+const recordingVisualizerRef = ref<HTMLElement | null>(null);
+
+// Function to scroll newest content into view
+const scrollToTop = () => {
+  const forceScroll = () => {
+    // Try scrollIntoView on the recording visualizer (when recording)
+    if (recordingVisualizerRef.value) {
+      console.log('Scrolling recording visualizer into view');
+      recordingVisualizerRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    // Try scrollIntoView on the current pair element
+    if (currentPairRef.value) {
+      console.log('Scrolling current pair into view');
+      currentPairRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    // Fallback to manual scroll
+    if (mainContainerRef.value) {
+      const container = mainContainerRef.value;
+      const maxScroll = container.scrollHeight - container.clientHeight;
+
+      console.log('Manual scroll - Before: scrollTop =', container.scrollTop, 'maxScroll =', maxScroll);
+
+      // Try scrollTo first
+      container.scrollTo({
+        top: maxScroll,
+        behavior: 'smooth'
+      });
+
+      // Then force scrollTop
+      setTimeout(() => {
+        container.scrollTop = maxScroll;
+        console.log('Manual scroll - After: scrollTop =', container.scrollTop);
+      }, 50);
+    }
+  };
+
+  // Force scroll after DOM updates
+  nextTick(() => {
+    forceScroll();
+    setTimeout(forceScroll, 100);
+    setTimeout(forceScroll, 300);
+  });
+};
+
+// Auto-scroll to top when recording starts
+watch(isRecording, (recording) => {
+  if (recording) {
+    scrollToTop();
+  }
+});
+
+// Auto-scroll to top when translation completes
+watch(isTranslated, (translated) => {
+  if (translated) {
+    scrollToTop();
+  }
+});
+
+// Auto-scroll to top when conversation history changes (new translation added)
+watch(() => conversationHistory.value.length, () => {
+  scrollToTop();
+});
+
+// Also scroll when recordedBlob changes (new recording available)
+watch(recordedBlob, (blob) => {
+  if (blob) {
+    scrollToTop();
+  }
+});
+
 // Record button is only enabled when both languages are selected
 const canRecord = computed(() => {
   return !!(inputLanguage.value && outputLanguage.value);
@@ -185,7 +262,7 @@ const handleDeleteRecording = () => {
 };
 
 
-const handleNewRecording = () => {
+const handleNewRecording = async () => {
   console.log('Starting new recording...');
 
   // Save current conversation pair to history
@@ -204,6 +281,10 @@ const handleNewRecording = () => {
     console.log('Saved to history. Total pairs:', conversationHistory.value.length);
   }
 
+  // Close any open language selection columns
+  isInputColumnOpen.value = false;
+  isOutputColumnOpen.value = false;
+
   // Reset for new recording
   recordedBlob.value = null;
   currentTranslationOutputLang.value = null; // Reset locked language
@@ -211,6 +292,22 @@ const handleNewRecording = () => {
   isTranslated.value = false;
   store.currentTranslatedText = '';
   store.detectedLanguage = null;
+
+  // Ensure target language is set correctly from the output language selection
+  if (outputLanguage.value) {
+    store.setTargetLang(outputLanguage.value.displayCode);
+    console.log('Target language confirmed:', outputLanguage.value.nativeName, outputLanguage.value.displayCode);
+  } else {
+    console.warn('No output language selected!');
+  }
+
+  // Automatically start recording
+  try {
+    await startRecording();
+    console.log('Auto-started new recording');
+  } catch (error) {
+    console.error('Failed to auto-start recording:', error);
+  }
 };
 </script>
 
@@ -236,7 +333,7 @@ const handleNewRecording = () => {
       </header>
 
       <!-- Main Content Area -->
-      <main>
+      <main ref="mainContainerRef">
         <!-- Permission Warnings -->
         <div v-if="permissionStatus === 'denied'" class="warning-box">
           <p>Microphone access is denied. Please enable it in your browser settings.</p>
@@ -266,7 +363,7 @@ const handleNewRecording = () => {
                 <span class="lang-name">{{ pair.inputLang.nativeName }}</span>
               </div>
               <div class="transcript-field input-field">
-                <div class="transcript-content">{{ pair.sourceText }}</div>
+                <div class="transcript-content" :dir="pair.inputLang.isRTL ? 'rtl' : 'ltr'">{{ pair.sourceText }}</div>
                 <AudioPlayer :audio-blob="pair.audioBlob" />
               </div>
             </div>
@@ -278,14 +375,14 @@ const handleNewRecording = () => {
                 <span class="lang-name">{{ pair.outputLang.nativeName }}</span>
               </div>
               <div class="transcript-field output-field">
-                <div class="transcript-content">{{ pair.translatedText }}</div>
+                <div class="transcript-content" :dir="pair.outputLang.isRTL ? 'rtl' : 'ltr'">{{ pair.translatedText }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Recording Visualizer (only show WHILE recording) -->
-        <div v-if="isRecording" class="conversation-pair">
+        <div v-if="isRecording" class="conversation-pair" ref="recordingVisualizerRef">
           <div class="input-output-row">
             <div class="language-indicator" v-if="inputLanguage">
               <span class="lang-flag">{{ inputLanguage.flag }}</span>
@@ -296,7 +393,7 @@ const handleNewRecording = () => {
         </div>
 
         <!-- Current Input/Output Pair (only show AFTER recording has stopped) -->
-        <div v-if="canRecord && recordedBlob" class="conversation-pair">
+        <div v-if="canRecord && recordedBlob" class="conversation-pair" ref="currentPairRef">
           <!-- Input (Source) Section -->
           <div class="input-output-row">
             <div class="language-indicator" v-if="store.detectedLanguage || inputLanguage">
@@ -305,7 +402,7 @@ const handleNewRecording = () => {
             </div>
             <div class="field-with-actions">
               <div class="transcript-field input-field">
-                <div class="transcript-content" :class="{ placeholder: !transcript && !store.isProcessing }">
+                <div class="transcript-content" :class="{ placeholder: !transcript && !store.isProcessing }" :dir="(store.detectedLanguage || inputLanguage)?.isRTL ? 'rtl' : 'ltr'">
                   {{ transcript || (store.isProcessing ? 'Processing...' : 'Transcription will appear here...') }}
                 </div>
                 <AudioPlayer :audio-blob="recordedBlob" />
@@ -327,7 +424,7 @@ const handleNewRecording = () => {
               <span class="lang-name">{{ currentTranslationOutputLang.nativeName }}</span>
             </div>
             <div class="transcript-field output-field">
-              <div class="transcript-content">
+              <div class="transcript-content" :dir="currentTranslationOutputLang?.isRTL ? 'rtl' : 'ltr'">
                 {{ store.currentTranslatedText || 'Translation...' }}
               </div>
             </div>
@@ -454,7 +551,8 @@ main {
   padding: 2rem;
   padding-bottom: 90px; /* Space for footer */
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
   gap: 2rem;
   /* Don't center items - allow left alignment for transcript */
   align-items: stretch;
@@ -509,7 +607,7 @@ main {
 .conversation-pair {
   width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: 1rem;
 }
 
@@ -684,6 +782,14 @@ main {
   color: rgba(255, 255, 255, 0.95);
   min-height: 60px;
   margin-bottom: 1rem;
+}
+
+.transcript-content[dir="rtl"] {
+  text-align: right;
+}
+
+.transcript-content[dir="ltr"] {
+  text-align: left;
 }
 
 .transcript-content.placeholder {
