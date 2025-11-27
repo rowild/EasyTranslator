@@ -2,6 +2,7 @@
 import { onMounted, ref, computed, watch, nextTick } from 'vue';
 import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
+import Background from '../components/Background.vue'
 import LanguageColumn from '../components/LanguageColumn.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
@@ -297,7 +298,7 @@ const handleNewRecording = async () => {
     <div class="center-content">
       <!-- Header -->
       <header>
-        <h1>Speak and Translate</h1>
+        <h1><span>Speak</span><span>&</span><span>Translate</span></h1>
         <div v-if="isOffline" class="offline-badge">Offline</div>
       </header>
 
@@ -444,5 +445,8 @@ const handleNewRecording = async () => {
         <span class="footer-flag">{{ outputLanguage?.flag || '🇫🇷' }}</span>
       </button>
     </footer>
+
+
+    <Background/>
   </div>
 </template>

@@ -15,6 +15,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Rock Salt';
+  src: url('/fonts/RockSalt-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* CSS Custom Properties */
 :root {
   /* Color scheme */
@@ -80,7 +88,7 @@ header {
   align-items: center;
   justify-content: space-between;
   position: relative;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.2); */
   background: transparent;
   backdrop-filter: blur(10px);
   z-index: 5;
@@ -88,13 +96,70 @@ header {
 
 h1 {
   margin: 0;
-  font-size: 2.5rem;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 700;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-family: 'Rock Salt', 'Fraunces', cursive;
+  font-weight: 400;
   text-align: left;
-  letter-spacing: 0.5px;
-  flex: 1;
-  width: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.15rem;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  position: relative;
+  width: fit-content;
+  color: rgba(255, 255, 255, 0.95); /* Fallback when gradients are unavailable */
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+h1 span {
+  display: inline-block;
+  margin-left: -0.25rem;
+  color: rgba(255, 255, 255, 0.95); /* visible fallback */
+  text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.35);
+  position: relative;
+  /* --grad: linear-gradient(130deg, #ff9a9e, #fad0c4); */
+}
+
+h1 span:nth-child(1) {
+  --grad: linear-gradient(130deg, #ffb347, #ff005c);
+  transform: rotate(-11deg) translateY(7px);
+  z-index: 3;
+}
+
+h1 span:nth-child(2) {
+  --grad: linear-gradient(120deg, #7df6d4, #1fb6ff);
+  transform: rotate(-16deg) translate(4px, -4px);
+  z-index: 1;
+  color: #ffffff;
+  font-weight: 700;
+  -webkit-text-fill-color: currentColor;
+}
+
+h1 span:nth-child(3) {
+  --grad: linear-gradient(140deg, #c471ed, #12c2e9);
+  transform: rotate(-4deg) translate(-22px, 15px);
+  margin-left: -1.15rem;
+  z-index: 2;
+}
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  h1 span {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: var(--grad);
+    background-repeat: no-repeat;
+    background-size: 120% 120%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  h1 span:nth-child(2) {
+    background-image: none;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+  }
 }
 
 .offline-badge {
@@ -492,7 +557,11 @@ main {
   }
 
   h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
+  }
+
+  h1 span {
+    margin-left: -0.18rem;
   }
 
   main {
@@ -598,7 +667,11 @@ main {
   }
 
   h1 {
-    font-size: 1.4rem;
+    font-size: 1.65rem;
+  }
+
+  h1 span {
+    margin-left: -0.16rem;
   }
 
   main {
