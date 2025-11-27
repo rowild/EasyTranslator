@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "WebFetch(domain:mistral.ai)",
+      "WebFetch(domain:docs.mistral.ai)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "mcp__Ref__ref_search_documentation",
+      "WebSearch",
+      "mcp__Ref__ref_read_url",
+      "WebFetch(domain:wavesurfer.xyz)",
+      "WebFetch(domain:wavesurfer-js.pages.dev)",
+      "WebFetch(domain:unpkg.com)",
+      "WebFetch(domain:app.unpkg.com)",
+      "Bash(npm view:*)",
+      "WebFetch(domain:github.com)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "Ref"
+  ]
+}

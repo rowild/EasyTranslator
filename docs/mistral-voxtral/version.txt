@@ -1,0 +1,54 @@
+Mistral Voxtral Documentation
+Version: Latest (voxtral-mini-latest, voxtral-small-latest)
+Release Date: July 15, 2025
+Fetched: 2025-11-26
+Sources:
+- https://mistral.ai/news/voxtral
+- https://docs.mistral.ai/capabilities/audio_transcription
+
+Model Variants:
+- Voxtral (24B) - Production scale
+- Voxtral Mini (3B) - Edge/local deployment
+- Voxtral Mini Transcribe - API-optimized transcription
+
+License: Apache 2.0
+
+Key Features:
+- 32k token context window
+- 30 minutes audio transcription
+- 40 minutes audio understanding
+- Built-in Q&A and summarization
+- Native multilingual support
+- Function-calling from voice
+- Text understanding (Mistral Small 3.1 backbone)
+
+Pricing:
+- Transcription API: $0.001 per minute
+- Self-hosted: Free (Apache 2.0)
+
+Supported Languages:
+- English, Spanish, French, Portuguese
+- Hindi, German, Dutch, Italian
+- Automatic language detection
+
+Supported Audio Formats:
+- mp3, mp4, mpeg, mpga, m4a, wav, webm
+
+Performance:
+- Exceeds Whisper large-v3
+- Beats GPT-4o mini Transcribe
+- State-of-the-art on English short-form
+- Competitive with GPT-4o-mini on understanding
+- Unparalleled cost/latency efficiency
+
+Availability:
+- API: api.mistral.ai
+- Hugging Face: Self-hosted deployment
+- Le Chat: Voice mode integration
+
+Enterprise Features:
+- Private deployment
+- Domain-specific fine-tuning
+- Speaker identification
+- Emotion detection
+- Dedicated support

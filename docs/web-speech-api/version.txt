@@ -1,0 +1,19 @@
+Web Speech API Documentation
+Version: Current Web Standard
+Fetched: 2025-11-26
+Sources:
+- https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
+- https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API
+
+Browser Compatibility: Not Baseline
+Note: Feature does not work uniformly across widely-used browsers. Requires vendor prefixes in some browsers (webkitSpeechRecognition).
+
+Standards Status:
+- Speech Recognition: Working Draft
+- Speech Synthesis: Recommendation
+
+Important Limitations:
+- Server-based recognition in Chrome (requires network connection)
+- On-device recognition is experimental
+- Contextual biasing is experimental
+- Voice availability varies by platform
