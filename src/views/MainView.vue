@@ -246,9 +246,9 @@ const handleNewRecording = async () => {
   // console.log('Starting new recording...');
 
   // Save current conversation pair to history
-  if (recordedBlob.value && inputLanguage.value && currentTranslationOutputLang.value) {
-    // Use detected language if available, otherwise use selected input language
-    const actualInputLang = store.detectedLanguage || inputLanguage.value;
+  if (recordedBlob.value && store.detectedLanguage && currentTranslationOutputLang.value) {
+    // Use detected language from Voxtral
+    const actualInputLang = store.detectedLanguage;
 
     // Use the locked output language (already a copy, no need to spread again)
     conversationHistory.value.push({
@@ -352,7 +352,9 @@ const handleNewRecording = async () => {
               <span class="lang-name">{{ inputLanguage.nativeName }}</span>
             </div>
             <div class="visualizer-with-button">
-              <RecordingVisualizer :is-recording="isRecording" :analyser="analyserNode" />
+              <div class="visualizer-container">
+                <RecordingVisualizer :is-recording="isRecording" :analyser="analyserNode" />
+              </div>
               <button
                 class="inline-record-btn"
                 :class="{ recording: isRecording }"

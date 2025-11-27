@@ -367,6 +367,10 @@ main {
   width: 100%;
 }
 
+.visualizer-container {
+  width: 78%;
+}
+
 .inline-record-btn {
   flex-shrink: 0;
   width: 60px;
