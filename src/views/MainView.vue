@@ -5,6 +5,7 @@ import { useAudioRecorder } from '../composables/useAudioRecorder';
 import LanguageColumn from '../components/LanguageColumn.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
+import TextToSpeech from '../components/TextToSpeech.vue';
 import { languages, getSortedLanguages, type Language } from '../config/languages';
 import { Trash2, Plus, Mic, Square } from 'lucide-vue-next';
 
@@ -339,6 +340,7 @@ const handleNewRecording = async () => {
               </div>
               <div class="transcript-field output-field">
                 <div class="transcript-content" :dir="pair.outputLang.isRTL ? 'rtl' : 'ltr'">{{ pair.translatedText }}</div>
+                <TextToSpeech :text="pair.translatedText" :lang="pair.outputLang.speechCode" />
               </div>
             </div>
           </div>
@@ -404,6 +406,7 @@ const handleNewRecording = async () => {
               <div class="transcript-content" :dir="currentTranslationOutputLang?.isRTL ? 'rtl' : 'ltr'">
                 {{ store.currentTranslatedText || 'Translation...' }}
               </div>
+              <TextToSpeech v-if="currentTranslationOutputLang" :text="store.currentTranslatedText" :lang="currentTranslationOutputLang.speechCode" />
             </div>
           </div>
 
