@@ -23,6 +23,8 @@ const languageList: Language[] = [
   { code: 'fi-FI', displayCode: 'fi', name: 'Finnish', nativeName: 'Suomi', flag: '🇫🇮', speechCode: 'fi-FI' },
   { code: 'fr-FR', displayCode: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', speechCode: 'fr-FR' },
   { code: 'de-DE', displayCode: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', speechCode: 'de-DE' },
+  { code: 'de-AT', displayCode: 'de', name: 'Austrian German', nativeName: 'Österreichisches Deutsch', flag: '🇦🇹', speechCode: 'de-AT' },
+  { code: 'de-CH', displayCode: 'de', name: 'Swiss German', nativeName: 'Schweizerdeutsch', flag: '🇨🇭', speechCode: 'de-CH' },
   { code: 'el-GR', displayCode: 'el', name: 'Greek', nativeName: 'Ελληνικά', flag: '🇬🇷', speechCode: 'el-GR' },
   { code: 'hu-HU', displayCode: 'hu', name: 'Hungarian', nativeName: 'Magyar', flag: '🇭🇺', speechCode: 'hu-HU' },
   { code: 'ga-IE', displayCode: 'ga', name: 'Irish', nativeName: 'Gaeilge', flag: '🇮🇪', speechCode: 'ga-IE' },
