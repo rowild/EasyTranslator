@@ -82,10 +82,9 @@ body {
   min-height: 100vh;
 }
 
-
 .main-view {
   position: relative;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
 }
@@ -116,7 +115,7 @@ header {
   position: relative;
   /* border-bottom: 1px solid rgba(255, 255, 255, 0.2); */
   background: transparent;
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
   z-index: 5;
 }
 
