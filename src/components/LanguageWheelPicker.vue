@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { X } from 'lucide-vue-next';
 import LanguageWheel from './LanguageWheel.vue';
 import { languages, type Language } from '../config/languages';
@@ -18,6 +18,14 @@ const emit = defineEmits<{
 
 const selectedSource = ref<Language | null>(props.initialSource || null);
 const selectedTarget = ref<Language | null>(props.initialTarget || null);
+
+// Update selected languages when modal opens with new props
+watch(() => props.isOpen, (isOpen) => {
+  if (isOpen) {
+    selectedSource.value = props.initialSource || null;
+    selectedTarget.value = props.initialTarget || null;
+  }
+});
 
 // Can only confirm if BOTH languages are selected
 const canConfirm = computed(() => selectedSource.value !== null && selectedTarget.value !== null);
@@ -149,8 +157,7 @@ const handleBackdropClick = (e: MouseEvent) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(7, 67, 105, 0.92);
-  backdrop-filter: blur(20px);
+  background: rgba(7, 67, 105, 0.35);
   z-index: 1000;
   display: flex;
   align-items: center;

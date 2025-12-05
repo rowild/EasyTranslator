@@ -322,16 +322,16 @@ const handleNewRecording = async () => {
 
 <template>
   <div class="main-view">
-    <!-- Center Content -->
-    <div v-if="hasCompletedSetup" class="center-content">
-      <!-- Header -->
-      <header>
-        <h1><span>Speak</span><span>&</span><span>Translate</span></h1>
-        <div v-if="isOffline" class="offline-badge">Offline</div>
-      </header>
+    <!-- Header (Always Visible) -->
+    <header>
+      <h1><span>Speak</span><span>&</span><span>Translate</span></h1>
+      <div v-if="isOffline" class="offline-badge">Offline</div>
+    </header>
 
+    <!-- Center Content -->
+    <div class="center-content">
       <!-- Main Content Area -->
-      <main ref="mainContainerRef">
+      <main v-if="hasCompletedSetup" ref="mainContainerRef">
         <!-- Permission Warnings -->
         <div v-if="permissionStatus === 'denied'" class="warning-box">
           <p>Microphone access is denied. Please enable it in your browser settings.</p>
@@ -460,10 +460,11 @@ const handleNewRecording = async () => {
       @close="showLanguagePicker = false"
     />
 
-    <!-- Fixed Footer with Controls -->
-    <footer v-if="hasCompletedSetup" class="app-footer">
-      <!-- Dual Language Button -->
+    <!-- Fixed Footer with Controls (Always Visible) -->
+    <footer class="app-footer">
+      <!-- Dual Language Button (only show after setup) -->
       <button
+        v-if="hasCompletedSetup"
         class="footer-lang-btn dual-lang-btn"
         @click="showLanguagePicker = true"
         :title="`Change languages: ${sourceLang?.nativeName || 'Select'} → ${outputLanguage?.nativeName || 'Select'}`"

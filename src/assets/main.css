@@ -96,8 +96,9 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 72px); /* Account for footer height */
   overflow: hidden;
+  padding-bottom: 0;
 }
 
 header {
@@ -196,7 +197,7 @@ main {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
-  padding-bottom: 90px; /* Space for footer */
+  padding-bottom: 120px; /* Space for footer */
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-start;
@@ -605,6 +606,7 @@ main {
   .center-content {
     width: 100%;
     max-width: 100%;
+    height: calc(100vh - 60px); /* Account for mobile footer height */
   }
 
   header {
