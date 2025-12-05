@@ -8,14 +8,25 @@ export const useTranslationStore = defineStore('translation', () => {
     const currentSourceLang = ref('en'); // Default, will be updated by STT
     const currentTranslatedText = ref('');
     const targetLang = ref(localStorage.getItem('targetLang') || 'it'); // Default Italian
+    const sourceLang = ref<string | null>(localStorage.getItem('sourceLang') || null); // Source language preference (null = auto-detect)
     const isProcessing = ref(false);
     const error = ref<string | null>(null);
     const history = ref<Conversation[]>([]);
     const detectedLanguage = ref<Language | null>(null);
+    const actualTranslatedLanguage = ref<Language | null>(null); // Actual language of translation (might be fallback)
 
     const setTargetLang = (lang: string) => {
         targetLang.value = lang;
         localStorage.setItem('targetLang', lang);
+    };
+
+    const setSourceLang = (lang: string | null) => {
+        sourceLang.value = lang;
+        if (lang) {
+            localStorage.setItem('sourceLang', lang);
+        } else {
+            localStorage.removeItem('sourceLang');
+        }
     };
 
     const loadHistory = async () => {
@@ -151,8 +162,21 @@ export const useTranslationStore = defineStore('translation', () => {
             const targetLangCode = targetLanguage?.displayCode || targetLang.value;
             const targetLangName = targetLanguage?.name || targetLang.value;
 
+            // Get source language hint (if set) - this will be the fallback language
+            const sourceLangHint = sourceLang.value
+                ? languages.find(l => l.displayCode === sourceLang.value)
+                : null;
+
             console.log('Sending audio to Voxtral for transcription and translation...');
             console.log('Target language:', targetLangName, '(' + targetLangCode + ')');
+            if (sourceLangHint) {
+                console.log('Source/fallback language:', sourceLangHint.name, '(' + sourceLangHint.displayCode + ')');
+            }
+
+            // Build the system prompt with fallback logic
+            const fallbackInstruction = sourceLangHint
+                ? `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), translate to ${sourceLangHint.name} (${sourceLangHint.displayCode}) instead as the fallback language.`
+                : `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), return the transcribed text as-is (no translation needed).`;
 
             const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
                 method: 'POST',
@@ -169,13 +193,14 @@ export const useTranslationStore = defineStore('translation', () => {
                             content: `You are a transcription and translation assistant. Listen to the audio and:
 1. Transcribe exactly what was said
 2. Detect the source language (return ISO 639-1 code like 'en', 'de', 'fr', etc.)
-3. Translate the transcription to ${targetLangName} (language code: ${targetLangCode})
+3. Translate the transcription to ${targetLangName} (language code: ${targetLangCode})${fallbackInstruction}
 
 Return a JSON object with this exact structure:
 {
   "sourceText": "the transcribed text",
-  "sourceLanguage": "ISO 639-1 language code",
-  "translatedText": "the translation in ${targetLangName}"
+  "sourceLanguage": "ISO 639-1 language code of the detected speech",
+  "translatedText": "the translation in the appropriate target language",
+  "targetLanguage": "ISO 639-1 language code of the actual translation (${targetLangCode} or fallback)"
 }`
                         },
                         {
@@ -210,16 +235,16 @@ Return a JSON object with this exact structure:
             currentSourceText.value = result.sourceText || '';
             currentTranslatedText.value = result.translatedText || '';
 
-            // Match the detected language code to our language list
+            // Match the detected source language code to our language list
             if (result.sourceLanguage) {
-                console.log('Detected language code:', result.sourceLanguage);
+                console.log('Detected source language code:', result.sourceLanguage);
 
                 const detected = languages.find(lang => {
                     const match = lang.displayCode === result.sourceLanguage ||
                                   lang.displayCode.toLowerCase() === result.sourceLanguage.toLowerCase() ||
                                   lang.code.toLowerCase().startsWith(result.sourceLanguage.toLowerCase() + '-');
                     if (match) {
-                        console.log('Matched language:', lang.nativeName, lang.code);
+                        console.log('Matched source language:', lang.nativeName, lang.code);
                     }
                     return match;
                 });
@@ -233,6 +258,33 @@ Return a JSON object with this exact structure:
                     detectedLanguage.value = null;
                     currentSourceLang.value = result.sourceLanguage;
                 }
+            }
+
+            // Match the actual target language code (might be fallback)
+            if (result.targetLanguage) {
+                console.log('Actual target language code:', result.targetLanguage);
+
+                const actualTarget = languages.find(lang => {
+                    const match = lang.displayCode === result.targetLanguage ||
+                                  lang.displayCode.toLowerCase() === result.targetLanguage.toLowerCase() ||
+                                  lang.code.toLowerCase().startsWith(result.targetLanguage.toLowerCase() + '-');
+                    if (match) {
+                        console.log('Matched target language:', lang.nativeName, lang.code);
+                    }
+                    return match;
+                });
+
+                if (actualTarget) {
+                    console.log('Setting actualTranslatedLanguage to:', actualTarget.nativeName, actualTarget.flag);
+                    actualTranslatedLanguage.value = actualTarget;
+                } else {
+                    console.warn('Could not find language for code:', result.targetLanguage);
+                    // Fallback to the requested target language
+                    actualTranslatedLanguage.value = targetLanguage || null;
+                }
+            } else {
+                // No targetLanguage in response, assume it's the requested target
+                actualTranslatedLanguage.value = targetLanguage || null;
             }
 
             // Save to DB
@@ -259,11 +311,14 @@ Return a JSON object with this exact structure:
         currentSourceLang,
         currentTranslatedText,
         targetLang,
+        sourceLang,
         isProcessing,
         error,
         history,
         detectedLanguage,
+        actualTranslatedLanguage,
         setTargetLang,
+        setSourceLang,
         loadHistory,
         transcribeAndTranslate,
     };

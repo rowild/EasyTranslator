@@ -543,6 +543,42 @@ main {
   line-height: 1;
 }
 
+/* Dual Language Button */
+.dual-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dual-lang-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.dual-lang-btn:active {
+  transform: scale(0.95);
+}
+
+.footer-arrow {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
+}
+
+.dual-lang-btn .source-flag:hover {
+  filter: drop-shadow(0 0 8px rgba(66, 184, 131, 0.6));
+}
+
+.dual-lang-btn .target-flag:hover {
+  filter: drop-shadow(0 0 8px rgba(255, 45, 119, 0.6));
+}
+
 .footer-record-container {
   display: flex;
   align-items: center;

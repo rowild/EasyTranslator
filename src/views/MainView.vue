@@ -3,11 +3,11 @@ import { onMounted, ref, computed, watch, nextTick } from 'vue';
 import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
 import Background from '../components/Background.vue'
-import LanguageColumn from '../components/LanguageColumn.vue';
+import LanguageWheelPicker from '../components/LanguageWheelPicker.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import TextToSpeech from '../components/TextToSpeech.vue';
-import { languages, getSortedLanguages, type Language } from '../config/languages';
+import { languages, type Language } from '../config/languages';
 import { Trash2, Plus, Mic, Square } from 'lucide-vue-next';
 
 const store = useTranslationStore();
@@ -27,8 +27,14 @@ const isOffline = ref(!navigator.onLine);
 const recordedBlob = ref<Blob | null>(null);
 const inputLanguage = ref<Language | null>(null);
 const outputLanguage = ref<Language | null>(null);
+const sourceLang = ref<Language | null>(null);
 const isTranslated = ref(false); // Track if current recording has been translated
 const currentTranslationOutputLang = ref<Language | null>(null); // Locked output language for current translation
+
+// Language picker state
+const showLanguagePicker = ref(false);
+const isFirstRun = ref(false);
+const hasCompletedSetup = ref(false);
 
 // Conversation history
 interface ConversationPair {
@@ -41,39 +47,44 @@ interface ConversationPair {
 
 const conversationHistory = ref<ConversationPair[]>([]);
 
-// Languages sorted by native name (no input language selection)
-const sortedLanguages = computed(() => getSortedLanguages(null));
-
-// Column visibility state
-const isOutputColumnOpen = ref(false);
-
-const toggleOutputColumn = () => {
-  isOutputColumnOpen.value = !isOutputColumnOpen.value;
-};
-
 window.addEventListener('online', () => isOffline.value = false);
 window.addEventListener('offline', () => isOffline.value = true);
 
 // Load saved language preferences from localStorage
 onMounted(() => {
-  store.loadHistory();
-  checkPermission();
+  // Check first-run
+  const completedSetup = localStorage.getItem('hasCompletedLanguageSetup');
 
-  // Use 'targetLang' key to match the store
-  const savedOutputCode = localStorage.getItem('targetLang');
-
-  if (savedOutputCode) {
-    // Find by displayCode since that's what's stored in the store
-    outputLanguage.value = languages.find(lang => lang.displayCode === savedOutputCode) || null;
-    // Make sure store is in sync
-    if (outputLanguage.value) {
-      store.setTargetLang(outputLanguage.value.displayCode);
-    }
+  if (!completedSetup) {
+    isFirstRun.value = true;
+    showLanguagePicker.value = true;
+    hasCompletedSetup.value = false;
+    // Don't initialize app yet
   } else {
-    // Set French as default
-    outputLanguage.value = languages.find(lang => lang.code === 'fr-FR') || null;
-    if (outputLanguage.value) {
-      store.setTargetLang(outputLanguage.value.displayCode);
+    hasCompletedSetup.value = true;
+    // Normal initialization
+    store.loadHistory();
+    checkPermission();
+
+    // Load saved source language
+    const savedSourceCode = localStorage.getItem('sourceLang');
+    if (savedSourceCode) {
+      sourceLang.value = languages.find(lang => lang.displayCode === savedSourceCode) || null;
+    }
+
+    // Load saved output language
+    const savedOutputCode = localStorage.getItem('targetLang');
+    if (savedOutputCode) {
+      outputLanguage.value = languages.find(lang => lang.displayCode === savedOutputCode) || null;
+      if (outputLanguage.value) {
+        store.setTargetLang(outputLanguage.value.displayCode);
+      }
+    } else {
+      // Set French as default
+      outputLanguage.value = languages.find(lang => lang.code === 'fr-FR') || null;
+      if (outputLanguage.value) {
+        store.setTargetLang(outputLanguage.value.displayCode);
+      }
     }
   }
 });
@@ -168,10 +179,31 @@ const canRecord = computed(() => {
   return !!outputLanguage.value;
 });
 
-const handleOutputLanguageSelect = (language: Language) => {
-  outputLanguage.value = language;
-  // Note: The watcher will automatically sync with store.setTargetLang()
-  // console.log('Output language set to:', language.nativeName, language.displayCode);
+// Handle language picker confirmation
+const handleLanguageConfirm = (payload: { source: Language | null; target: Language }) => {
+  sourceLang.value = payload.source;
+  outputLanguage.value = payload.target;
+
+  // Update store
+  if (payload.source) {
+    store.setSourceLang(payload.source.displayCode);
+  } else {
+    store.setSourceLang(null);
+  }
+  store.setTargetLang(payload.target.displayCode);
+
+  if (isFirstRun.value) {
+    // Mark as completed
+    localStorage.setItem('hasCompletedLanguageSetup', 'true');
+    isFirstRun.value = false;
+    hasCompletedSetup.value = true;
+
+    // Now initialize app
+    store.loadHistory();
+    checkPermission();
+  }
+
+  showLanguagePicker.value = false;
 };
 
 const handleRecordToggle = async () => {
@@ -200,8 +232,8 @@ const handleRecordToggle = async () => {
       // Mark as translated since we got both in one call
       isTranslated.value = true;
 
-      // Lock the output language for this translation (create a copy to prevent reactivity)
-      currentTranslationOutputLang.value = outputLanguage.value ? { ...outputLanguage.value } : null;
+      // Use the actual translated language from the store (might be fallback)
+      currentTranslationOutputLang.value = store.actualTranslatedLanguage ? { ...store.actualTranslatedLanguage } : null;
 
       // console.log('After transcription & translation:');
       // console.log('- Source text:', store.currentSourceText);
@@ -221,9 +253,6 @@ const handleRecordToggle = async () => {
       setTranscript('');
       isTranslated.value = false;
       currentTranslationOutputLang.value = null; // Reset locked language
-
-      // Close language column when starting recording
-      isOutputColumnOpen.value = false;
 
       await startRecording();
     } catch (e) {
@@ -263,9 +292,6 @@ const handleNewRecording = async () => {
     console.log('Saved to history. Total pairs:', conversationHistory.value.length);
   }
 
-  // Close any open language selection column
-  isOutputColumnOpen.value = false;
-
   // Reset for new recording
   recordedBlob.value = null;
   currentTranslationOutputLang.value = null; // Reset locked language
@@ -295,7 +321,7 @@ const handleNewRecording = async () => {
 <template>
   <div class="main-view">
     <!-- Center Content -->
-    <div class="center-content">
+    <div v-if="hasCompletedSetup" class="center-content">
       <!-- Header -->
       <header>
         <h1><span>Speak</span><span>&</span><span>Translate</span></h1>
@@ -422,27 +448,27 @@ const handleNewRecording = async () => {
       </main>
     </div>
 
-    <!-- Right Column: Output Language -->
-    <LanguageColumn
-      :languages="sortedLanguages"
-      :selectedLanguage="outputLanguage"
-      :sourceLanguage="null"
-      :isOpen="isOutputColumnOpen"
-      type="output"
-      @select="handleOutputLanguageSelect"
-      @toggle="toggleOutputColumn"
+    <!-- Language Picker Modal -->
+    <LanguageWheelPicker
+      :is-open="showLanguagePicker"
+      :is-first-run="isFirstRun"
+      :initial-source="sourceLang || undefined"
+      :initial-target="outputLanguage || undefined"
+      @confirm="handleLanguageConfirm"
+      @close="showLanguagePicker = false"
     />
 
     <!-- Fixed Footer with Controls -->
-    <footer class="app-footer">
-      <!-- Output Language Button -->
+    <footer v-if="hasCompletedSetup" class="app-footer">
+      <!-- Dual Language Button -->
       <button
-        class="footer-lang-btn output-lang-btn"
-        :class="{ 'selected': outputLanguage }"
-        @click="toggleOutputColumn"
-        :title="outputLanguage ? outputLanguage.nativeName : 'Select output language'"
+        class="footer-lang-btn dual-lang-btn"
+        @click="showLanguagePicker = true"
+        :title="`Change languages: ${sourceLang?.nativeName || 'Auto-detect'} → ${outputLanguage?.nativeName || ''}`"
       >
-        <span class="footer-flag">{{ outputLanguage?.flag || '🇫🇷' }}</span>
+        <span class="footer-flag source-flag">{{ sourceLang?.flag || '🌐' }}</span>
+        <span class="footer-arrow">→</span>
+        <span class="footer-flag target-flag">{{ outputLanguage?.flag || '🇫🇷' }}</span>
       </button>
     </footer>
 
