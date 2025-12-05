@@ -101,7 +101,7 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 72px); /* Account for footer height */
+  height: calc(100dvh - 70px); /* Account for footer height using dynamic viewport */
   overflow: hidden;
   padding-bottom: 0;
 }
@@ -648,7 +648,7 @@ main {
   .center-content {
     width: 100%;
     max-width: 100%;
-    height: calc(100vh - 60px); /* Account for mobile footer height */
+    height: calc(100dvh - 60px); /* Account for mobile footer height using dynamic viewport */
   }
 
   header {
@@ -769,6 +769,7 @@ main {
   .center-content {
     width: 100%;
     max-width: 100%;
+    height: calc(100dvh - 55px); /* Account for smallest footer height using dynamic viewport */
   }
 
   header {
