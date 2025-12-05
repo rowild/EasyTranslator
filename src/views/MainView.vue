@@ -181,15 +181,17 @@ const canRecord = computed(() => {
 
 // Handle language picker confirmation
 const handleLanguageConfirm = (payload: { source: Language | null; target: Language }) => {
+  // Both languages are now required
+  if (!payload.source || !payload.target) {
+    console.error('Both source and target languages are required');
+    return;
+  }
+
   sourceLang.value = payload.source;
   outputLanguage.value = payload.target;
 
   // Update store
-  if (payload.source) {
-    store.setSourceLang(payload.source.displayCode);
-  } else {
-    store.setSourceLang(null);
-  }
+  store.setSourceLang(payload.source.displayCode);
   store.setTargetLang(payload.target.displayCode);
 
   if (isFirstRun.value) {
@@ -464,11 +466,11 @@ const handleNewRecording = async () => {
       <button
         class="footer-lang-btn dual-lang-btn"
         @click="showLanguagePicker = true"
-        :title="`Change languages: ${sourceLang?.nativeName || 'Auto-detect'} → ${outputLanguage?.nativeName || ''}`"
+        :title="`Change languages: ${sourceLang?.nativeName || 'Select'} → ${outputLanguage?.nativeName || 'Select'}`"
       >
-        <span class="footer-flag source-flag">{{ sourceLang?.flag || '🌐' }}</span>
+        <span class="footer-flag source-flag">{{ sourceLang?.flag || '❓' }}</span>
         <span class="footer-arrow">→</span>
-        <span class="footer-flag target-flag">{{ outputLanguage?.flag || '🇫🇷' }}</span>
+        <span class="footer-flag target-flag">{{ outputLanguage?.flag || '❓' }}</span>
       </button>
     </footer>
 

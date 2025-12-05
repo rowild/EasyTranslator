@@ -8,7 +8,7 @@ export const useTranslationStore = defineStore('translation', () => {
     const currentSourceLang = ref('en'); // Default, will be updated by STT
     const currentTranslatedText = ref('');
     const targetLang = ref(localStorage.getItem('targetLang') || 'it'); // Default Italian
-    const sourceLang = ref<string | null>(localStorage.getItem('sourceLang') || null); // Source language preference (null = auto-detect)
+    const sourceLang = ref<string | null>(localStorage.getItem('sourceLang') || null); // Source language (required for fallback)
     const isProcessing = ref(false);
     const error = ref<string | null>(null);
     const history = ref<Conversation[]>([]);
@@ -174,9 +174,10 @@ export const useTranslationStore = defineStore('translation', () => {
             }
 
             // Build the system prompt with fallback logic
+            // Source language is now required, but handle edge case where it might not be set
             const fallbackInstruction = sourceLangHint
                 ? `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), translate to ${sourceLangHint.name} (${sourceLangHint.displayCode}) instead as the fallback language.`
-                : `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), return the transcribed text as-is (no translation needed).`;
+                : `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), return the transcribed text as-is (no translation possible).`;
 
             const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
                 method: 'POST',

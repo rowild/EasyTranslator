@@ -19,8 +19,8 @@ const emit = defineEmits<{
 const selectedSource = ref<Language | null>(props.initialSource || null);
 const selectedTarget = ref<Language | null>(props.initialTarget || null);
 
-// Can only confirm if target language is selected
-const canConfirm = computed(() => selectedTarget.value !== null);
+// Can only confirm if BOTH languages are selected
+const canConfirm = computed(() => selectedSource.value !== null && selectedTarget.value !== null);
 
 const handleSourceSelect = (language: Language | null) => {
   selectedSource.value = language;
@@ -77,7 +77,7 @@ const handleBackdropClick = (e: MouseEvent) => {
             {{ isFirstRun ? 'Welcome! Select Your Languages' : 'Change Languages' }}
           </h2>
           <p class="modal-subtitle" v-if="isFirstRun">
-            Choose your source and target languages to get started
+            Choose both languages: your primary language and the translation target
           </p>
         </div>
 
@@ -88,7 +88,6 @@ const handleBackdropClick = (e: MouseEvent) => {
             :languages="languages"
             :selected-language="selectedSource"
             type="source"
-            :allow-auto-detect="true"
             @select="handleSourceSelect"
           />
 
@@ -110,9 +109,9 @@ const handleBackdropClick = (e: MouseEvent) => {
         <div class="selected-display">
           <div class="selected-item">
             <span class="selected-label">From:</span>
-            <span class="selected-lang">
-              {{ selectedSource?.flag || '🌐' }}
-              {{ selectedSource?.nativeName || 'Auto-detect' }}
+            <span class="selected-lang" :class="{ 'required': !selectedSource }">
+              {{ selectedSource?.flag || '❓' }}
+              {{ selectedSource?.nativeName || 'Select language' }}
             </span>
           </div>
           <div class="selected-item">

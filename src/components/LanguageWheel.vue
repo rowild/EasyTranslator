@@ -11,7 +11,6 @@ const props = defineProps<{
   languages: Language[];
   selectedLanguage: Language | null;
   type: 'source' | 'target';
-  allowAutoDetect?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -22,31 +21,12 @@ const wheelRef = ref<HTMLElement | null>(null);
 const observer = ref<IntersectionObserver | null>(null);
 const draggableInstance = ref<Draggable[] | null>(null);
 
-// Create wheel items including auto-detect option for source
-// Sort alphabetically by native name
+// Sort languages alphabetically by native name
 const wheelItems = computed(() => {
   // Sort languages alphabetically by native name
-  const sortedLanguages = [...props.languages].sort((a, b) =>
+  return [...props.languages].sort((a, b) =>
     a.nativeName.localeCompare(b.nativeName, undefined, { sensitivity: 'base' })
   );
-
-  if (props.allowAutoDetect) {
-    // Add auto-detect as first item
-    return [
-      {
-        code: 'auto-detect',
-        displayCode: 'auto',
-        name: 'Auto-detect',
-        nativeName: 'Auto-detect',
-        flag: '🌐',
-        speechCode: '',
-        isRTL: false
-      } as Language,
-      ...sortedLanguages
-    ];
-  }
-
-  return sortedLanguages;
 });
 
 // Calculate distance from center for 3D effect
@@ -85,14 +65,9 @@ const setupObserver = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
           const langCode = entry.target.getAttribute('data-lang-code');
-
-          if (langCode === 'auto-detect') {
-            emit('select', null);
-          } else {
-            const language = props.languages.find(l => l.code === langCode);
-            if (language) {
-              emit('select', language);
-            }
+          const language = props.languages.find(l => l.code === langCode);
+          if (language) {
+            emit('select', language);
           }
         }
       });
@@ -111,11 +86,10 @@ const setupObserver = () => {
 
 // Scroll to selected language
 const scrollToLanguage = (language: Language | null, smooth = true) => {
-  if (!wheelRef.value) return;
+  if (!wheelRef.value || !language) return;
 
   nextTick(() => {
-    const targetCode = language?.code || 'auto-detect';
-    const targetItem = wheelRef.value?.querySelector(`[data-lang-code="${targetCode}"]`);
+    const targetItem = wheelRef.value?.querySelector(`[data-lang-code="${language.code}"]`);
 
     if (targetItem) {
       targetItem.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'instant' });
@@ -159,9 +133,6 @@ onMounted(() => {
     // Use instant scroll to center selected language immediately
     if (props.selectedLanguage) {
       scrollToLanguage(props.selectedLanguage, false);
-    } else if (props.allowAutoDetect) {
-      // For source wheel, scroll to auto-detect by default
-      scrollToLanguage(null, false);
     }
 
     // Add scroll listener for transform updates
@@ -186,9 +157,6 @@ watch(() => props.selectedLanguage, (newLang) => {
 
 // Check if a language is selected
 const isSelected = (language: Language): boolean => {
-  if (!props.selectedLanguage && language.code === 'auto-detect') {
-    return props.allowAutoDetect || false;
-  }
   return props.selectedLanguage?.code === language.code;
 };
 </script>
