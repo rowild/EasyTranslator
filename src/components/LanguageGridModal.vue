@@ -47,32 +47,35 @@ const handleBackdropClick = (e: MouseEvent) => {
       @click="handleBackdropClick"
     >
       <div class="language-grid-modal">
-        <!-- Close button -->
-        <button
-          class="close-btn"
-          @click="handleClose"
-          title="Close"
-        >
-          <X :size="24" />
-        </button>
-
-        <!-- Header -->
+        <!-- Fixed Header -->
         <div class="modal-header">
+          <!-- Close button -->
+          <button
+            class="close-btn"
+            @click="handleClose"
+            title="Close"
+          >
+            <X :size="24" />
+          </button>
+
           <h2>Select Language</h2>
         </div>
 
-        <!-- Language Grid -->
-        <div class="language-grid">
-          <button
-            v-for="language in uniqueLanguages"
-            :key="language.displayCode"
-            class="language-grid-item"
-            @click="handleLanguageClick(language)"
-            :title="language.nativeName"
-          >
-            <span class="lang-flag">{{ language.flag }}</span>
-            <span class="lang-name">{{ language.nativeName }}</span>
-          </button>
+        <!-- Scrollable Content -->
+        <div class="language-grid-wrapper">
+          <!-- Language Grid -->
+          <div class="language-grid">
+            <button
+              v-for="language in uniqueLanguages"
+              :key="language.displayCode"
+              class="language-grid-item"
+              @click="handleLanguageClick(language)"
+              :title="language.nativeName"
+            >
+              <span class="lang-flag">{{ language.flag }}</span>
+              <span class="lang-name">{{ language.nativeName }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -98,24 +101,32 @@ const handleBackdropClick = (e: MouseEvent) => {
 .language-grid-modal {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 240, 250, 0.98) 100%);
   border-radius: 24px;
-  padding: 2rem;
   max-width: 800px;
   width: 100%;
   max-height: 90vh;
-  overflow-y: auto;
   box-shadow: 0 20px 80px rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  flex-shrink: 0;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
 .close-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(0, 0, 0, 0.1);
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
   border: none;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,14 +136,14 @@ const handleBackdropClick = (e: MouseEvent) => {
   z-index: 10;
 }
 
-.close-btn:hover {
-  background: rgba(0, 0, 0, 0.2);
-  transform: rotate(90deg);
+.close-btn :deep(svg) {
+  display: block;
+  flex-shrink: 0;
 }
 
-.modal-header {
-  margin-bottom: 1.5rem;
-  padding-right: 3rem;
+.close-btn:hover {
+  color: #000;
+  transform: scale(1.1);
 }
 
 .modal-header h2 {
@@ -140,6 +151,13 @@ const handleBackdropClick = (e: MouseEvent) => {
   font-weight: 600;
   color: #333;
   margin: 0;
+  padding-right: 3rem;
+}
+
+.language-grid-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 2rem 2rem 2rem;
 }
 
 .language-grid {
@@ -200,21 +218,21 @@ const handleBackdropClick = (e: MouseEvent) => {
 }
 
 /* Scrollbar styling */
-.language-grid-modal::-webkit-scrollbar {
+.language-grid-wrapper::-webkit-scrollbar {
   width: 10px;
 }
 
-.language-grid-modal::-webkit-scrollbar-track {
+.language-grid-wrapper::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 5px;
 }
 
-.language-grid-modal::-webkit-scrollbar-thumb {
+.language-grid-wrapper::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }
 
-.language-grid-modal::-webkit-scrollbar-thumb:hover {
+.language-grid-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
 
@@ -257,8 +275,12 @@ const handleBackdropClick = (e: MouseEvent) => {
     font-size: 0.75rem;
   }
 
-  .language-grid-modal {
-    padding: 1.5rem;
+  .modal-header {
+    padding: 0.75rem 1.5rem;
+  }
+
+  .language-grid-wrapper {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
   }
 }
 </style>

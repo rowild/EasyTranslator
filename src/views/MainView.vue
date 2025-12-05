@@ -325,7 +325,7 @@ const handleNewRecording = async () => {
 </script>
 
 <template>
-  <div class="main-view">
+  <div class="main-view" :class="{ 'modal-open': showLanguagePicker || showInfoModal }">
     <!-- Header (Always Visible) -->
     <header>
       <h1><span>Speak</span><span>&</span><span>Translate</span></h1>

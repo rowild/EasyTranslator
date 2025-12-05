@@ -136,69 +136,76 @@ const handleBackdropClick = (e: MouseEvent) => {
       @click="handleBackdropClick"
     >
       <div class="info-modal">
-        <!-- Close button -->
-        <button
-          class="close-btn"
-          @click="handleClose"
-          title="Close"
-        >
-          <X :size="24" />
-        </button>
+        <!-- Fixed Header -->
+        <div class="info-modal-header">
+          <!-- Close button -->
+          <button
+            class="close-btn"
+            @click="handleClose"
+            title="Close"
+          >
+            <X :size="24" />
+          </button>
 
-        <!-- Language switcher buttons -->
-        <div class="language-switcher">
-          <button
-            v-if="sourceLang"
-            class="lang-switch-btn"
-            :class="{ active: selectedInfoLang === sourceLang.displayCode }"
-            @click="handleSourceLangClick"
-            :title="sourceLang.nativeName"
-          >
-            <span class="lang-flag">{{ sourceLang.flag }}</span>
-          </button>
-          <button
-            v-if="targetLang"
-            class="lang-switch-btn"
-            :class="{ active: selectedInfoLang === targetLang.displayCode }"
-            @click="handleTargetLangClick"
-            :title="targetLang.nativeName"
-          >
-            <span class="lang-flag">{{ targetLang.flag }}</span>
-          </button>
-          <button
-            class="lang-switch-btn other-languages-btn"
-            @click="handleOtherLanguagesClick"
-            title="Other languages"
-          >
-            <span class="other-lang-icon">🌐</span>
-            <span v-if="shouldShowOtherLangFlag" class="selected-other-flag">
-              {{ lastSelectedOtherLang?.flag }}
-            </span>
-          </button>
+          <!-- Language switcher buttons -->
+          <div class="language-switcher">
+            <div class="left-lang-buttons">
+              <button
+                v-if="sourceLang"
+                class="lang-switch-btn"
+                :class="{ active: selectedInfoLang === sourceLang.displayCode }"
+                @click="handleSourceLangClick"
+                :title="sourceLang.nativeName"
+              >
+                <span class="lang-flag">{{ sourceLang.flag }}</span>
+              </button>
+              <button
+                v-if="targetLang"
+                class="lang-switch-btn"
+                :class="{ active: selectedInfoLang === targetLang.displayCode }"
+                @click="handleTargetLangClick"
+                :title="targetLang.nativeName"
+              >
+                <span class="lang-flag">{{ targetLang.flag }}</span>
+              </button>
+            </div>
+            <button
+              class="lang-switch-btn other-languages-btn"
+              @click="handleOtherLanguagesClick"
+              title="Other languages"
+            >
+              <span v-if="shouldShowOtherLangFlag" class="selected-other-flag">
+                {{ lastSelectedOtherLang?.flag }}
+              </span>
+              <span class="other-lang-icon">🌐</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Info content -->
-        <div v-if="currentInfo" class="info-content" :dir="currentLanguage?.isRTL ? 'rtl' : 'ltr'">
-          <!-- Overview Section -->
-          <section class="info-section">
-            <p class="section-header" v-html="currentInfo.overview.header"></p>
-            <div class="section-content" v-html="currentInfo.overview.content"></div>
-          </section>
+        <!-- Scrollable Content -->
+        <div class="info-content-wrapper">
+          <div v-if="currentInfo" class="info-content" :dir="currentLanguage?.isRTL ? 'rtl' : 'ltr'">
+            <!-- Overview Section -->
+            <section class="info-section">
+              <p class="section-header" v-html="currentInfo.overview.header"></p>
+              <div class="section-content" v-html="currentInfo.overview.content"></div>
+            </section>
 
-          <!-- How to Use Section -->
-          <section class="info-section">
-            <p class="section-header" v-html="currentInfo.howToUse.header"></p>
-            <div class="section-content" v-html="currentInfo.howToUse.content"></div>
-          </section>
+            <!-- How to Use Section -->
+            <section class="info-section">
+              <p class="section-header" v-html="currentInfo.howToUse.header"></p>
+              <div class="section-content" v-html="currentInfo.howToUse.content"></div>
+            </section>
 
-          <!-- Data Note Section -->
-          <section class="info-section">
-            <p class="section-header" v-html="currentInfo.dataNote.header"></p>
-            <div class="section-content" v-html="currentInfo.dataNote.content"></div>
-          </section>
-        </div>
-        <div v-else class="info-content">
-          <p>Loading...</p>
+            <!-- Data Note Section -->
+            <section class="info-section">
+              <p class="section-header" v-html="currentInfo.dataNote.header"></p>
+              <div class="section-content" v-html="currentInfo.dataNote.content"></div>
+            </section>
+          </div>
+          <div v-else class="info-content">
+            <p>Loading...</p>
+          </div>
         </div>
       </div>
     </div>
@@ -231,24 +238,32 @@ const handleBackdropClick = (e: MouseEvent) => {
 .info-modal {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 250, 0.95) 100%);
   border-radius: 24px;
-  padding: 2rem;
   max-width: 600px;
   width: 100%;
   max-height: 85vh;
-  overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.info-modal-header {
+  flex-shrink: 0;
+  padding: 1rem 2rem 1rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
 .close-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(0, 0, 0, 0.1);
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
   border: none;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,16 +273,34 @@ const handleBackdropClick = (e: MouseEvent) => {
   z-index: 10;
 }
 
+.close-btn :deep(svg) {
+  display: block;
+  flex-shrink: 0;
+}
+
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.2);
-  transform: rotate(90deg);
+  color: #000;
+  transform: scale(1.1);
 }
 
 .language-switcher {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  padding-right: 50px;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-content-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 2rem 2rem 2rem;
+}
+
+.left-lang-buttons {
+  display: flex;
+  gap: 0.5rem;
   align-items: center;
 }
 
@@ -291,9 +324,12 @@ const handleBackdropClick = (e: MouseEvent) => {
 }
 
 .lang-switch-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-color: transparent;
-  color: white;
+  border: 2px solid #c2185b;
+}
+
+.lang-switch-btn.active .lang-flag {
+  text-shadow: 0 0 16px rgba(255, 45, 119, 0.7),
+               0 0 32px rgba(255, 45, 119, 0.5);
 }
 
 .lang-flag {
@@ -313,7 +349,6 @@ const handleBackdropClick = (e: MouseEvent) => {
 
 .selected-other-flag {
   font-size: 1.2rem;
-  margin-left: 0.25rem;
 }
 
 .info-content {
@@ -383,28 +418,35 @@ const handleBackdropClick = (e: MouseEvent) => {
 }
 
 /* Scrollbar styling */
-.info-modal::-webkit-scrollbar {
+.info-content-wrapper::-webkit-scrollbar {
   width: 8px;
 }
 
-.info-modal::-webkit-scrollbar-track {
+.info-content-wrapper::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 4px;
 }
 
-.info-modal::-webkit-scrollbar-thumb {
+.info-content-wrapper::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
 
-.info-modal::-webkit-scrollbar-thumb:hover {
+.info-content-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 640px) {
   .info-modal {
-    padding: 1.5rem;
     max-height: 90vh;
+  }
+
+  .info-modal-header {
+    padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+  }
+
+  .info-content-wrapper {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
   }
 
   .language-switcher {

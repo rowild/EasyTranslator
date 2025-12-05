@@ -90,6 +90,12 @@ body {
   overflow: hidden;
 }
 
+.main-view.modal-open main {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .center-content {
   width: 100%;
   max-width: 1024px;
@@ -569,7 +575,7 @@ main {
 }
 
 .footer-flag {
-  font-size: 2rem;
+  font-size: 1.5rem;
   line-height: 1;
 }
 
@@ -597,9 +603,11 @@ main {
 }
 
 .footer-arrow {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
+  display: flex;
+  align-items: center;
 }
 
 .dual-lang-btn .source-flag:hover {
@@ -672,7 +680,7 @@ main {
   }
 
   .footer-flag {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
   }
 
   .footer-record-container :deep(.record-wrapper) {
@@ -791,7 +799,7 @@ main {
   }
 
   .footer-flag {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
   }
 
   .footer-record-container :deep(.record-wrapper) {

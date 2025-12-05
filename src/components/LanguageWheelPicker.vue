@@ -194,13 +194,13 @@ const handleBackdropClick = (e: MouseEvent) => {
 
 .close-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
   width: 40px;
   height: 40px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -209,14 +209,18 @@ const handleBackdropClick = (e: MouseEvent) => {
   transition: all 0.2s ease;
 }
 
+.close-btn :deep(svg) {
+  display: block;
+  flex-shrink: 0;
+}
+
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 1);
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .modal-header {
-  text-align: center;
+  text-align: left;
   margin-bottom: 2rem;
 }
 
