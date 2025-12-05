@@ -51,11 +51,38 @@ interface ConversationPair {
 
 const conversationHistory = ref<ConversationPair[]>([]);
 
+// Load app-info.json for UI translations
+interface AppInfoData {
+  overview: { header: string; content: string };
+  howToUse: { header: string; content: string };
+  dataNote: { header: string; content: string };
+  ui: {
+    allowMic: string;
+  };
+}
+
+const appInfoData = ref<Record<string, AppInfoData>>({});
+
+// Computed property for UI translations based on source language
+const uiText = computed(() => {
+  const langCode = sourceLang.value?.displayCode || 'en';
+  const data = appInfoData.value[langCode] || appInfoData.value['en'];
+  return data?.ui || { allowMic: 'Please allow microphone access when prompted.' };
+});
+
 window.addEventListener('online', () => isOffline.value = false);
 window.addEventListener('offline', () => isOffline.value = true);
 
 // Load saved language preferences from localStorage
-onMounted(() => {
+onMounted(async () => {
+  // Load app-info.json for UI translations
+  try {
+    const response = await fetch('/app-info.json');
+    appInfoData.value = await response.json();
+  } catch (error) {
+    console.error('Failed to load app-info.json:', error);
+  }
+
   // Always initialize app
   hasCompletedSetup.value = true;
   store.loadHistory();
@@ -340,7 +367,7 @@ const handleNewRecording = async () => {
           <p>Microphone access is denied. Please enable it in your browser settings.</p>
         </div>
         <div v-else-if="permissionStatus === 'prompt'" class="warning-box">
-          <p>Please allow microphone access when prompted.</p>
+          <p>{{ uiText.allowMic }}</p>
         </div>
 
         <!-- Speech Recognition Warning -->

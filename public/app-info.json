@@ -11,6 +11,9 @@
     "dataNote": {
       "header": "Note:",
       "content": "<p>Your conversations stay only on this device while the app is open. If you close or refresh the app, they are gone, and they are not sent to or synced with any server or other device.</p><p>The app uses Mistral's Voxtral online service to turn speech into text and to translate.</p>"
+    },
+    "ui": {
+      "allowMic": "Please allow microphone access when prompted."
     }
   },
   "bg": {
@@ -25,6 +28,9 @@
     "dataNote": {
       "header": "Забележка:",
       "content": "<p>Разговорите ви остават само на това устройство, докато приложението е отворено. Ако го затворите или презаредите, те се губят и не се изпращат или синхронизират със сървър или друго устройство.</p><p>Приложението използва онлайн услугата Voxtral на Mistral, за да превръща речта в текст и да превежда.</p>"
+    },
+    "ui": {
+      "allowMic": "Моля, разрешете достъп до микрофона, когато бъдете подканени."
     }
   },
   "hr": {
@@ -39,6 +45,9 @@
     "dataNote": {
       "header": "Napomena:",
       "content": "<p>Vaši razgovori ostaju samo na ovom uređaju dok je aplikacija otvorena. Ako zatvorite ili osvježite aplikaciju, oni nestaju i ne šalju se niti sinkroniziraju s bilo kojim poslužiteljem ili drugim uređajem.</p><p>Aplikacija koristi Voxtral online uslugu tvrtke Mistral za pretvaranje govora u tekst i prevođenje.</p>"
+    },
+    "ui": {
+      "allowMic": "Molimo dopustite pristup mikrofonu kada se zatraži."
     }
   },
   "cs": {
@@ -53,6 +62,9 @@
     "dataNote": {
       "header": "Poznámka:",
       "content": "<p>Vaše konverzace zůstávají pouze na tomto zařízení, dokud je aplikace otevřená. Pokud aplikaci zavřete nebo obnovíte, zmizí a neodesílají se ani nesynchronizují s žádným serverem nebo jiným zařízením.</p><p>Aplikace používá online službu Voxtral od Mistral k převodu řeči na text a k překladu.</p>"
+    },
+    "ui": {
+      "allowMic": "Povolte přístup k mikrofonu, když se zobrazí výzva."
     }
   },
   "da": {
@@ -67,6 +79,9 @@
     "dataNote": {
       "header": "Bemærk:",
       "content": "<p>Dine samtaler bliver kun på denne enhed, mens appen er åben. Hvis du lukker eller opdaterer appen, forsvinder de, og de bliver ikke sendt til eller synkroniseret med nogen server eller anden enhed.</p><p>Appen bruger Mistrals online tjeneste Voxtral til at lave tale om til tekst og til at oversætte.</p>"
+    },
+    "ui": {
+      "allowMic": "Tillad venligst mikrofon adgang, når du bliver bedt om det."
     }
   },
   "nl": {
@@ -81,6 +96,9 @@
     "dataNote": {
       "header": "Opmerking:",
       "content": "<p>Je gesprekken blijven alleen op dit apparaat zolang de app open is. Als je de app sluit of vernieuwt, verdwijnen ze en worden ze niet verzonden of gesynchroniseerd met een server of ander apparaat.</p><p>De app gebruikt de online dienst Voxtral van Mistral om spraak om te zetten naar tekst en te vertalen.</p>"
+    },
+    "ui": {
+      "allowMic": "Sta microfoontoegang toe wanneer hierom wordt gevraagd."
     }
   },
   "et": {
@@ -95,6 +113,9 @@
     "dataNote": {
       "header": "Märkus:",
       "content": "<p>Teie vestlused jäävad ainult sellesse seadmesse seni, kuni rakendus on avatud. Kui sulgete või värskendate rakenduse, need kaovad ning neid ei saadeta ega sünkroonita ühegi serveri või muu seadmega.</p><p>Rakendus kasutab Mistrali Voxtral veebiteenust kõnest tekstiks muutmiseks ja tõlkimiseks.</p>"
+    },
+    "ui": {
+      "allowMic": "Lubage mikrofoni juurdepääs, kui seda küsitakse."
     }
   },
   "fi": {
@@ -109,6 +130,9 @@
     "dataNote": {
       "header": "Huom:",
       "content": "<p>Keskustelusi pysyvät vain tässä laitteessa niin kauan kuin sovellus on auki. Jos suljet tai päivität sovelluksen, ne katoavat eikä niitä lähetetä tai synkronoida mihinkään palvelimeen tai toiseen laitteeseen.</p><p>Sovellus käyttää Mistralin Voxtral-verkkopalvelua muuttaakseen puheen tekstiksi ja kääntääkseen sen.</p>"
+    },
+    "ui": {
+      "allowMic": "Salli mikrofonin käyttö kehotteen mukaisesti."
     }
   },
   "fr": {
@@ -123,6 +147,9 @@
     "dataNote": {
       "header": "Note :",
       "content": "<p>Vos conversations restent uniquement sur cet appareil tant que l’application est ouverte. Si vous la fermez ou la rechargez, elles disparaissent et ne sont pas envoyées ou synchronisées avec un serveur ou un autre appareil.</p><p>L’application utilise le service en ligne Voxtral de Mistral pour convertir la parole en texte et traduire.</p>"
+    },
+    "ui": {
+      "allowMic": "Veuillez autoriser l'accès au microphone lorsque vous y êtes invité."
     }
   },
   "de": {
@@ -137,6 +164,9 @@
     "dataNote": {
       "header": "Hinweis:",
       "content": "<p>Ihre Gespräche bleiben nur auf diesem Gerät, solange die App geöffnet ist. Wenn Sie die App schließen oder aktualisieren, sind sie weg und werden nicht an einen Server oder ein anderes Gerät gesendet oder dort synchronisiert.</p><p>Die App verwendet den Online-Dienst Voxtral von Mistral, um Sprache in Text umzuwandeln und zu übersetzen.</p>"
+    },
+    "ui": {
+      "allowMic": "Bitte erlauben Sie den Mikrofonzugriff, wenn Sie dazu aufgefordert werden."
     }
   },
   "el": {
@@ -151,6 +181,9 @@
     "dataNote": {
       "header": "Σημείωση:",
       "content": "<p>Οι συνομιλίες σας μένουν μόνο σε αυτή τη συσκευή όσο η εφαρμογή είναι ανοιχτή. Αν την κλείσετε ή την ανανεώσετε, χάνονται και δεν αποστέλλονται ή συγχρονίζονται με κανέναν διακομιστή ή άλλη συσκευή.</p><p>Η εφαρμογή χρησιμοποιεί την online υπηρεσία Voxtral της Mistral για να μετατρέπει την ομιλία σε κείμενο και να μεταφράζει.</p>"
+    },
+    "ui": {
+      "allowMic": "Παρακαλούμε επιτρέψτε την πρόσβαση στο μικρόφωνο όταν ζητηθεί."
     }
   },
   "hu": {
@@ -165,6 +198,9 @@
     "dataNote": {
       "header": "Megjegyzés:",
       "content": "<p>A beszélgetések csak ezen az eszközön maradnak, amíg az app nyitva van. Ha bezárja vagy frissíti, eltűnnek, és nem küldjük vagy szinkronizáljuk őket semmilyen szerverrel vagy más eszközzel.</p><p>Az app a Mistral Voxtral online szolgáltatását használja a beszéd szöveggé alakítására és a fordításra.</p>"
+    },
+    "ui": {
+      "allowMic": "Kérjük, engedélyezze a mikrofon hozzáférést, amikor a rendszer kéri."
     }
   },
   "ga": {
@@ -179,6 +215,9 @@
     "dataNote": {
       "header": "Nóta:",
       "content": "<p>Fanann do chomhráite ar an bhfeiste seo amháin fad is atá an aip oscailte. Má dhúnann nó athnuaíonn tú an aip, imíonn siad agus ní sheoltar ná sioncronaítear iad le haon fhreastalaí ná gléas eile.</p><p>Úsáideann an aip seirbhís ar líne Voxtral ó Mistral chun cainte a iompú ina théacs agus chun aistriú.</p>"
+    },
+    "ui": {
+      "allowMic": "Ceadaigh rochtain ar an micreafón nuair a iarrtar é, le do thoil."
     }
   },
   "it": {
@@ -193,6 +232,9 @@
     "dataNote": {
       "header": "Nota:",
       "content": "<p>Le tue conversazioni restano solo su questo dispositivo finché l'app è aperta. Se chiudi o aggiorni l'app, spariscono e non vengono inviate o sincronizzate con alcun server o altro dispositivo.</p><p>L'app usa il servizio online Voxtral di Mistral per trasformare la voce in testo e tradurre.</p>"
+    },
+    "ui": {
+      "allowMic": "Consenti l'accesso al microfono quando richiesto."
     }
   },
   "lv": {
@@ -207,6 +249,9 @@
     "dataNote": {
       "header": "Piezīme:",
       "content": "<p>Jūsu sarunas paliek tikai šajā ierīcē, kamēr lietotne ir atvērta. Ja aizverat vai atsvaidzināt lietotni, tās pazūd, un tās netiek sūtītas vai sinhronizētas ar serveri vai citu ierīci.</p><p>Lietotne izmanto Mistral tiešsaistes pakalpojumu Voxtral, lai pārvērstu runu tekstā un tulkotu.</p>"
+    },
+    "ui": {
+      "allowMic": "Lūdzu, atļaujiet mikrofona piekļuvi, kad tas tiek pieprasīts."
     }
   },
   "lt": {
@@ -221,6 +266,9 @@
     "dataNote": {
       "header": "Pastaba:",
       "content": "<p>Jūsų pokalbiai lieka tik šiame įrenginyje, kol programa atidaryta. Jei uždarysite ar atnaujinsite programą, jie dingsta ir nėra siunčiami ar sinchronizuojami su jokiu serveriu ar kitu įrenginiu.</p><p>Programa naudoja „Mistral“ internetinę paslaugą „Voxtral“, kad paverstų kalbą tekstu ir išverstų.</p>"
+    },
+    "ui": {
+      "allowMic": "Prašome leisti prieigą prie mikrofono, kai būsite paprašyti."
     }
   },
   "mt": {
@@ -235,6 +283,9 @@
     "dataNote": {
       "header": "Nota:",
       "content": "<p>Il-konversazzjonijiet tiegħek jibqgħu biss fuq dan l-apparat sakemm l-app tibqa' miftuħa. Jekk tagħlaq jew taġġorna l-app, jintilfu u ma jintbagħtux jew jiġu ssinkronizzati ma' xi server jew apparat ieħor.</p><p>L-app tuża s-servizz online Voxtral ta' Mistral biex iddawwar id-diskors f'test u biex tittraduċi.</p>"
+    },
+    "ui": {
+      "allowMic": "Jekk jogħġbok, awtorizza l-aċċess għall-mikrofonu meta jintalab."
     }
   },
   "pl": {
@@ -249,6 +300,9 @@
     "dataNote": {
       "header": "Uwaga:",
       "content": "<p>Twoje rozmowy pozostają tylko na tym urządzeniu, gdy aplikacja jest otwarta. Jeśli zamkniesz lub odświeżysz aplikację, znikną i nie są wysyłane ani synchronizowane z żadnym serwerem czy innym urządzeniem.</p><p>Aplikacja korzysta z internetowej usługi Voxtral firmy Mistral do zamiany mowy na tekst i tłumaczenia.</p>"
+    },
+    "ui": {
+      "allowMic": "Zezwól na dostęp do mikrofonu, gdy zostaniesz o to poproszony."
     }
   },
   "pt": {
@@ -263,6 +317,9 @@
     "dataNote": {
       "header": "Nota:",
       "content": "<p>As suas conversas ficam apenas neste dispositivo enquanto a app está aberta. Se fechar ou atualizar a app, desaparecem e não são enviadas ou sincronizadas com qualquer servidor ou outro dispositivo.</p><p>A app usa o serviço online Voxtral da Mistral para converter voz em texto e traduzir.</p>"
+    },
+    "ui": {
+      "allowMic": "Permita o acesso ao microfone quando solicitado."
     }
   },
   "ro": {
@@ -277,6 +334,9 @@
     "dataNote": {
       "header": "Notă:",
       "content": "<p>Conversațiile tale rămân doar pe acest dispozitiv cât timp aplicația este deschisă. Dacă o închizi sau reîmprospătezi, dispar și nu sunt trimise sau sincronizate cu niciun server sau alt dispozitiv.</p><p>Aplicația folosește serviciul online Voxtral de la Mistral pentru a transforma vorbirea în text și pentru traducere.</p>"
+    },
+    "ui": {
+      "allowMic": "Vă rugăm să permiteți accesul la microfon când vi se solicită."
     }
   },
   "sk": {
@@ -291,6 +351,9 @@
     "dataNote": {
       "header": "Poznámka:",
       "content": "<p>Vaše rozhovory ostávajú len na tomto zariadení, kým je aplikácia otvorená. Ak aplikáciu zatvoríte alebo obnovíte, zmiznú a neodosielajú sa ani nesynchronizujú so žiadnym serverom alebo iným zariadením.</p><p>Aplikácia používa online službu Voxtral od Mistral na prevod reči na text a preklad.</p>"
+    },
+    "ui": {
+      "allowMic": "Keď sa zobrazí výzva, povolte prístup k mikrofónu."
     }
   },
   "sl": {
@@ -305,6 +368,9 @@
     "dataNote": {
       "header": "Opomba:",
       "content": "<p>Vaši pogovori ostanejo samo na tej napravi, dokler je aplikacija odprta. Če aplikacijo zaprete ali osvežite, izginejo in se ne pošiljajo ali sinhronizirajo z nobenim strežnikom ali drugo napravo.</p><p>Aplikacija uporablja spletno storitev Voxtral podjetja Mistral za pretvorbo govora v besedilo in prevajanje.</p>"
+    },
+    "ui": {
+      "allowMic": "Dovolite dostop do mikrofona, ko se zahteva."
     }
   },
   "es": {
@@ -319,6 +385,9 @@
     "dataNote": {
       "header": "Nota:",
       "content": "<p>Tus conversaciones se quedan solo en este dispositivo mientras la app está abierta. Si cierras o recargas la app, desaparecen y no se envían ni sincronizan con ningún servidor ni otro dispositivo.</p><p>La app usa el servicio en línea Voxtral de Mistral para convertir la voz en texto y traducir.</p>"
+    },
+    "ui": {
+      "allowMic": "Permite el acceso al micrófono cuando se te solicite."
     }
   },
   "sv": {
@@ -333,6 +402,9 @@
     "dataNote": {
       "header": "Obs:",
       "content": "<p>Dina konversationer stannar bara på den här enheten medan appen är öppen. Om du stänger eller uppdaterar appen försvinner de och skickas eller synkroniseras inte till någon server eller annan enhet.</p><p>Appen använder Mistrals onlinetjänst Voxtral för att omvandla tal till text och översätta.</p>"
+    },
+    "ui": {
+      "allowMic": "Tillåt mikrofonåtkomst när du uppmanas."
     }
   },
   "is": {
@@ -347,6 +419,9 @@
     "dataNote": {
       "header": "Athugið:",
       "content": "<p>Samtölin þín eru aðeins á þessu tæki meðan forritið er opið. Ef þú lokar eða endurhleður forritið hverfa þau og eru ekki send eða samstillt við neinn netþjón eða annað tæki.</p><p>Forritið notar Voxtral netþjónustu Mistral til að breyta tali í texta og þýða.</p>"
+    },
+    "ui": {
+      "allowMic": "Leyfðu aðgang að hljóðnema þegar beðið er um það."
     }
   },
   "no": {
@@ -361,6 +436,9 @@
     "dataNote": {
       "header": "Merk:",
       "content": "<p>Samtalene dine blir bare på denne enheten mens appen er åpen. Hvis du lukker eller oppdaterer appen, forsvinner de, og de sendes eller synkroniseres ikke med noen server eller annet apparat.</p><p>Appen bruker Mistrals nettjeneste Voxtral for å gjøre tale til tekst og oversette.</p>"
+    },
+    "ui": {
+      "allowMic": "Vennligst tillat mikrofonaksess når du blir bedt om det."
     }
   },
   "lb": {
@@ -375,6 +453,9 @@
     "dataNote": {
       "header": "Notiz:",
       "content": "<p>Är Gespréicher bleiwen nëmmen op dësem Apparat soulaang d'App op ass. Wann Dir d'App zoumaacht oder nei lued, sinn se fort a ginn net un e Server oder en anert Apparat geschéckt oder synchroniséiert.</p><p>D'App benotzt de Voxtral Online-Service vu Mistral fir Ried an Text ëmzewandelen an ze iwwersetzen.</p>"
+    },
+    "ui": {
+      "allowMic": "Erlaabt w.e.g. de Mikrofoaccès, wann Dir gefrot gitt."
     }
   },
   "sq": {
@@ -389,6 +470,9 @@
     "dataNote": {
       "header": "Shënim:",
       "content": "<p>Bisedat tuaja qëndrojnë vetëm në këtë pajisje sa kohë aplikacioni është i hapur. Nëse e mbyllni ose rifreskoni aplikacionin, ato zhduken dhe nuk dërgohen ose sinkronizohen me asnjë server apo pajisje tjetër.</p><p>Aplikacioni përdor shërbimin online Voxtral të Mistral për të kthyer të folurin në tekst dhe përkthim.</p>"
+    },
+    "ui": {
+      "allowMic": "Ju lutemi, lejoni qasjen në mikrofon kur kërkohet."
     }
   },
   "sr": {
@@ -403,6 +487,9 @@
     "dataNote": {
       "header": "Напомена:",
       "content": "<p>Ваши разговори остају само на овом уређају док је апликација отворена. Ако затворите или освежите апликацију, они нестају и не шаљу се нити синхронизују са било којим сервером или другим уређајем.</p><p>Апликација користи Voxtral онлајн услугу компаније Mistral за претварање говора у текст и превод.</p>"
+    },
+    "ui": {
+      "allowMic": "Дозволите приступ микрофону када се то затражи."
     }
   },
   "mk": {
@@ -417,6 +504,9 @@
     "dataNote": {
       "header": "Забелешка:",
       "content": "<p>Вашите разговори остануваат само на овој уред додека апликацијата е отворена. Ако ја затворите или освежите апликацијата, исчезнуваат и не се испраќаат или синхронизираат со никаков сервер или друг уред.</p><p>Апликацијата ја користи онлајн услугата Voxtral на Mistral за да ја претвори говорот во текст и да преведува.</p>"
+    },
+    "ui": {
+      "allowMic": "Дозволете пристап до микрофонот кога ќе биде побарано."
     }
   },
   "bs": {
@@ -431,6 +521,9 @@
     "dataNote": {
       "header": "Napomena:",
       "content": "<p>Vaši razgovori ostaju samo na ovom uređaju dok je aplikacija otvorena. Ako zatvorite ili osvježite aplikaciju, nestaju i ne šalju se niti sinkroniziraju s bilo kojim serverom ili drugim uređajem.</p><p>Aplikacija koristi Voxtral online uslugu kompanije Mistral za pretvaranje govora u tekst i prevođenje.</p>"
+    },
+    "ui": {
+      "allowMic": "Molimo dozvolite pristup mikrofonu kada se zatraži."
     }
   },
   "uk": {
@@ -445,6 +538,9 @@
     "dataNote": {
       "header": "Примітка:",
       "content": "<p>Ваші розмови залишаються лише на цьому пристрої, поки застосунок відкритий. Якщо ви закриєте або оновите застосунок, вони зникнуть і не надсилаються та не синхронізуються з жодним сервером чи іншим пристроєм.</p><p>Застосунок використовує онлайн-сервіс Voxtral від Mistral, щоб перетворювати мовлення на текст і перекладати.</p>"
+    },
+    "ui": {
+      "allowMic": "Будь ласка, дозвольте доступ до мікрофона, коли вас попросять."
     }
   },
   "ru": {
@@ -459,6 +555,9 @@
     "dataNote": {
       "header": "Примечание:",
       "content": "<p>Ваши разговоры остаются только на этом устройстве, пока приложение открыто. Если вы закроете или обновите приложение, они исчезнут и не отправляются и не синхронизируются ни с каким сервером или другим устройством.</p><p>Приложение использует онлайн-сервис Voxtral от Mistral для преобразования речи в текст и перевода.</p>"
+    },
+    "ui": {
+      "allowMic": "Пожалуйста, разрешите доступ к микрофону при запросе."
     }
   },
   "tr": {
@@ -473,6 +572,9 @@
     "dataNote": {
       "header": "Not:",
       "content": "<p>Sohbetleriniz uygulama açıkken yalnızca bu cihazda kalır. Uygulamayı kapatırsanız veya yenilerseniz kaybolurlar ve herhangi bir sunucuya ya da başka bir cihaza gönderilmez veya eşitlenmez.</p><p>Uygulama, konuşmayı metne çevirmek ve çevirmek için Mistral'in çevrimiçi hizmeti Voxtral'ı kullanır.</p>"
+    },
+    "ui": {
+      "allowMic": "İstendiğinde lütfen mikrofon erişimine izin verin."
     }
   },
   "zh": {
@@ -487,6 +589,9 @@
     "dataNote": {
       "header": "提示：",
       "content": "<p>你的对话只会在应用打开时保留在此设备上。如果关闭或刷新应用，它们会消失，也不会发送或同步到任何服务器或其他设备。</p><p>本应用使用 Mistral 的 Voxtral 在线服务将语音转成文字并进行翻译。</p>"
+    },
+    "ui": {
+      "allowMic": "提示时请允许麦克风访问。"
     }
   },
   "ja": {
@@ -501,6 +606,9 @@
     "dataNote": {
       "header": "注意:",
       "content": "<p>会話はアプリを開いている間だけこの端末に残ります。アプリを閉じるか再読み込みすると消え、サーバーや他の端末に送信・同期されません。</p><p>このアプリは Mistral のオンラインサービス Voxtral を使って音声を文字にし、翻訳します。</p>"
+    },
+    "ui": {
+      "allowMic": "プロンプトが表示されたら、マイクへのアクセスを許可してください。"
     }
   },
   "ko": {
@@ -515,6 +623,9 @@
     "dataNote": {
       "header": "알림:",
       "content": "<p>대화 내용은 앱을 여는 동안에만 이 기기에 저장됩니다. 앱을 닫거나 새로고침하면 사라지며, 서버나 다른 기기로 전송 또는 동기화되지 않습니다.</p><p>이 앱은 Mistral의 온라인 서비스 Voxtral을 사용해 음성을 텍스트로 바꾸고 번역합니다.</p>"
+    },
+    "ui": {
+      "allowMic": "메시지가 표시되면 마이크 액세스를 허용하세요."
     }
   },
   "ar": {
@@ -529,6 +640,9 @@
     "dataNote": {
       "header": "ملاحظة:",
       "content": "<p>تبقى محادثاتك على هذا الجهاز فقط ما دام التطبيق مفتوحاً. إذا أغلقت التطبيق أو أعدت تحميله تختفي، ولا تُرسل أو تُزامن مع أي خادم أو جهاز آخر.</p><p>يستخدم التطبيق خدمة Voxtral عبر الإنترنت من Mistral لتحويل الكلام إلى نص وللترجمة.</p>"
+    },
+    "ui": {
+      "allowMic": "يُرجى السماح بالوصول إلى الميكروفون عند المطالبة."
     }
   },
   "he": {
@@ -543,6 +657,9 @@
     "dataNote": {
       "header": "הערה:",
       "content": "<p>השיחות שלך נשארות רק במכשיר הזה כל עוד האפליקציה פתוחה. אם תסגור או תרענן את האפליקציה, הן ייעלמו, ולא יישלחו או יסונכרנו עם שרת או מכשיר אחר.</p><p>האפליקציה משתמשת בשירות המקוון Voxtral של Mistral כדי להפוך דיבור לטקסט ולתרגם.</p>"
+    },
+    "ui": {
+      "allowMic": "אנא אפשר גישה למיקרופון כשמתבקש."
     }
   }
 }

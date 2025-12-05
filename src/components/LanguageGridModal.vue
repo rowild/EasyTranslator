@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { X } from 'lucide-vue-next';
 import { languages, type Language } from '../config/languages';
 
-const props = defineProps<{
+defineProps<{
   isOpen: boolean;
 }>();
 
