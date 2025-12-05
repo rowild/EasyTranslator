@@ -514,9 +514,38 @@ main {
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0 2rem;
   z-index: 100;
+}
+
+.footer-info-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.footer-info-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.footer-info-btn:active {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(0);
+}
+
+.info-label {
+  letter-spacing: 0.3px;
 }
 
 .footer-lang-btn {
@@ -540,7 +569,7 @@ main {
 }
 
 .footer-flag {
-  font-size: 2.5rem;
+  font-size: 2rem;
   line-height: 1;
 }
 
@@ -549,25 +578,26 @@ main {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
+  border-radius: 8px;
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .dual-lang-btn:hover {
-  transform: scale(1.05);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 .dual-lang-btn:active {
-  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(0);
 }
 
 .footer-arrow {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
 }
@@ -632,8 +662,17 @@ main {
     padding: 0 1rem;
   }
 
+  .footer-info-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .footer-info-btn .info-label {
+    font-size: 0.85rem;
+  }
+
   .footer-flag {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   .footer-record-container :deep(.record-wrapper) {
@@ -742,8 +781,17 @@ main {
     padding: 0 0.75rem;
   }
 
+  .footer-info-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .footer-info-btn .info-label {
+    font-size: 0.8rem;
+  }
+
   .footer-flag {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
   }
 
   .footer-record-container :deep(.record-wrapper) {

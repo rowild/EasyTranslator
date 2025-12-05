@@ -1,0 +1,548 @@
+{
+  "en": {
+    "overview": {
+      "header": "What does this app do?",
+      "content": "<p><b>Speak & Translate</b> is a simple app that records your voice, turns it into written text, and translates it into the other language you picked. You can replay your original recording and, depending on your browser, also listen to the translated text.</p>"
+    },
+    "howToUse": {
+      "header": "How to use this app",
+      "content": "<ol><li>Pick the two languages you want.</li><li>Tap the Record button. When the browser asks to use your microphone, click Allow.</li><li>Speak, then tap the Stop button.</li><li>Wait a moment; the app shows the written text and the translation. Playing the translated voice depends on your browser—if it is not available, you will still see the text.</li><li>Tap the speaker icons to hear them, and tap the + to start a new message. The app needs an internet connection for the translation step.</li></ol><p>You can speak in either of the two chosen languages; the app detects which one you used and translates to the other.</p>"
+    },
+    "dataNote": {
+      "header": "Note:",
+      "content": "<p>Your conversations stay only on this device while the app is open. If you close or refresh the app, they are gone, and they are not sent to or synced with any server or other device.</p><p>The app uses Mistral's Voxtral online service to turn speech into text and to translate.</p>"
+    }
+  },
+  "bg": {
+    "overview": {
+      "header": "Какво прави това приложение?",
+      "content": "<p><b>Speak & Translate</b> е просто приложение, което записва гласа ви, превръща го в текст и го превежда на другия избран от вас език. Можете да пуснете записа отново и, според браузъра, да чуете и превода.</p>"
+    },
+    "howToUse": {
+      "header": "Как се използва",
+      "content": "<ol><li>Изберете двата езика, които желаете.</li><li>Натиснете бутона Record. Когато браузърът поиска достъп до микрофона, натиснете Allow.</li><li>Говорете, после натиснете бутона Stop.</li><li>Изчакайте малко; приложението показва написания текст и превода. Възпроизвеждането на преведения глас зависи от браузъра — ако не е налично, все пак ще видите текста.</li><li>Докоснете иконите на високоговорителя, за да чуете текста, и +, за да започнете ново съобщение. Приложението има нужда от интернет за стъпката с превода.</li></ol><p>Можете да говорите на който и да е от двата избрани езика; приложението разпознава кой сте използвали и превежда на другия.</p>"
+    },
+    "dataNote": {
+      "header": "Забележка:",
+      "content": "<p>Разговорите ви остават само на това устройство, докато приложението е отворено. Ако го затворите или презаредите, те се губят и не се изпращат или синхронизират със сървър или друго устройство.</p><p>Приложението използва онлайн услугата Voxtral на Mistral, за да превръща речта в текст и да превежда.</p>"
+    }
+  },
+  "hr": {
+    "overview": {
+      "header": "Što radi ova aplikacija?",
+      "content": "<p><b>Speak & Translate</b> je jednostavna aplikacija koja snima vaš glas, pretvara ga u pisani tekst i prevodi ga na drugi odabrani jezik. Možete ponovno poslušati snimku i, ovisno o pregledniku, čuti i prevedeni tekst.</p>"
+    },
+    "howToUse": {
+      "header": "Kako koristiti",
+      "content": "<ol><li>Odaberite dva jezika koja želite.</li><li>Dodirnite gumb Record. Kad preglednik zatraži mikrofon, kliknite Allow.</li><li>Govorite, zatim dodirnite gumb Stop.</li><li>Pričekajte trenutak; aplikacija prikazuje pisani tekst i prijevod. Reprodukcija prevedenog glasa ovisi o pregledniku — ako nije dostupna, i dalje ćete vidjeti tekst.</li><li>Dodirnite ikone zvučnika da čujete tekst i + za novu poruku. Aplikaciji je potreban internet za korak prevođenja.</li></ol><p>Možete govoriti na bilo kojem od dva odabrana jezika; aplikacija prepoznaje koji ste koristili i prevodi na drugi.</p>"
+    },
+    "dataNote": {
+      "header": "Napomena:",
+      "content": "<p>Vaši razgovori ostaju samo na ovom uređaju dok je aplikacija otvorena. Ako zatvorite ili osvježite aplikaciju, oni nestaju i ne šalju se niti sinkroniziraju s bilo kojim poslužiteljem ili drugim uređajem.</p><p>Aplikacija koristi Voxtral online uslugu tvrtke Mistral za pretvaranje govora u tekst i prevođenje.</p>"
+    }
+  },
+  "cs": {
+    "overview": {
+      "header": "Co tato aplikace dělá?",
+      "content": "<p><b>Speak & Translate</b> je jednoduchá aplikace, která nahraje váš hlas, převede ho na text a přeloží ho do druhého vybraného jazyka. Můžete si záznam znovu přehrát a podle prohlížeče i poslechnout přeložený text.</p>"
+    },
+    "howToUse": {
+      "header": "Jak používat",
+      "content": "<ol><li>Vyberte si dva jazyky, které chcete.</li><li>Klepněte na tlačítko Record. Když prohlížeč požádá o mikrofon, klikněte na Allow.</li><li>Mluvte, pak klepněte na tlačítko Stop.</li><li>Chvíli počkejte; aplikace zobrazí napsaný text a překlad. Přehrání přeloženého hlasu závisí na prohlížeči — pokud není k dispozici, text uvidíte.</li><li>Klepněte na ikony reproduktoru, abyste je slyšeli, a na + pro nové sdělení. Aplikace potřebuje internet pro krok překladu.</li></ol><p>Můžete mluvit kterýmkoli z obou vybraných jazyků; aplikace pozná, který jste použili, a přeloží do druhého.</p>"
+    },
+    "dataNote": {
+      "header": "Poznámka:",
+      "content": "<p>Vaše konverzace zůstávají pouze na tomto zařízení, dokud je aplikace otevřená. Pokud aplikaci zavřete nebo obnovíte, zmizí a neodesílají se ani nesynchronizují s žádným serverem nebo jiným zařízením.</p><p>Aplikace používá online službu Voxtral od Mistral k převodu řeči na text a k překladu.</p>"
+    }
+  },
+  "da": {
+    "overview": {
+      "header": "Hvad gør denne app?",
+      "content": "<p><b>Speak & Translate</b> er en enkel app, der optager din stemme, laver den om til tekst og oversætter den til det andet sprog, du har valgt. Du kan afspille optagelsen igen og, afhængigt af din browser, også høre den oversatte tekst.</p>"
+    },
+    "howToUse": {
+      "header": "Sådan bruger du appen",
+      "content": "<ol><li>Vælg de to sprog, du vil bruge.</li><li>Tryk på Record-knappen. Når browseren beder om mikrofonadgang, klikker du på Allow.</li><li>Tal, og tryk derefter på Stop-knappen.</li><li>Vent et øjeblik; appen viser den skrevne tekst og oversættelsen. Afspilning af den oversatte stemme afhænger af din browser — hvis det ikke er muligt, kan du stadig se teksten.</li><li>Tryk på højttalerikonerne for at høre dem, og på + for at starte en ny besked. Appen skal bruge internetforbindelse til oversættelsen.</li></ol><p>Du kan tale på et af de to valgte sprog; appen registrerer, hvilket du brugte, og oversætter til det andet.</p>"
+    },
+    "dataNote": {
+      "header": "Bemærk:",
+      "content": "<p>Dine samtaler bliver kun på denne enhed, mens appen er åben. Hvis du lukker eller opdaterer appen, forsvinder de, og de bliver ikke sendt til eller synkroniseret med nogen server eller anden enhed.</p><p>Appen bruger Mistrals online tjeneste Voxtral til at lave tale om til tekst og til at oversætte.</p>"
+    }
+  },
+  "nl": {
+    "overview": {
+      "header": "Wat doet deze app?",
+      "content": "<p><b>Speak & Translate</b> is een eenvoudige app die je stem opneemt, omzet in tekst en vertaalt naar de andere taal die je hebt gekozen. Je kunt je opname terugluisteren en, afhankelijk van je browser, ook de vertaling horen.</p>"
+    },
+    "howToUse": {
+      "header": "Hoe gebruik je de app",
+      "content": "<ol><li>Kies de twee talen die je wilt.</li><li>Tik op de Record-knop. Als de browser om microfoontoegang vraagt, klik je op Allow.</li><li>Spreek en tik daarna op de Stop-knop.</li><li>Wacht even; de app toont de geschreven tekst en de vertaling. Het afspelen van de vertaalde stem hangt af van je browser — als het niet kan, zie je de tekst toch.</li><li>Tik op de luidsprekerpictogrammen om te luisteren en op + om een nieuw bericht te starten. De app heeft internet nodig voor het vertalen.</li></ol><p>Je kunt in een van beide gekozen talen spreken; de app herkent welke je gebruikte en vertaalt naar de andere.</p>"
+    },
+    "dataNote": {
+      "header": "Opmerking:",
+      "content": "<p>Je gesprekken blijven alleen op dit apparaat zolang de app open is. Als je de app sluit of vernieuwt, verdwijnen ze en worden ze niet verzonden of gesynchroniseerd met een server of ander apparaat.</p><p>De app gebruikt de online dienst Voxtral van Mistral om spraak om te zetten naar tekst en te vertalen.</p>"
+    }
+  },
+  "et": {
+    "overview": {
+      "header": "Mida see rakendus teeb?",
+      "content": "<p><b>Speak & Translate</b> on lihtne rakendus, mis salvestab teie hääle, muudab selle tekstiks ja tõlgib teise valitud keelde. Saate salvestust uuesti kuulata ja sõltuvalt brauserist ka tõlget kuulata.</p>"
+    },
+    "howToUse": {
+      "header": "Kuidas kasutada",
+      "content": "<ol><li>Valige kaks keelt, mida soovite.</li><li>Puudutage Record-nuppu. Kui brauser küsib mikrofoni luba, klõpsake Allow.</li><li>Rääkige, seejärel puudutage Stop-nuppu.</li><li>Oodake hetk; rakendus näitab kirjutatud teksti ja tõlget. Tõlgitud hääle esitamine sõltub brauserist — kui see pole saadaval, näete siiski teksti.</li><li>Puudutage kõlari ikoone, et neid kuulata, ja +, et alustada uut sõnumit. Rakendus vajab tõlkimiseks internetti.</li></ol><p>Võite rääkida mõnes kahest valitud keelest; rakendus tuvastab, kumba kasutasite, ja tõlgib teise.</p>"
+    },
+    "dataNote": {
+      "header": "Märkus:",
+      "content": "<p>Teie vestlused jäävad ainult sellesse seadmesse seni, kuni rakendus on avatud. Kui sulgete või värskendate rakenduse, need kaovad ning neid ei saadeta ega sünkroonita ühegi serveri või muu seadmega.</p><p>Rakendus kasutab Mistrali Voxtral veebiteenust kõnest tekstiks muutmiseks ja tõlkimiseks.</p>"
+    }
+  },
+  "fi": {
+    "overview": {
+      "header": "Mitä tämä sovellus tekee?",
+      "content": "<p><b>Speak & Translate</b> on yksinkertainen sovellus, joka nauhoittaa äänen, muuttaa sen tekstiksi ja kääntää sen valitsemaasi toiseen kieleen. Voit kuunnella alkuperäisen nauhoituksen uudelleen ja selaimesta riippuen myös käännöksen.</p>"
+    },
+    "howToUse": {
+      "header": "Näin käytät sovellusta",
+      "content": "<ol><li>Valitse kaksi kieltä, joita haluat käyttää.</li><li>Paina Record-painiketta. Kun selain pyytää mikrofonin käyttöä, klikkaa Allow.</li><li>Puhu, ja paina sitten Stop-painiketta.</li><li>Odota hetki; sovellus näyttää kirjoitetun tekstin ja käännöksen. Käännetyn äänen toisto riippuu selaimesta — jos se ei ole mahdollista, näet silti tekstin.</li><li>Paina kaiutinkuvakkeita kuunnellaksesi ja + aloittaaksesi uuden viestin. Sovellus tarvitsee internet-yhteyden käännösvaiheeseen.</li></ol><p>Voit puhua kummallakin valitulla kielellä; sovellus tunnistaa, kumpaa käytit, ja kääntää toiselle.</p>"
+    },
+    "dataNote": {
+      "header": "Huom:",
+      "content": "<p>Keskustelusi pysyvät vain tässä laitteessa niin kauan kuin sovellus on auki. Jos suljet tai päivität sovelluksen, ne katoavat eikä niitä lähetetä tai synkronoida mihinkään palvelimeen tai toiseen laitteeseen.</p><p>Sovellus käyttää Mistralin Voxtral-verkkopalvelua muuttaakseen puheen tekstiksi ja kääntääkseen sen.</p>"
+    }
+  },
+  "fr": {
+    "overview": {
+      "header": "Que fait cette application ?",
+      "content": "<p><b>Speak & Translate</b> est une application simple qui enregistre votre voix, la transforme en texte et la traduit vers l’autre langue que vous avez choisie. Vous pouvez réécouter votre enregistrement et, selon votre navigateur, écouter aussi le texte traduit.</p>"
+    },
+    "howToUse": {
+      "header": "Comment l'utiliser",
+      "content": "<ol><li>Choisissez les deux langues que vous voulez.</li><li>Appuyez sur le bouton Record. Quand le navigateur demande l’accès au micro, cliquez sur Allow.</li><li>Parlez, puis appuyez sur le bouton Stop.</li><li>Attendez un instant ; l’application affiche le texte et la traduction. L’écoute de la voix traduite dépend du navigateur — si ce n’est pas disponible, vous verrez quand même le texte.</li><li>Appuyez sur les icônes de haut-parleur pour écouter, et sur + pour commencer un nouveau message. L’application a besoin d’une connexion Internet pour la traduction.</li></ol><p>Vous pouvez parler dans l’une des deux langues choisies ; l’application détecte celle que vous avez utilisée et traduit vers l’autre.</p>"
+    },
+    "dataNote": {
+      "header": "Note :",
+      "content": "<p>Vos conversations restent uniquement sur cet appareil tant que l’application est ouverte. Si vous la fermez ou la rechargez, elles disparaissent et ne sont pas envoyées ou synchronisées avec un serveur ou un autre appareil.</p><p>L’application utilise le service en ligne Voxtral de Mistral pour convertir la parole en texte et traduire.</p>"
+    }
+  },
+  "de": {
+    "overview": {
+      "header": "Was macht diese App?",
+      "content": "<p><b>Speak & Translate</b> ist eine einfache App, die Ihre Stimme aufnimmt, sie in Text umwandelt und in die andere von Ihnen gewählte Sprache übersetzt. Sie können die Aufnahme erneut abspielen und je nach Browser auch den übersetzten Text anhören.</p>"
+    },
+    "howToUse": {
+      "header": "So verwenden Sie die App",
+      "content": "<ol><li>Wählen Sie die zwei Sprachen aus, die Sie möchten.</li><li>Tippen Sie auf die Record-Schaltfläche. Wenn der Browser nach dem Mikrofon fragt, klicken Sie auf Allow.</li><li>Sprechen Sie und tippen Sie dann auf die Stop-Schaltfläche.</li><li>Warten Sie einen Moment; die App zeigt den geschriebenen Text und die Übersetzung. Das Abspielen der übersetzten Stimme hängt vom Browser ab — wenn es nicht verfügbar ist, sehen Sie trotzdem den Text.</li><li>Tippen Sie auf die Lautsprecher-Symbole, um sie zu hören, und auf +, um eine neue Nachricht zu starten. Die App benötigt für die Übersetzungsschritt eine Internetverbindung.</li></ol><p>Sie können in einer der beiden gewählten Sprachen sprechen; die App erkennt, welche Sie verwendet haben, und übersetzt in die andere.</p>"
+    },
+    "dataNote": {
+      "header": "Hinweis:",
+      "content": "<p>Ihre Gespräche bleiben nur auf diesem Gerät, solange die App geöffnet ist. Wenn Sie die App schließen oder aktualisieren, sind sie weg und werden nicht an einen Server oder ein anderes Gerät gesendet oder dort synchronisiert.</p><p>Die App verwendet den Online-Dienst Voxtral von Mistral, um Sprache in Text umzuwandeln und zu übersetzen.</p>"
+    }
+  },
+  "el": {
+    "overview": {
+      "header": "Τι κάνει αυτή η εφαρμογή;",
+      "content": "<p><b>Speak & Translate</b> είναι μια απλή εφαρμογή που καταγράφει τη φωνή σας, τη μετατρέπει σε γραπτό κείμενο και τη μεταφράζει στη δεύτερη γλώσσα που επιλέξατε. Μπορείτε να ακούσετε ξανά την ηχογράφηση και, ανάλογα με το πρόγραμμα περιήγησης, να ακούσετε και το μεταφρασμένο κείμενο.</p>"
+    },
+    "howToUse": {
+      "header": "Πώς να τη χρησιμοποιήσετε",
+      "content": "<ol><li>Επιλέξτε τις δύο γλώσσες που θέλετε.</li><li>Πατήστε το κουμπί Record. Όταν ο browser ζητήσει μικρόφωνο, πατήστε Allow.</li><li>Μιλήστε και μετά πατήστε το κουμπί Stop.</li><li>Περιμένετε λίγο· η εφαρμογή εμφανίζει το γραπτό κείμενο και τη μετάφραση. Η αναπαραγωγή της μεταφρασμένης φωνής εξαρτάται από τον browser — αν δεν είναι διαθέσιμη, θα δείτε το κείμενο.</li><li>Πατήστε τα εικονίδια του ηχείου για να τα ακούσετε και το + για να ξεκινήσετε νέο μήνυμα. Η εφαρμογή χρειάζεται σύνδεση στο διαδίκτυο για το βήμα της μετάφρασης.</li></ol><p>Μπορείτε να μιλήσετε σε οποιαδήποτε από τις δύο γλώσσες· η εφαρμογή καταλαβαίνει ποια χρησιμοποιήσατε και μεταφράζει στην άλλη.</p>"
+    },
+    "dataNote": {
+      "header": "Σημείωση:",
+      "content": "<p>Οι συνομιλίες σας μένουν μόνο σε αυτή τη συσκευή όσο η εφαρμογή είναι ανοιχτή. Αν την κλείσετε ή την ανανεώσετε, χάνονται και δεν αποστέλλονται ή συγχρονίζονται με κανέναν διακομιστή ή άλλη συσκευή.</p><p>Η εφαρμογή χρησιμοποιεί την online υπηρεσία Voxtral της Mistral για να μετατρέπει την ομιλία σε κείμενο και να μεταφράζει.</p>"
+    }
+  },
+  "hu": {
+    "overview": {
+      "header": "Mit tud ez az app?",
+      "content": "<p>A <b>Speak & Translate</b> egyszerű alkalmazás: felveszi a hangját, írott szöveggé alakítja, és lefordítja a másik kiválasztott nyelvre. Visszahallgathatja az eredeti felvételt, és böngészőtől függően a fordítást is meghallgathatja.</p>"
+    },
+    "howToUse": {
+      "header": "Hogyan használja",
+      "content": "<ol><li>Válassza ki a két nyelvet, amit szeretne.</li><li>Koppintson a Record gombra. Amikor a böngésző mikrofont kér, kattintson az Allow-ra.</li><li>Beszéljen, majd koppintson a Stop gombra.</li><li>Várjon egy pillanatot; az app megmutatja a leírt szöveget és a fordítást. A fordított hang lejátszása a böngészőtől függ — ha nem elérhető, a szöveg akkor is látható.</li><li>Koppintson a hangszóró ikonokra a meghallgatáshoz, és a + jelre egy új üzenethez. Az appnak internetkapcsolat kell a fordításhoz.</li></ol><p>Bármelyik kiválasztott nyelven beszélhet; az app felismeri, melyiket használta, és lefordítja a másikra.</p>"
+    },
+    "dataNote": {
+      "header": "Megjegyzés:",
+      "content": "<p>A beszélgetések csak ezen az eszközön maradnak, amíg az app nyitva van. Ha bezárja vagy frissíti, eltűnnek, és nem küldjük vagy szinkronizáljuk őket semmilyen szerverrel vagy más eszközzel.</p><p>Az app a Mistral Voxtral online szolgáltatását használja a beszéd szöveggé alakítására és a fordításra.</p>"
+    }
+  },
+  "ga": {
+    "overview": {
+      "header": "Cad a dhéanann an aip seo?",
+      "content": "<p>Is aip shimplí é <b>Speak & Translate</b> a thaifeadann do ghuth, a athraíonn go téacs é, agus a aistríonn é go dtí an teanga eile a roghnaigh tú. Is féidir leat an taifeadadh bunaidh a sheinm arís agus, ag brath ar an mbrabhsálaí, an téacs aistrithe a chloisteáil.</p>"
+    },
+    "howToUse": {
+      "header": "Conas é a úsáid",
+      "content": "<ol><li>Roghnaigh an dá theanga is mian leat.</li><li>Tapáil an cnaipe Record. Nuair a iarrann an brabhsálaí an micreafón, cliceáil Allow.</li><li>Labhair, ansin tapáil an cnaipe Stop.</li><li>Fan tamall; taispeánann an aip an téacs agus an t-aistriúchán. Braitheann seinnte an ghutha aistrithe ar an mbrabhsálaí — mura bhfuil sé ar fáil, feicfidh tú an téacs fós.</li><li>Tapáil deilbhíní an chainteora chun éisteacht, agus an + chun teachtaireacht nua a thosú. Teastaíonn nasc idirlín ón aip don chéim aistriúcháin.</li></ol><p>Is féidir leat labhairt i gceachtar de na teangacha roghnaithe; aithníonn an aip cé acu a d'úsáid tú agus aistríonn sí go dtí an ceann eile.</p>"
+    },
+    "dataNote": {
+      "header": "Nóta:",
+      "content": "<p>Fanann do chomhráite ar an bhfeiste seo amháin fad is atá an aip oscailte. Má dhúnann nó athnuaíonn tú an aip, imíonn siad agus ní sheoltar ná sioncronaítear iad le haon fhreastalaí ná gléas eile.</p><p>Úsáideann an aip seirbhís ar líne Voxtral ó Mistral chun cainte a iompú ina théacs agus chun aistriú.</p>"
+    }
+  },
+  "it": {
+    "overview": {
+      "header": "Cosa fa questa app?",
+      "content": "<p><b>Speak & Translate</b> è un'app semplice che registra la tua voce, la trasforma in testo e la traduce nell'altra lingua che hai scelto. Puoi riascoltare la registrazione originale e, a seconda del browser, ascoltare anche il testo tradotto.</p>"
+    },
+    "howToUse": {
+      "header": "Come si usa",
+      "content": "<ol><li>Scegli le due lingue che vuoi.</li><li>Tocca il pulsante Record. Quando il browser chiede il microfono, clicca su Allow.</li><li>Parla, poi tocca il pulsante Stop.</li><li>Attendi un momento; l'app mostra il testo scritto e la traduzione. L'ascolto della voce tradotta dipende dal browser: se non è disponibile, vedrai comunque il testo.</li><li>Tocca le icone dell'altoparlante per ascoltare e il + per iniziare un nuovo messaggio. L'app ha bisogno di internet per il passaggio di traduzione.</li></ol><p>Puoi parlare in una delle due lingue scelte; l'app rileva quale hai usato e traduce nell'altra.</p>"
+    },
+    "dataNote": {
+      "header": "Nota:",
+      "content": "<p>Le tue conversazioni restano solo su questo dispositivo finché l'app è aperta. Se chiudi o aggiorni l'app, spariscono e non vengono inviate o sincronizzate con alcun server o altro dispositivo.</p><p>L'app usa il servizio online Voxtral di Mistral per trasformare la voce in testo e tradurre.</p>"
+    }
+  },
+  "lv": {
+    "overview": {
+      "header": "Ko dara šī lietotne?",
+      "content": "<p><b>Speak & Translate</b> ir vienkārša lietotne, kas ieraksta jūsu balsi, pārvērš to tekstā un iztulko otrā izvēlētajā valodā. Jūs varat atskaņot ierakstu vēlreiz un, atkarībā no pārlūka, dzirdēt arī tulkojumu.</p>"
+    },
+    "howToUse": {
+      "header": "Kā lietot",
+      "content": "<ol><li>Izvēlieties divas valodas, kuras vēlaties.</li><li>Nospiediet pogu Record. Kad pārlūks prasa mikrofonu, klikšķiniet Allow.</li><li>Runājiet, tad nospiediet pogu Stop.</li><li>Pagaidiet brīdi; lietotne parādīs tekstu un tulkojumu. Tulkotās balss atskaņošana ir atkarīga no pārlūka — ja tā nav pieejama, teksts joprojām būs redzams.</li><li>Nospiediet skaļruņu ikonas, lai klausītos, un +, lai sāktu jaunu ziņu. Tulkošanai lietotnei nepieciešams internets.</li></ol><p>Jūs varat runāt jebkurā no abām izvēlētajām valodām; lietotne nosaka, kuru izmantojāt, un tulko otrā.</p>"
+    },
+    "dataNote": {
+      "header": "Piezīme:",
+      "content": "<p>Jūsu sarunas paliek tikai šajā ierīcē, kamēr lietotne ir atvērta. Ja aizverat vai atsvaidzināt lietotni, tās pazūd, un tās netiek sūtītas vai sinhronizētas ar serveri vai citu ierīci.</p><p>Lietotne izmanto Mistral tiešsaistes pakalpojumu Voxtral, lai pārvērstu runu tekstā un tulkotu.</p>"
+    }
+  },
+  "lt": {
+    "overview": {
+      "header": "Ką daro ši programa?",
+      "content": "<p><b>Speak & Translate</b> yra paprasta programa, kuri įrašo jūsų balsą, paverčia jį tekstu ir išverčia į kitą pasirinktą kalbą. Galite dar kartą paklausyti įrašo ir, priklausomai nuo naršyklės, ir vertimo.</p>"
+    },
+    "howToUse": {
+      "header": "Kaip naudoti",
+      "content": "<ol><li>Pasirinkite dvi kalbas, kurių norite.</li><li>Paspauskite Record mygtuką. Kai naršyklė paprašys mikrofono, spauskite Allow.</li><li>Kalbėkite, tada paspauskite Stop mygtuką.</li><li>Palaukite akimirką; programa parodo parašytą tekstą ir vertimą. Išversto balso atkūrimas priklauso nuo naršyklės — jei jis negalimas, vis tiek matysite tekstą.</li><li>Spauskite garsiakalbio piktogramas, kad išgirstumėte, ir +, kad pradėtumėte naują žinutę. Vertimui programai reikalingas internetas.</li></ol><p>Galite kalbėti bet kuria iš dviejų pasirinktų kalbų; programa atpažįsta, kurią naudojote, ir išverčia į kitą.</p>"
+    },
+    "dataNote": {
+      "header": "Pastaba:",
+      "content": "<p>Jūsų pokalbiai lieka tik šiame įrenginyje, kol programa atidaryta. Jei uždarysite ar atnaujinsite programą, jie dingsta ir nėra siunčiami ar sinchronizuojami su jokiu serveriu ar kitu įrenginiu.</p><p>Programa naudoja „Mistral“ internetinę paslaugą „Voxtral“, kad paverstų kalbą tekstu ir išverstų.</p>"
+    }
+  },
+  "mt": {
+    "overview": {
+      "header": "X'tagħmel din l-app?",
+      "content": "<p><b>Speak & Translate</b> hija app sempliċi li tirrekordja leħnek, iddurh f'test miktub u tittraduċih għall-lingwa l-oħra li għażilt. Tista' terġa' tisma' r-reġistrazzjoni oriġinali u, skont il-browser, tisma' wkoll it-test tradott.</p>"
+    },
+    "howToUse": {
+      "header": "Kif tużaha",
+      "content": "<ol><li>Agħżel iż-żewġ lingwi li trid.</li><li>Agħfas il-buttuna Record. Meta l-browser jitlob il-mikrofonu, ikklikkja Allow.</li><li>Kellem, imbagħad agħfas il-buttuna Stop.</li><li>Stenna ftit; l-app turi t-test miktub u t-traduzzjoni. Il-plejbek tal-vuċi tradotta jiddependi fuq il-browser — jekk mhux disponibbli, xorta tara t-test.</li><li>Agħfas l-ikoni tal-kelliem biex tisma' u l-+ biex tibda messaġġ ġdid. L-app teħtieġ konnessjoni tal-internet għat-traduzzjoni.</li></ol><p>Tista' titkellem f'waħda miż-żewġ lingwi magħżula; l-app tiskopri liema użajt u tittraduċi għall-oħra.</p>"
+    },
+    "dataNote": {
+      "header": "Nota:",
+      "content": "<p>Il-konversazzjonijiet tiegħek jibqgħu biss fuq dan l-apparat sakemm l-app tibqa' miftuħa. Jekk tagħlaq jew taġġorna l-app, jintilfu u ma jintbagħtux jew jiġu ssinkronizzati ma' xi server jew apparat ieħor.</p><p>L-app tuża s-servizz online Voxtral ta' Mistral biex iddawwar id-diskors f'test u biex tittraduċi.</p>"
+    }
+  },
+  "pl": {
+    "overview": {
+      "header": "Co robi ta aplikacja?",
+      "content": "<p><b>Speak & Translate</b> to prosta aplikacja, która nagrywa twój głos, zamienia go na tekst i tłumaczy na drugi wybrany język. Możesz ponownie odtworzyć nagranie i, w zależności od przeglądarki, także usłyszeć tłumaczenie.</p>"
+    },
+    "howToUse": {
+      "header": "Jak używać",
+      "content": "<ol><li>Wybierz dwa języki, których chcesz używać.</li><li>Dotknij przycisku Record. Gdy przeglądarka poprosi o mikrofon, kliknij Allow.</li><li>Mów, a następnie dotknij przycisku Stop.</li><li>Poczekaj chwilę; aplikacja pokaże tekst i tłumaczenie. Odtwarzanie przetłumaczonego głosu zależy od przeglądarki — jeśli nie jest dostępne, nadal zobaczysz tekst.</li><li>Dotknij ikon głośnika, aby odsłuchać, i +, aby zacząć nową wiadomość. Do kroku tłumaczenia aplikacja potrzebuje internetu.</li></ol><p>Możesz mówić w dowolnym z dwóch wybranych języków; aplikacja wykryje, którego użyłeś, i przetłumaczy na drugi.</p>"
+    },
+    "dataNote": {
+      "header": "Uwaga:",
+      "content": "<p>Twoje rozmowy pozostają tylko na tym urządzeniu, gdy aplikacja jest otwarta. Jeśli zamkniesz lub odświeżysz aplikację, znikną i nie są wysyłane ani synchronizowane z żadnym serwerem czy innym urządzeniem.</p><p>Aplikacja korzysta z internetowej usługi Voxtral firmy Mistral do zamiany mowy na tekst i tłumaczenia.</p>"
+    }
+  },
+  "pt": {
+    "overview": {
+      "header": "O que esta app faz?",
+      "content": "<p><b>Speak & Translate</b> é uma app simples que grava a sua voz, transforma-a em texto e traduz para a outra língua escolhida. Pode reproduzir a gravação original e, consoante o navegador, ouvir também o texto traduzido.</p>"
+    },
+    "howToUse": {
+      "header": "Como usar",
+      "content": "<ol><li>Escolha as duas línguas que quer.</li><li>Toque no botão Record. Quando o navegador pedir o microfone, clique em Allow.</li><li>Fale e depois toque no botão Stop.</li><li>Espere um momento; a app mostra o texto escrito e a tradução. Ouvir a voz traduzida depende do navegador — se não estiver disponível, verá o texto.</li><li>Toque nos ícones de altifalante para ouvir e no + para iniciar uma nova mensagem. A app precisa de internet para o passo da tradução.</li></ol><p>Pode falar em qualquer uma das duas línguas escolhidas; a app deteta qual usou e traduz para a outra.</p>"
+    },
+    "dataNote": {
+      "header": "Nota:",
+      "content": "<p>As suas conversas ficam apenas neste dispositivo enquanto a app está aberta. Se fechar ou atualizar a app, desaparecem e não são enviadas ou sincronizadas com qualquer servidor ou outro dispositivo.</p><p>A app usa o serviço online Voxtral da Mistral para converter voz em texto e traduzir.</p>"
+    }
+  },
+  "ro": {
+    "overview": {
+      "header": "Ce face această aplicație?",
+      "content": "<p><b>Speak & Translate</b> este o aplicație simplă care îți înregistrează vocea, o transformă în text și o traduce în cealaltă limbă aleasă. Poți reda din nou înregistrarea și, în funcție de browser, să asculți și textul tradus.</p>"
+    },
+    "howToUse": {
+      "header": "Cum se folosește",
+      "content": "<ol><li>Alege cele două limbi pe care le vrei.</li><li>Atinge butonul Record. Când browserul cere microfonul, apasă Allow.</li><li>Vorbește, apoi apasă butonul Stop.</li><li>Așteaptă puțin; aplicația arată textul scris și traducerea. Redarea vocii traduse depinde de browser — dacă nu este disponibilă, vei vedea totuși textul.</li><li>Atinge pictogramele difuzorului ca să asculți și + pentru un mesaj nou. Aplicația are nevoie de internet pentru pasul de traducere.</li></ol><p>Poți vorbi în oricare dintre cele două limbi alese; aplicația detectează pe care ai folosit-o și traduce în cealaltă.</p>"
+    },
+    "dataNote": {
+      "header": "Notă:",
+      "content": "<p>Conversațiile tale rămân doar pe acest dispozitiv cât timp aplicația este deschisă. Dacă o închizi sau reîmprospătezi, dispar și nu sunt trimise sau sincronizate cu niciun server sau alt dispozitiv.</p><p>Aplicația folosește serviciul online Voxtral de la Mistral pentru a transforma vorbirea în text și pentru traducere.</p>"
+    }
+  },
+  "sk": {
+    "overview": {
+      "header": "Čo robí táto aplikácia?",
+      "content": "<p><b>Speak & Translate</b> je jednoduchá aplikácia, ktorá nahrá váš hlas, prevedie ho na text a preloží do druhého vybraného jazyka. Môžete si záznam znova prehrať a podľa prehliadača aj vypočuť preklad.</p>"
+    },
+    "howToUse": {
+      "header": "Ako používať",
+      "content": "<ol><li>Vyberte si dva jazyky, ktoré chcete.</li><li>Kliknite na tlačidlo Record. Keď prehliadač požiada o mikrofón, kliknite na Allow.</li><li>Hovorte, potom kliknite na tlačidlo Stop.</li><li>Počkajte chvíľu; aplikácia zobrazí napísaný text a preklad. Prehrávanie preloženej reči závisí od prehliadača — ak nie je dostupné, text stále uvidíte.</li><li>Kliknite na ikony reproduktora, aby ste počuli text, a na + pre novú správu. Aplikácia potrebuje internet na krok prekladu.</li></ol><p>Môžete hovoriť ktorýmkoľvek z dvoch zvolených jazykov; aplikácia zistí, ktorý ste použili, a preloží do druhého.</p>"
+    },
+    "dataNote": {
+      "header": "Poznámka:",
+      "content": "<p>Vaše rozhovory ostávajú len na tomto zariadení, kým je aplikácia otvorená. Ak aplikáciu zatvoríte alebo obnovíte, zmiznú a neodosielajú sa ani nesynchronizujú so žiadnym serverom alebo iným zariadením.</p><p>Aplikácia používa online službu Voxtral od Mistral na prevod reči na text a preklad.</p>"
+    }
+  },
+  "sl": {
+    "overview": {
+      "header": "Kaj počne ta aplikacija?",
+      "content": "<p><b>Speak & Translate</b> je preprosta aplikacija, ki posname vaš glas, ga pretvori v besedilo in prevede v drugi izbrani jezik. Posnetek lahko ponovno predvajate in, odvisno od brskalnika, slišite tudi prevod.</p>"
+    },
+    "howToUse": {
+      "header": "Kako uporabljati",
+      "content": "<ol><li>Izberite dva jezika, ki ju želite.</li><li>Tapnite gumb Record. Ko brskalnik zahteva mikrofon, kliknite Allow.</li><li>Govorite, nato tapnite gumb Stop.</li><li>Počakajte trenutek; aplikacija prikaže napisano besedilo in prevod. Predvajanje prevedenega glasu je odvisno od brskalnika — če ni na voljo, boste še vedno videli besedilo.</li><li>Tapnite ikone zvočnika, da jih slišite, in +, da začnete novo sporočilo. Aplikacija potrebuje internet za korak prevajanja.</li></ol><p>Lahko govorite v katerem koli od obeh izbranih jezikov; aplikacija zazna, katerega ste uporabili, in prevede v drugega.</p>"
+    },
+    "dataNote": {
+      "header": "Opomba:",
+      "content": "<p>Vaši pogovori ostanejo samo na tej napravi, dokler je aplikacija odprta. Če aplikacijo zaprete ali osvežite, izginejo in se ne pošiljajo ali sinhronizirajo z nobenim strežnikom ali drugo napravo.</p><p>Aplikacija uporablja spletno storitev Voxtral podjetja Mistral za pretvorbo govora v besedilo in prevajanje.</p>"
+    }
+  },
+  "es": {
+    "overview": {
+      "header": "¿Qué hace esta app?",
+      "content": "<p><b>Speak & Translate</b> es una app sencilla que graba tu voz, la convierte en texto y la traduce al otro idioma que elijas. Puedes reproducir la grabación original y, según tu navegador, escuchar también el texto traducido.</p>"
+    },
+    "howToUse": {
+      "header": "Cómo usarla",
+      "content": "<ol><li>Elige los dos idiomas que quieres.</li><li>Toca el botón Record. Cuando el navegador pida el micrófono, haz clic en Allow.</li><li>Habla y luego toca el botón Stop.</li><li>Espera un momento; la app muestra el texto escrito y la traducción. Reproducir la voz traducida depende del navegador — si no está disponible, verás igualmente el texto.</li><li>Toca los iconos de altavoz para escuchar y el + para empezar un nuevo mensaje. La app necesita conexión a internet para la traducción.</li></ol><p>Puedes hablar en cualquiera de los dos idiomas elegidos; la app detecta cuál usaste y traduce al otro.</p>"
+    },
+    "dataNote": {
+      "header": "Nota:",
+      "content": "<p>Tus conversaciones se quedan solo en este dispositivo mientras la app está abierta. Si cierras o recargas la app, desaparecen y no se envían ni sincronizan con ningún servidor ni otro dispositivo.</p><p>La app usa el servicio en línea Voxtral de Mistral para convertir la voz en texto y traducir.</p>"
+    }
+  },
+  "sv": {
+    "overview": {
+      "header": "Vad gör den här appen?",
+      "content": "<p><b>Speak & Translate</b> är en enkel app som spelar in din röst, gör om den till text och översätter till det andra språk du valt. Du kan spela upp inspelningen igen och, beroende på webbläsare, även höra den översatta texten.</p>"
+    },
+    "howToUse": {
+      "header": "Så använder du appen",
+      "content": "<ol><li>Välj de två språk du vill använda.</li><li>Tryck på Record-knappen. När webbläsaren ber om mikrofonen, klicka på Allow.</li><li>Prata och tryck sedan på Stop-knappen.</li><li>Vänta en stund; appen visar den skrivna texten och översättningen. Att spela upp den översatta rösten beror på webbläsaren — om det inte är möjligt ser du ändå texten.</li><li>Tryck på högtalarikonerna för att lyssna och på + för att starta ett nytt meddelande. Appen behöver internet för översättningssteget.</li></ol><p>Du kan tala på något av de två valda språken; appen känner av vilket du använde och översätter till det andra.</p>"
+    },
+    "dataNote": {
+      "header": "Obs:",
+      "content": "<p>Dina konversationer stannar bara på den här enheten medan appen är öppen. Om du stänger eller uppdaterar appen försvinner de och skickas eller synkroniseras inte till någon server eller annan enhet.</p><p>Appen använder Mistrals onlinetjänst Voxtral för att omvandla tal till text och översätta.</p>"
+    }
+  },
+  "is": {
+    "overview": {
+      "header": "Hvað gerir þetta forrit?",
+      "content": "<p><b>Speak & Translate</b> er einfalt forrit sem tekur upp röddina þína, breytir henni í texta og þýðir yfir á hitt tungumálið sem þú valdir. Þú getur spilað upptökuna aftur og, eftir vafra, einnig hlustað á þýdda textann.</p>"
+    },
+    "howToUse": {
+      "header": "Hvernig á að nota",
+      "content": "<ol><li>Veldu tvö tungumál sem þú vilt.</li><li>Ýttu á Record-hnappinn. Þegar vafrinn biður um hljóðnema, smelltu á Allow.</li><li>Talaðu og ýttu svo á Stop-hnappinn.</li><li>Bíddu andartak; forritið sýnir skrifaðan texta og þýðingu. Afspilun á þýddri rödd fer eftir vafra — ef hún er ekki í boði, sérðu samt textann.</li><li>Ýttu á hátalaratáknin til að hlusta og á + til að byrja ný skilaboð. Forritið þarf internet fyrir þýðinguna.</li></ol><p>Þú getur talað á hvoru tveggja valdra tungumála; forritið skynjar hvort þú notaðir og þýðir yfir á hitt.</p>"
+    },
+    "dataNote": {
+      "header": "Athugið:",
+      "content": "<p>Samtölin þín eru aðeins á þessu tæki meðan forritið er opið. Ef þú lokar eða endurhleður forritið hverfa þau og eru ekki send eða samstillt við neinn netþjón eða annað tæki.</p><p>Forritið notar Voxtral netþjónustu Mistral til að breyta tali í texta og þýða.</p>"
+    }
+  },
+  "no": {
+    "overview": {
+      "header": "Hva gjør denne appen?",
+      "content": "<p><b>Speak & Translate</b> er en enkel app som tar opp stemmen din, gjør den om til tekst og oversetter til det andre språket du valgte. Du kan spille av opptaket igjen og, avhengig av nettleser, også høre den oversatte teksten.</p>"
+    },
+    "howToUse": {
+      "header": "Slik bruker du den",
+      "content": "<ol><li>Velg de to språkene du vil bruke.</li><li>Trykk på Record-knappen. Når nettleseren ber om mikrofonen, klikk Allow.</li><li>Snakk, og trykk deretter på Stop-knappen.</li><li>Vent litt; appen viser den skrevne teksten og oversettelsen. Avspilling av den oversatte stemmen avhenger av nettleseren — hvis den ikke er tilgjengelig, ser du likevel teksten.</li><li>Trykk på høyttalerikonene for å høre, og på + for å starte en ny melding. Appen trenger internett for oversettelsen.</li></ol><p>Du kan snakke på et av de to valgte språkene; appen merker hvilket du brukte og oversetter til det andre.</p>"
+    },
+    "dataNote": {
+      "header": "Merk:",
+      "content": "<p>Samtalene dine blir bare på denne enheten mens appen er åpen. Hvis du lukker eller oppdaterer appen, forsvinner de, og de sendes eller synkroniseres ikke med noen server eller annet apparat.</p><p>Appen bruker Mistrals nettjeneste Voxtral for å gjøre tale til tekst og oversette.</p>"
+    }
+  },
+  "lb": {
+    "overview": {
+      "header": "Wat mécht dës App?",
+      "content": "<p><b>Speak & Translate</b> ass eng einfach App déi Är Stëmm ophëlt, se an Text ëmwandelt an an déi aner gewielten Sprooch iwwersetzt. Dir kënnt d'Opnam nach eng Kéier ofspillen an, jee no Browser, och den iwwersaten Text lauschteren.</p>"
+    },
+    "howToUse": {
+      "header": "Wéi benotzen",
+      "content": "<ol><li>Wielt déi zwee Sproochen, déi Dir wëllt.</li><li>Klickt op de Record-Button. Wann de Browser de Mikro freet, klickt Allow.</li><li>Schwätzt, a klickt duerno op de Stop-Button.</li><li>Waart e Moment; d'App weist de geschriwwenen Text an d'Iwwersetzung. D'Ofspille vun der iwwersater Stëmm hänkt vum Browser of — wann et net geet, gesitt Dir de Text trotzdem.</li><li>Klickt op d'Lautspriecher-Ikonen fir ze lauschteren, an op + fir eng nei Noriicht unzefänken. D'App brauch Internet fir d'Iwwersetzung.</li></ol><p>Dir kënnt an enger vun deenen zwou gewielte Sprooche schwätzen; d'App erkennt wéi eng Dir benotzt hutt an iwwersetzt an déi aner.</p>"
+    },
+    "dataNote": {
+      "header": "Notiz:",
+      "content": "<p>Är Gespréicher bleiwen nëmmen op dësem Apparat soulaang d'App op ass. Wann Dir d'App zoumaacht oder nei lued, sinn se fort a ginn net un e Server oder en anert Apparat geschéckt oder synchroniséiert.</p><p>D'App benotzt de Voxtral Online-Service vu Mistral fir Ried an Text ëmzewandelen an ze iwwersetzen.</p>"
+    }
+  },
+  "sq": {
+    "overview": {
+      "header": "Çfarë bën kjo aplikacion?",
+      "content": "<p><b>Speak & Translate</b> është një aplikacion i thjeshtë që regjistron zërin tuaj, e kthen në tekst dhe e përkthen në gjuhën tjetër që zgjodhët. Mund të riprodhoni sërish regjistrimin dhe, në varësi të shfletuesit, të dëgjoni edhe tekstin e përkthyer.</p>"
+    },
+    "howToUse": {
+      "header": "Si ta përdorni",
+      "content": "<ol><li>Zgjidhni dy gjuhët që dëshironi.</li><li>Prekni butonin Record. Kur shfletuesi kërkon mikrofonin, klikoni Allow.</li><li>Flisni, pastaj prekni butonin Stop.</li><li>Pritni pak; aplikacioni shfaq tekstin e shkruar dhe përkthimin. Dëgjimi i zërit të përkthyer varet nga shfletuesi — nëse nuk është i disponueshëm, teksti ende do të shihet.</li><li>Prekni ikonat e altoparlantit për të dëgjuar dhe + për të filluar një mesazh të ri. Aplikacioni ka nevojë për internet për hapin e përkthimit.</li></ol><p>Mund të flisni në cilëndo nga dy gjuhët e zgjedhura; aplikacioni zbulon cilën përdorët dhe e përkthen në tjetrën.</p>"
+    },
+    "dataNote": {
+      "header": "Shënim:",
+      "content": "<p>Bisedat tuaja qëndrojnë vetëm në këtë pajisje sa kohë aplikacioni është i hapur. Nëse e mbyllni ose rifreskoni aplikacionin, ato zhduken dhe nuk dërgohen ose sinkronizohen me asnjë server apo pajisje tjetër.</p><p>Aplikacioni përdor shërbimin online Voxtral të Mistral për të kthyer të folurin në tekst dhe përkthim.</p>"
+    }
+  },
+  "sr": {
+    "overview": {
+      "header": "Шта ради ова апликација?",
+      "content": "<p><b>Speak & Translate</b> је једноставна апликација која снима ваш глас, претвара га у текст и преводи на други изабрани језик. Можете поново да пустите снимак и, у зависности од прегледача, да чујете и превод.</p>"
+    },
+    "howToUse": {
+      "header": "Како се користи",
+      "content": "<ol><li>Изаберите два језика која желите.</li><li>Додирните дугме Record. Када прегледач тражи микрофон, кликните Allow.</li><li>Говорите, затим додирните дугме Stop.</li><li>Сачекајте мало; апликација приказује написани текст и превод. Репродукција преведеног гласа зависи од прегледача — ако није доступна, видећете текст.</li><li>Додирните иконе звучника да чујете и + да започнете нову поруку. Апликацији је потребан интернет за корак превођења.</li></ol><p>Можете говорити на било ком од два изабрана језика; апликација препознаје који сте користили и преводи на други.</p>"
+    },
+    "dataNote": {
+      "header": "Напомена:",
+      "content": "<p>Ваши разговори остају само на овом уређају док је апликација отворена. Ако затворите или освежите апликацију, они нестају и не шаљу се нити синхронизују са било којим сервером или другим уређајем.</p><p>Апликација користи Voxtral онлајн услугу компаније Mistral за претварање говора у текст и превод.</p>"
+    }
+  },
+  "mk": {
+    "overview": {
+      "header": "Што прави ова апликација?",
+      "content": "<p><b>Speak & Translate</b> е едноставна апликација што го снима вашиот глас, го претвора во текст и го преведува на другиот избран јазик. Можете повторно да ја пуштите снимката и, во зависност од прелистувачот, да го слушнете и преводот.</p>"
+    },
+    "howToUse": {
+      "header": "Како се користи",
+      "content": "<ol><li>Изберете ги двата јазици што ги сакате.</li><li>Притиснете на копчето Record. Кога прелистувачот бара микрофон, кликнете Allow.</li><li>Зборувајте, потоа притиснете на копчето Stop.</li><li>Почекајте малку; апликацијата го прикажува напишаниот текст и преводот. Репродукцијата на преведениот глас зависи од прелистувачот — ако не е достапна, сепак ќе го видите текстот.</li><li>Притиснете ги иконите на звучникот за да слушнете, и + за нова порака. Апликацијата бара интернет за чекорот со превод.</li></ol><p>Можете да зборувате на кој било од двата избрани јазици; апликацијата препознава кој сте го користеле и преведува на другиот.</p>"
+    },
+    "dataNote": {
+      "header": "Забелешка:",
+      "content": "<p>Вашите разговори остануваат само на овој уред додека апликацијата е отворена. Ако ја затворите или освежите апликацијата, исчезнуваат и не се испраќаат или синхронизираат со никаков сервер или друг уред.</p><p>Апликацијата ја користи онлајн услугата Voxtral на Mistral за да ја претвори говорот во текст и да преведува.</p>"
+    }
+  },
+  "bs": {
+    "overview": {
+      "header": "Šta radi ova aplikacija?",
+      "content": "<p><b>Speak & Translate</b> je jednostavna aplikacija koja snima vaš glas, pretvara ga u tekst i prevodi na drugi odabrani jezik. Možete ponovo preslušati snimak i, u zavisnosti od preglednika, čuti i prevedeni tekst.</p>"
+    },
+    "howToUse": {
+      "header": "Kako koristiti",
+      "content": "<ol><li>Odaberite dva jezika koja želite.</li><li>Dodirnite dugme Record. Kada preglednik zatraži mikrofon, kliknite Allow.</li><li>Govori, zatim dodirnite dugme Stop.</li><li>Sačekajte malo; aplikacija prikazuje napisani tekst i prijevod. Reprodukcija prevedenog glasa zavisi od preglednika — ako nije dostupna, tekst ćete svejedno vidjeti.</li><li>Dodirnite ikone zvučnika da ih čujete i + da započnete novu poruku. Aplikaciji je potreban internet za korak prevođenja.</li></ol><p>Možete govoriti na bilo kojem od dva izabrana jezika; aplikacija prepoznaje koji ste koristili i prevodi na drugi.</p>"
+    },
+    "dataNote": {
+      "header": "Napomena:",
+      "content": "<p>Vaši razgovori ostaju samo na ovom uređaju dok je aplikacija otvorena. Ako zatvorite ili osvježite aplikaciju, nestaju i ne šalju se niti sinkroniziraju s bilo kojim serverom ili drugim uređajem.</p><p>Aplikacija koristi Voxtral online uslugu kompanije Mistral za pretvaranje govora u tekst i prevođenje.</p>"
+    }
+  },
+  "uk": {
+    "overview": {
+      "header": "Що робить цей застосунок?",
+      "content": "<p><b>Speak & Translate</b> — це простий застосунок, який записує ваш голос, перетворює його на текст і перекладає іншою обраною мовою. Ви можете знову прослухати запис і, залежно від браузера, почути переклад.</p>"
+    },
+    "howToUse": {
+      "header": "Як користуватися",
+      "content": "<ol><li>Виберіть дві мови, які хочете.</li><li>Натисніть кнопку Record. Коли браузер попросить доступ до мікрофона, натисніть Allow.</li><li>Говоріть, потім натисніть кнопку Stop.</li><li>Зачекайте хвильку; застосунок покаже написаний текст і переклад. Відтворення перекладеного голосу залежить від браузера — якщо недоступне, ви все одно побачите текст.</li><li>Натисніть піктограми динаміка, щоб прослухати, і +, щоб почати нове повідомлення. Для перекладу застосунку потрібен інтернет.</li></ol><p>Ви можете говорити будь-якою з двох обраних мов; застосунок визначить, яку ви використовували, і перекладе на іншу.</p>"
+    },
+    "dataNote": {
+      "header": "Примітка:",
+      "content": "<p>Ваші розмови залишаються лише на цьому пристрої, поки застосунок відкритий. Якщо ви закриєте або оновите застосунок, вони зникнуть і не надсилаються та не синхронізуються з жодним сервером чи іншим пристроєм.</p><p>Застосунок використовує онлайн-сервіс Voxtral від Mistral, щоб перетворювати мовлення на текст і перекладати.</p>"
+    }
+  },
+  "ru": {
+    "overview": {
+      "header": "Что делает это приложение?",
+      "content": "<p><b>Speak & Translate</b> — простое приложение, которое записывает ваш голос, превращает его в текст и переводит на другой выбранный вами язык. Вы можете снова прослушать запись и, в зависимости от браузера, услышать перевод.</p>"
+    },
+    "howToUse": {
+      "header": "Как пользоваться",
+      "content": "<ol><li>Выберите два языка, которые хотите.</li><li>Нажмите кнопку Record. Когда браузер запросит микрофон, нажмите Allow.</li><li>Говорите, затем нажмите кнопку Stop.</li><li>Немного подождите; приложение покажет текст и перевод. Воспроизведение переведенного голоса зависит от браузера — если недоступно, текст все равно будет виден.</li><li>Нажмите значки динамика, чтобы прослушать, и +, чтобы начать новое сообщение. Приложению нужен интернет для шага перевода.</li></ol><p>Вы можете говорить на любом из двух выбранных языков; приложение определит, какой вы использовали, и переведет на другой.</p>"
+    },
+    "dataNote": {
+      "header": "Примечание:",
+      "content": "<p>Ваши разговоры остаются только на этом устройстве, пока приложение открыто. Если вы закроете или обновите приложение, они исчезнут и не отправляются и не синхронизируются ни с каким сервером или другим устройством.</p><p>Приложение использует онлайн-сервис Voxtral от Mistral для преобразования речи в текст и перевода.</p>"
+    }
+  },
+  "tr": {
+    "overview": {
+      "header": "Bu uygulama ne yapar?",
+      "content": "<p><b>Speak & Translate</b> sesinizi kaydeden, yazıya çeviren ve seçtiğiniz diğer dile çeviren basit bir uygulamadır. Orijinal kaydı yeniden dinleyebilir ve tarayıcınıza bağlı olarak tercüme edilmiş metni de duyabilirsiniz.</p>"
+    },
+    "howToUse": {
+      "header": "Nasıl kullanılır",
+      "content": "<ol><li>İstediğiniz iki dili seçin.</li><li>Record düğmesine dokunun. Tarayıcı mikrofon isterse Allow'a tıklayın.</li><li>Konuşun, sonra Stop düğmesine dokunun.</li><li>Biraz bekleyin; uygulama yazılı metni ve çeviriyi gösterir. Çevrilmiş sesi çalmak tarayıcıya bağlıdır — mümkün değilse metni yine de görürsünüz.</li><li>Hoparlör simgelerine dokunarak dinleyin ve + ile yeni bir mesaj başlatın. Uygulamanın çeviri için internete ihtiyacı vardır.</li></ol><p>Seçtiğiniz iki dilden herhangi birinde konuşabilirsiniz; uygulama hangisini kullandığınızı algılar ve diğerine çevirir.</p>"
+    },
+    "dataNote": {
+      "header": "Not:",
+      "content": "<p>Sohbetleriniz uygulama açıkken yalnızca bu cihazda kalır. Uygulamayı kapatırsanız veya yenilerseniz kaybolurlar ve herhangi bir sunucuya ya da başka bir cihaza gönderilmez veya eşitlenmez.</p><p>Uygulama, konuşmayı metne çevirmek ve çevirmek için Mistral'in çevrimiçi hizmeti Voxtral'ı kullanır.</p>"
+    }
+  },
+  "zh": {
+    "overview": {
+      "header": "这个应用有什么用？",
+      "content": "<p><b>Speak & Translate</b> 是一个简单的应用，可以录下你的声音，把它变成文字，并翻译成你选择的另一种语言。你可以回放原始录音，并根据浏览器情况，收听翻译后的文字。</p>"
+    },
+    "howToUse": {
+      "header": "使用方法",
+      "content": "<ol><li>选择你想要的两种语言。</li><li>点按 Record 按钮。浏览器请求麦克风时，点击 Allow。</li><li>说话，然后点按 Stop 按钮。</li><li>稍等片刻；应用会显示文字和翻译。播放译文语音取决于浏览器——如果无法播放，你仍然可以看到文字。</li><li>点击扬声器图标收听，点击 + 开始新消息。翻译步骤需要网络连接。</li></ol><p>你可以用这两种语言中的任意一种说话；应用会检测你使用的语言，并翻译成另一种。</p>"
+    },
+    "dataNote": {
+      "header": "提示：",
+      "content": "<p>你的对话只会在应用打开时保留在此设备上。如果关闭或刷新应用，它们会消失，也不会发送或同步到任何服务器或其他设备。</p><p>本应用使用 Mistral 的 Voxtral 在线服务将语音转成文字并进行翻译。</p>"
+    }
+  },
+  "ja": {
+    "overview": {
+      "header": "このアプリは何をしますか？",
+      "content": "<p><b>Speak & Translate</b> は、声を録音して文字にし、選んだもう一方の言語に翻訳するシンプルなアプリです。元の録音を再生でき、ブラウザによっては翻訳された音声も聞けます。</p>"
+    },
+    "howToUse": {
+      "header": "使い方",
+      "content": "<ol><li>使いたい2つの言語を選びます。</li><li>Record ボタンをタップします。ブラウザがマイクを求めたら Allow をクリックします。</li><li>話してから Stop ボタンをタップします。</li><li>少し待つと、文字と翻訳が表示されます。翻訳音声の再生はブラウザによります — もし再生できなくても、文字は見られます。</li><li>スピーカーのアイコンをタップして聞き、+ で新しいメッセージを始めます。翻訳にはインターネット接続が必要です。</li></ol><p>選んだ2つの言語のどちらで話しても構いません。アプリが使った言語を検出し、もう一方に翻訳します。</p>"
+    },
+    "dataNote": {
+      "header": "注意:",
+      "content": "<p>会話はアプリを開いている間だけこの端末に残ります。アプリを閉じるか再読み込みすると消え、サーバーや他の端末に送信・同期されません。</p><p>このアプリは Mistral のオンラインサービス Voxtral を使って音声を文字にし、翻訳します。</p>"
+    }
+  },
+  "ko": {
+    "overview": {
+      "header": "이 앱은 무엇을 하나요?",
+      "content": "<p><b>Speak & Translate</b>는 목소리를 녹음해 글자로 바꾸고, 선택한 다른 언어로 번역해 주는 간단한 앱입니다. 원본 녹음을 다시 들을 수 있고, 브라우저에 따라 번역된 음성도 들을 수 있습니다.</p>"
+    },
+    "howToUse": {
+      "header": "사용 방법",
+      "content": "<ol><li>원하는 두 언어를 선택하세요.</li><li>Record 버튼을 누르세요. 브라우저가 마이크를 요청하면 Allow를 클릭하세요.</li><li>말한 뒤 Stop 버튼을 누르세요.</li><li>잠시 기다리면 글자와 번역이 표시됩니다. 번역 음성 재생은 브라우저에 따라 다르며, 안 되더라도 글자는 볼 수 있습니다.</li><li>스피커 아이콘을 눌러 듣고, +로 새 메시지를 시작하세요. 번역 단계에는 인터넷 연결이 필요합니다.</li></ol><p>선택한 두 언어 중 아무 언어로 말해도 됩니다. 앱이 사용한 언어를 감지해 다른 언어로 번역합니다.</p>"
+    },
+    "dataNote": {
+      "header": "알림:",
+      "content": "<p>대화 내용은 앱을 여는 동안에만 이 기기에 저장됩니다. 앱을 닫거나 새로고침하면 사라지며, 서버나 다른 기기로 전송 또는 동기화되지 않습니다.</p><p>이 앱은 Mistral의 온라인 서비스 Voxtral을 사용해 음성을 텍스트로 바꾸고 번역합니다.</p>"
+    }
+  },
+  "ar": {
+    "overview": {
+      "header": "ما الذي يفعله هذا التطبيق؟",
+      "content": "<p><b>Speak & Translate</b> تطبيق بسيط يسجل صوتك، يحوله إلى نص مكتوب، ويترجمه إلى اللغة الأخرى التي اخترتها. يمكنك إعادة تشغيل التسجيل الأصلي، واعتماداً على المتصفح، الاستماع إلى النص المترجم أيضاً.</p>"
+    },
+    "howToUse": {
+      "header": "كيفية الاستخدام",
+      "content": "<ol><li>اختر اللغتين اللتين تريد استخدامهما.</li><li>اضغط زر Record. عندما يطلب المتصفح الميكروفون، اضغط Allow.</li><li>تحدث، ثم اضغط زر Stop.</li><li>انتظر قليلاً؛ سيعرض التطبيق النص المكتوب والترجمة. تشغيل الصوت المترجم يعتمد على المتصفح — إذا لم يكن متاحاً فستظل ترى النص.</li><li>اضغط أيقونات مكبر الصوت للاستماع، و+ لبدء رسالة جديدة. يحتاج التطبيق إلى اتصال بالإنترنت لخطوة الترجمة.</li></ol><p>يمكنك التحدث بأي من اللغتين المختارتين؛ سيكتشف التطبيق أيهما استخدمت ويترجم إلى الأخرى.</p>"
+    },
+    "dataNote": {
+      "header": "ملاحظة:",
+      "content": "<p>تبقى محادثاتك على هذا الجهاز فقط ما دام التطبيق مفتوحاً. إذا أغلقت التطبيق أو أعدت تحميله تختفي، ولا تُرسل أو تُزامن مع أي خادم أو جهاز آخر.</p><p>يستخدم التطبيق خدمة Voxtral عبر الإنترنت من Mistral لتحويل الكلام إلى نص وللترجمة.</p>"
+    }
+  },
+  "he": {
+    "overview": {
+      "header": "מה האפליקציה הזו עושה?",
+      "content": "<p><b>Speak & Translate</b> היא אפליקציה פשוטה שמקליטה את הקול שלך, הופכת אותו לטקסט, ומתרגמת לשפה השנייה שבחרת. אפשר להשמיע שוב את ההקלטה המקורית, ותלוי בדפדפן, גם להאזין לטקסט המתורגם.</p>"
+    },
+    "howToUse": {
+      "header": "איך להשתמש",
+      "content": "<ol><li>בחר את שתי השפות שאתה רוצה.</li><li>הקש על כפתור Record. כשהדפדפן מבקש מיקרופון, לחץ Allow.</li><li>דבר ואז הקש על כפתור Stop.</li><li>המתן רגע; האפליקציה תראה את הטקסט הכתוב והתרגום. השמעת הקול המתורגם תלויה בדפדפן — אם אינה זמינה, עדיין תראה את הטקסט.</li><li>הקש על אייקוני הרמקול כדי להאזין, ועל + כדי להתחיל הודעה חדשה. האפליקציה צריכה חיבור אינטרנט לשלב התרגום.</li></ol><p>אפשר לדבר באחת משתי השפות שבחרת; האפליקציה מזהה באיזו השתמשת ומתרגמת לשנייה.</p>"
+    },
+    "dataNote": {
+      "header": "הערה:",
+      "content": "<p>השיחות שלך נשארות רק במכשיר הזה כל עוד האפליקציה פתוחה. אם תסגור או תרענן את האפליקציה, הן ייעלמו, ולא יישלחו או יסונכרנו עם שרת או מכשיר אחר.</p><p>האפליקציה משתמשת בשירות המקוון Voxtral של Mistral כדי להפוך דיבור לטקסט ולתרגם.</p>"
+    }
+  }
+}

@@ -4,11 +4,12 @@ import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
 import Background from '../components/Background.vue'
 import LanguageWheelPicker from '../components/LanguageWheelPicker.vue';
+import InfoModal from '../components/InfoModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import TextToSpeech from '../components/TextToSpeech.vue';
 import { languages, type Language } from '../config/languages';
-import { Trash2, Plus, Mic, Square } from 'lucide-vue-next';
+import { Trash2, Plus, Mic, Square, Info } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const {
@@ -35,6 +36,9 @@ const currentTranslationOutputLang = ref<Language | null>(null); // Locked outpu
 const showLanguagePicker = ref(false);
 const isFirstRun = ref(false);
 const hasCompletedSetup = ref(false);
+
+// Info modal state
+const showInfoModal = ref(false);
 
 // Conversation history
 interface ConversationPair {
@@ -460,8 +464,27 @@ const handleNewRecording = async () => {
       @close="showLanguagePicker = false"
     />
 
+    <!-- Info Modal -->
+    <InfoModal
+      :is-open="showInfoModal"
+      :source-lang="sourceLang"
+      :target-lang="outputLanguage"
+      @close="showInfoModal = false"
+    />
+
     <!-- Fixed Footer with Controls (Always Visible) -->
     <footer class="app-footer">
+      <!-- Info Button (only show after setup) -->
+      <button
+        v-if="hasCompletedSetup"
+        class="footer-info-btn"
+        @click="showInfoModal = true"
+        title="App information and help"
+      >
+        <Info :size="20" />
+        <span class="info-label">Info</span>
+      </button>
+
       <!-- Dual Language Button (only show after setup) -->
       <button
         v-if="hasCompletedSetup"

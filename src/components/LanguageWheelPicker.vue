@@ -24,6 +24,10 @@ watch(() => props.isOpen, (isOpen) => {
   if (isOpen) {
     selectedSource.value = props.initialSource || null;
     selectedTarget.value = props.initialTarget || null;
+    console.log('Language Picker opened:', {
+      source: selectedSource.value?.nativeName,
+      target: selectedTarget.value?.nativeName
+    });
   }
 });
 
@@ -91,42 +95,44 @@ const handleBackdropClick = (e: MouseEvent) => {
 
         <!-- Dual Wheel Container -->
         <div class="dual-wheel-container">
-          <!-- Source Language Wheel -->
-          <LanguageWheel
-            :languages="languages"
-            :selected-language="selectedSource"
-            type="source"
-            @select="handleSourceSelect"
-          />
+          <div class="wheels-with-arrow">
+            <!-- Source Language Wheel -->
+            <LanguageWheel
+              :languages="languages"
+              :selected-language="selectedSource"
+              type="source"
+              @select="handleSourceSelect"
+            />
 
-          <!-- Arrow Icon -->
-          <div class="wheel-arrow">
-            →
+            <!-- Arrow Icon - positioned at selection rectangle center -->
+            <div class="wheel-arrow">
+              →
+            </div>
+
+            <!-- Target Language Wheel -->
+            <LanguageWheel
+              :languages="languages"
+              :selected-language="selectedTarget"
+              type="target"
+              @select="handleTargetSelect"
+            />
           </div>
-
-          <!-- Target Language Wheel -->
-          <LanguageWheel
-            :languages="languages"
-            :selected-language="selectedTarget"
-            type="target"
-            @select="handleTargetSelect"
-          />
         </div>
 
         <!-- Selected Languages Display -->
         <div class="selected-display">
-          <div class="selected-item">
+          <div class="selected-item from-item">
             <span class="selected-label">From:</span>
             <span class="selected-lang" :class="{ 'required': !selectedSource }">
-              {{ selectedSource?.flag || '❓' }}
-              {{ selectedSource?.nativeName || 'Select language' }}
+              <span class="lang-text">{{ selectedSource?.nativeName || 'Select language' }}</span>
+              <span class="lang-flag-display">{{ selectedSource?.flag || '❓' }}</span>
             </span>
           </div>
-          <div class="selected-item">
+          <div class="selected-item to-item">
             <span class="selected-label">To:</span>
             <span class="selected-lang" :class="{ 'required': !selectedTarget }">
-              {{ selectedTarget?.flag || '❓' }}
-              {{ selectedTarget?.nativeName || 'Select language' }}
+              <span class="lang-flag-display">{{ selectedTarget?.flag || '❓' }}</span>
+              <span class="lang-text">{{ selectedTarget?.nativeName || 'Select language' }}</span>
             </span>
           </div>
         </div>
@@ -229,23 +235,35 @@ const handleBackdropClick = (e: MouseEvent) => {
 
 .dual-wheel-container {
   display: flex;
-  gap: 1.5rem;
-  align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
 }
 
+.wheels-with-arrow {
+  position: relative;
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
 .wheel-arrow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   font-size: 2.5rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
   font-weight: 300;
-  flex-shrink: 0;
+  z-index: 200;
+  pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 1.5rem;
 }
 
 .selected-display {
   display: flex;
   gap: 1.5rem;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 1.5rem;
   padding: 1rem;
   background: rgba(0, 0, 0, 0.2);
@@ -255,8 +273,16 @@ const handleBackdropClick = (e: MouseEvent) => {
 .selected-item {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.25rem;
+  flex: 1;
+}
+
+.from-item {
+  align-items: flex-end;
+}
+
+.to-item {
+  align-items: flex-start;
 }
 
 .selected-label {
@@ -278,6 +304,15 @@ const handleBackdropClick = (e: MouseEvent) => {
 
 .selected-lang.required {
   color: rgba(255, 180, 70, 0.9);
+}
+
+.lang-text {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.lang-flag-display {
+  flex-shrink: 0;
 }
 
 .confirm-btn {
@@ -354,17 +389,30 @@ const handleBackdropClick = (e: MouseEvent) => {
     font-size: 0.85rem;
   }
 
-  .dual-wheel-container {
-    gap: 0.75rem;
+  .wheels-with-arrow {
+    gap: 2.5rem;
   }
 
   .wheel-arrow {
     font-size: 2rem;
+    margin-top: 1rem;
   }
 
   .selected-display {
-    flex-direction: column;
-    gap: 0.75rem;
+    gap: 2rem;
+  }
+
+  .from-item,
+  .to-item {
+    font-size: 0.85rem;
+  }
+
+  .selected-label {
+    font-size: 0.7rem;
+  }
+
+  .selected-lang {
+    font-size: 0.85rem;
   }
 
   .confirm-btn {

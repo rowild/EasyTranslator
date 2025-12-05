@@ -19,7 +19,7 @@ const emit = defineEmits<{
 
 const wheelRef = ref<HTMLElement | null>(null);
 const observer = ref<IntersectionObserver | null>(null);
-const draggableInstance = ref<Draggable[] | null>(null);
+const isInitializing = ref(true);
 
 // Sort languages alphabetically by native name
 const wheelItems = computed(() => {
@@ -40,7 +40,8 @@ const getDistanceFromCenter = (element: Element): number => {
   const elementCenter = elementRect.top + elementRect.height / 2;
 
   const distance = elementCenter - containerCenter;
-  const itemHeight = 60; // Height of each item
+  // Adjust item height based on viewport
+  const itemHeight = window.innerWidth <= 480 ? 50 : 60;
 
   return Math.round(distance / itemHeight);
 };
@@ -60,13 +61,19 @@ const updateTransforms = () => {
 const setupObserver = () => {
   if (!wheelRef.value) return;
 
+  const rootMargin = window.innerWidth <= 480 ? '-100px 0px' : '-120px 0px';
+
   observer.value = new IntersectionObserver(
     (entries) => {
+      // Don't emit selection events during initial load
+      if (isInitializing.value) return;
+
       entries.forEach((entry) => {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
           const langCode = entry.target.getAttribute('data-lang-code');
           const language = props.languages.find(l => l.code === langCode);
           if (language) {
+            console.log(`Observer detected ${props.type} wheel:`, language.nativeName);
             emit('select', language);
           }
         }
@@ -75,7 +82,7 @@ const setupObserver = () => {
     {
       root: wheelRef.value,
       threshold: [0.5],
-      rootMargin: '-120px 0px' // Match scroll-padding
+      rootMargin: rootMargin // Match scroll-padding based on viewport
     }
   );
 
@@ -86,53 +93,78 @@ const setupObserver = () => {
 
 // Scroll to selected language
 const scrollToLanguage = (language: Language | null, smooth = true) => {
-  if (!wheelRef.value || !language) return;
+  if (!wheelRef.value || !language) {
+    console.log('ScrollToLanguage - missing ref or language:', { hasRef: !!wheelRef.value, language: language?.nativeName });
+    return;
+  }
+
+  console.log(`Scrolling ${props.type} wheel to:`, language.nativeName, language.code);
 
   nextTick(() => {
     const targetItem = wheelRef.value?.querySelector(`[data-lang-code="${language.code}"]`);
 
     if (targetItem) {
+      console.log(`Found target item for ${language.nativeName}, scrolling...`);
       targetItem.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'instant' });
+    } else {
+      console.error(`Target item not found for ${language.nativeName} with code ${language.code}`);
     }
   });
 };
 
-// Setup GSAP Draggable for drag support
-const setupDraggable = () => {
+// Snap to nearest language when scroll stops
+let scrollTimeout: number | null = null;
+
+const snapToNearest = () => {
   if (!wheelRef.value) return;
 
-  draggableInstance.value = Draggable.create(wheelRef.value, {
-    type: 'scroll',
-    edgeResistance: 0.65,
-    throwProps: true,
-    snap: {
-      y: (endValue) => {
-        // Snap to 60px intervals (item height)
-        return Math.round(endValue / 60) * 60;
-      }
-    },
-    onDragEnd: function() {
-      // Trigger transform update after drag
-      updateTransforms();
-    }
+  const itemHeight = window.innerWidth <= 480 ? 50 : 60;
+  const scrollTop = wheelRef.value.scrollTop;
+  const snappedPosition = Math.round(scrollTop / itemHeight) * itemHeight;
+
+  wheelRef.value.scrollTo({
+    top: snappedPosition,
+    behavior: 'smooth'
   });
 };
 
 // Handle scroll events for transform updates
 const handleScroll = () => {
   updateTransforms();
+
+  // Clear existing timeout
+  if (scrollTimeout !== null) {
+    clearTimeout(scrollTimeout);
+  }
+
+  // Set new timeout to snap after scrolling stops
+  scrollTimeout = window.setTimeout(() => {
+    snapToNearest();
+  }, 150);
 };
 
 onMounted(() => {
   nextTick(() => {
     setupObserver();
     updateTransforms();
-    setupDraggable();
 
     // Scroll to selected language if provided
     // Use instant scroll to center selected language immediately
     if (props.selectedLanguage) {
-      scrollToLanguage(props.selectedLanguage, false);
+      // Use a small timeout to ensure DOM is fully ready
+      setTimeout(() => {
+        scrollToLanguage(props.selectedLanguage, false);
+        updateTransforms();
+
+        // Enable observer after scroll completes
+        setTimeout(() => {
+          isInitializing.value = false;
+          console.log(`${props.type} wheel initialization complete`);
+        }, 200);
+      }, 50);
+    } else {
+      // No initial language, enable observer immediately
+      isInitializing.value = false;
     }
 
     // Add scroll listener for transform updates
@@ -144,15 +176,26 @@ onUnmounted(() => {
   observer.value?.disconnect();
   wheelRef.value?.removeEventListener('scroll', handleScroll);
 
-  // Kill GSAP draggable instance
-  if (draggableInstance.value) {
-    draggableInstance.value.forEach(d => d.kill());
+  // Clear any pending scroll timeout
+  if (scrollTimeout !== null) {
+    clearTimeout(scrollTimeout);
   }
 });
 
 // Watch for external selection changes
-watch(() => props.selectedLanguage, (newLang) => {
-  scrollToLanguage(newLang);
+watch(() => props.selectedLanguage, (newLang, oldLang) => {
+  if (newLang) {
+    // If language changed externally, temporarily disable observer during scroll
+    if (oldLang && newLang.code !== oldLang.code) {
+      isInitializing.value = true;
+      scrollToLanguage(newLang, true);
+      setTimeout(() => {
+        isInitializing.value = false;
+      }, 500);
+    } else {
+      scrollToLanguage(newLang, true);
+    }
+  }
 });
 
 // Check if a language is selected
@@ -166,23 +209,28 @@ const isSelected = (language: Language): boolean => {
     <div class="wheel-label">
       {{ type === 'source' ? 'From' : 'To' }}
     </div>
-    <div ref="wheelRef" class="wheel-container">
-      <!-- Add padding items for proper scrolling -->
-      <div class="wheel-padding"></div>
+    <div class="wheel-wrapper">
+      <!-- STANDALONE selection rectangle - completely independent -->
+      <div class="selection-rectangle"></div>
 
-      <div
-        v-for="language in wheelItems"
-        :key="language.code"
-        class="wheel-item"
-        :class="{ 'is-selected': isSelected(language) }"
-        :data-lang-code="language.code"
-      >
-        <span class="wheel-flag">{{ language.flag }}</span>
-        <span class="wheel-name">{{ language.nativeName }}</span>
+      <div ref="wheelRef" class="wheel-container">
+        <!-- Add padding items for proper scrolling -->
+        <div class="wheel-padding"></div>
+
+        <div
+          v-for="language in wheelItems"
+          :key="language.code"
+          class="wheel-item"
+          :class="{ 'is-selected': isSelected(language) }"
+          :data-lang-code="language.code"
+        >
+          <span class="wheel-flag">{{ language.flag }}</span>
+          <span class="wheel-name">{{ language.nativeName }}</span>
+        </div>
+
+        <!-- Add padding items for proper scrolling -->
+        <div class="wheel-padding"></div>
       </div>
-
-      <!-- Add padding items for proper scrolling -->
-      <div class="wheel-padding"></div>
     </div>
   </div>
 </template>
@@ -203,6 +251,24 @@ const isSelected = (language: Language): boolean => {
   letter-spacing: 0.05em;
 }
 
+.wheel-wrapper {
+  position: relative;
+}
+
+/* STANDALONE selection rectangle - completely separate from wheel */
+.selection-rectangle {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  top: calc(50% - 30px);
+  height: 60px;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
 .wheel-container {
   position: relative;
   height: 300px;
@@ -211,7 +277,6 @@ const isSelected = (language: Language): boolean => {
   scroll-snap-type: y mandatory;
   scroll-padding: 120px 0;
   scrollbar-width: none;
-  perspective: 1000px;
 
   /* Glassmorphism background */
   background: rgba(255, 255, 255, 0.05);
@@ -229,27 +294,6 @@ const isSelected = (language: Language): boolean => {
   display: none;
 }
 
-/* Center indicator line */
-.wheel-container::before,
-.wheel-container::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.3);
-  z-index: 10;
-  pointer-events: none;
-}
-
-.wheel-container::before {
-  top: calc(50% - 30px);
-}
-
-.wheel-container::after {
-  top: calc(50% + 30px);
-}
-
 .wheel-padding {
   height: 120px;
   flex-shrink: 0;
@@ -264,8 +308,7 @@ const isSelected = (language: Language): boolean => {
   gap: 0.75rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease, opacity 0.3s ease, font-size 0.3s ease;
+  transition: opacity 0.2s ease, font-weight 0.2s ease;
   user-select: none;
 }
 
@@ -273,27 +316,23 @@ const isSelected = (language: Language): boolean => {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* 3D transforms based on distance from center */
+/* Fade based on distance from center */
 .wheel-item[data-distance="-3"],
 .wheel-item[data-distance="3"] {
-  transform: rotateX(30deg) translateZ(-30px);
   opacity: 0.2;
 }
 
 .wheel-item[data-distance="-2"],
 .wheel-item[data-distance="2"] {
-  transform: rotateX(20deg) translateZ(-20px);
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 .wheel-item[data-distance="-1"],
 .wheel-item[data-distance="1"] {
-  transform: rotateX(10deg) translateZ(-10px);
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .wheel-item[data-distance="0"] {
-  transform: rotateX(0deg) translateZ(0px);
   opacity: 1;
   font-weight: 700;
 }
@@ -325,9 +364,22 @@ const isSelected = (language: Language): boolean => {
 
 /* Mobile responsive */
 @media (max-width: 480px) {
+  .selection-rectangle {
+    top: calc(50% - 25px);
+    height: 50px;
+    left: -3px;
+    right: -3px;
+    border-width: 2px;
+  }
+
   .wheel-container {
     height: 250px;
     width: 150px;
+    scroll-padding: 100px 0;
+  }
+
+  .wheel-padding {
+    height: 100px;
   }
 
   .wheel-item {
