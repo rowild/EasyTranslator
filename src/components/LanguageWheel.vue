@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
+import { gsap } from 'gsap';
+import { Draggable } from 'gsap/Draggable';
 import type { Language } from '../config/languages';
+
+// Register GSAP plugin
+gsap.registerPlugin(Draggable);
 
 const props = defineProps<{
   languages: Language[];
@@ -15,10 +20,15 @@ const emit = defineEmits<{
 
 const wheelRef = ref<HTMLElement | null>(null);
 const observer = ref<IntersectionObserver | null>(null);
+const draggableInstance = ref<Draggable[] | null>(null);
 
 // Create wheel items including auto-detect option for source
+// Sort alphabetically by native name
 const wheelItems = computed(() => {
-  const items = [...props.languages];
+  // Sort languages alphabetically by native name
+  const sortedLanguages = [...props.languages].sort((a, b) =>
+    a.nativeName.localeCompare(b.nativeName, undefined, { sensitivity: 'base' })
+  );
 
   if (props.allowAutoDetect) {
     // Add auto-detect as first item
@@ -32,11 +42,11 @@ const wheelItems = computed(() => {
         speechCode: '',
         isRTL: false
       } as Language,
-      ...items
+      ...sortedLanguages
     ];
   }
 
-  return items;
+  return sortedLanguages;
 });
 
 // Calculate distance from center for 3D effect
@@ -100,7 +110,7 @@ const setupObserver = () => {
 };
 
 // Scroll to selected language
-const scrollToLanguage = (language: Language | null) => {
+const scrollToLanguage = (language: Language | null, smooth = true) => {
   if (!wheelRef.value) return;
 
   nextTick(() => {
@@ -108,7 +118,28 @@ const scrollToLanguage = (language: Language | null) => {
     const targetItem = wheelRef.value?.querySelector(`[data-lang-code="${targetCode}"]`);
 
     if (targetItem) {
-      targetItem.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      targetItem.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'instant' });
+    }
+  });
+};
+
+// Setup GSAP Draggable for drag support
+const setupDraggable = () => {
+  if (!wheelRef.value) return;
+
+  draggableInstance.value = Draggable.create(wheelRef.value, {
+    type: 'scroll',
+    edgeResistance: 0.65,
+    throwProps: true,
+    snap: {
+      y: (endValue) => {
+        // Snap to 60px intervals (item height)
+        return Math.round(endValue / 60) * 60;
+      }
+    },
+    onDragEnd: function() {
+      // Trigger transform update after drag
+      updateTransforms();
     }
   });
 };
@@ -122,13 +153,15 @@ onMounted(() => {
   nextTick(() => {
     setupObserver();
     updateTransforms();
+    setupDraggable();
 
     // Scroll to selected language if provided
+    // Use instant scroll to center selected language immediately
     if (props.selectedLanguage) {
-      scrollToLanguage(props.selectedLanguage);
+      scrollToLanguage(props.selectedLanguage, false);
     } else if (props.allowAutoDetect) {
       // For source wheel, scroll to auto-detect by default
-      scrollToLanguage(null);
+      scrollToLanguage(null, false);
     }
 
     // Add scroll listener for transform updates
@@ -139,6 +172,11 @@ onMounted(() => {
 onUnmounted(() => {
   observer.value?.disconnect();
   wheelRef.value?.removeEventListener('scroll', handleScroll);
+
+  // Kill GSAP draggable instance
+  if (draggableInstance.value) {
+    draggableInstance.value.forEach(d => d.kill());
+  }
 });
 
 // Watch for external selection changes
