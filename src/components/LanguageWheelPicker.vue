@@ -171,10 +171,6 @@ const handleBackdropClick = (e: MouseEvent) => {
   padding: 1rem;
 }
 
-.language-picker-overlay.first-run {
-  background: rgba(7, 67, 105, 0.98);
-}
-
 .language-picker-modal {
   position: relative;
   background: rgba(255, 255, 255, 0.1);

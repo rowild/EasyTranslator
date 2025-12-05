@@ -56,39 +56,38 @@ window.addEventListener('offline', () => isOffline.value = true);
 
 // Load saved language preferences from localStorage
 onMounted(() => {
-  // Check first-run
-  const completedSetup = localStorage.getItem('hasCompletedLanguageSetup');
+  // Always initialize app
+  hasCompletedSetup.value = true;
+  store.loadHistory();
+  checkPermission();
 
-  if (!completedSetup) {
-    isFirstRun.value = true;
-    showLanguagePicker.value = true;
-    hasCompletedSetup.value = false;
-    // Don't initialize app yet
+  // Load saved source language or set German as default
+  const savedSourceCode = localStorage.getItem('sourceLang');
+  if (savedSourceCode) {
+    sourceLang.value = languages.find(lang => lang.displayCode === savedSourceCode) || null;
   } else {
-    hasCompletedSetup.value = true;
-    // Normal initialization
-    store.loadHistory();
-    checkPermission();
-
-    // Load saved source language
-    const savedSourceCode = localStorage.getItem('sourceLang');
-    if (savedSourceCode) {
-      sourceLang.value = languages.find(lang => lang.displayCode === savedSourceCode) || null;
+    // Set German as default source
+    const defaultSource = languages.find(lang => lang.code === 'de-DE');
+    if (defaultSource) {
+      sourceLang.value = defaultSource;
+      localStorage.setItem('sourceLang', defaultSource.displayCode);
+      store.setSourceLang(defaultSource.displayCode);
     }
+  }
 
-    // Load saved output language
-    const savedOutputCode = localStorage.getItem('targetLang');
-    if (savedOutputCode) {
-      outputLanguage.value = languages.find(lang => lang.displayCode === savedOutputCode) || null;
-      if (outputLanguage.value) {
-        store.setTargetLang(outputLanguage.value.displayCode);
-      }
-    } else {
-      // Set French as default
-      outputLanguage.value = languages.find(lang => lang.code === 'fr-FR') || null;
-      if (outputLanguage.value) {
-        store.setTargetLang(outputLanguage.value.displayCode);
-      }
+  // Load saved output language or set French as default
+  const savedOutputCode = localStorage.getItem('targetLang');
+  if (savedOutputCode) {
+    outputLanguage.value = languages.find(lang => lang.displayCode === savedOutputCode) || null;
+    if (outputLanguage.value) {
+      store.setTargetLang(outputLanguage.value.displayCode);
+    }
+  } else {
+    // Set French as default target
+    const defaultTarget = languages.find(lang => lang.code === 'fr-FR');
+    if (defaultTarget) {
+      outputLanguage.value = defaultTarget;
+      store.setTargetLang(defaultTarget.displayCode);
     }
   }
 });
