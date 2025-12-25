@@ -2,12 +2,14 @@
 import { ref, watch, onUnmounted, onMounted, computed } from 'vue';
 import { Volume2, Square, Settings } from 'lucide-vue-next';
 import { useSettingsStore } from '../stores/settings';
+import { languages } from '../config/languages';
 
 const props = defineProps<{
   text: string;
   lang: string;
   voiceSelectorId?: string;
   activeVoiceSelectorId?: string | null;
+  uiLocaleCode?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -24,6 +26,60 @@ let animationId: number | null = null;
 let simulatedBars: number[] = [];
 
 const settingsStore = useSettingsStore();
+
+const PLAYBACK_SUPPORT_NOTE_BY_CODE: Record<string, string> = {
+  ar: 'يعتمد التشغيل\nعلى دعم المتصفح',
+  bg: 'Възпроизвеждането зависи\nот поддръжката на браузъра',
+  bs: 'Reprodukcija zavisi\nod podrške preglednika',
+  cs: 'Přehrávání závisí\nna podpoře prohlížeče',
+  da: 'Afspilning afhænger\naf browserunderstøttelse',
+  de: 'Wiedergabe hängt\nvon Browser-Unterstützung ab',
+  el: 'Η αναπαραγωγή εξαρτάται\nαπό την υποστήριξη του προγράμματος περιήγησης',
+  en: 'Playback depends\non browser support',
+  es: 'La reproducción depende\ndel soporte del navegador',
+  et: 'Taasesitus sõltub\nbrauseri toest',
+  fi: 'Toisto riippuu\nselaimen tuesta',
+  fr: 'La lecture dépend\nde la prise en charge du navigateur',
+  ga: 'Braitheann an athsheinm\nair thacaíocht an bhrabhsálaí',
+  he: 'ההשמעה תלויה\nבתמיכת הדפדפן',
+  hr: 'Reprodukcija ovisi\no podršci preglednika',
+  hu: 'A lejátszás a böngésző\ntámogatásától függ',
+  is: 'Afspilun fer eftir\nstuðningi vafrans',
+  it: 'La riproduzione dipende\ndal supporto del browser',
+  ja: '再生は\nブラウザの対応に依存します',
+  ko: '재생은\n브라우저 지원에 따라 달라집니다',
+  lb: 'D’Ofspillen hänkt of\nvun der Browser-Ënnerstëtzung',
+  lt: 'Atkūrimas priklauso\nnuo naršyklės palaikymo',
+  lv: 'Atskaņošana ir atkarīga\nno pārlūkprogrammas atbalsta',
+  mk: 'Репродукцијата зависи\nод поддршката на прелистувачот',
+  mt: 'Il-playback jiddependi\nmill-appoġġ tal-browser',
+  nl: 'Afspelen hangt af\nvan browserondersteuning',
+  no: 'Avspilling avhenger\nav nettleserstøtte',
+  pl: 'Odtwarzanie zależy\nod obsługi przeglądarki',
+  pt: 'A reprodução depende\ndo suporte do navegador',
+  ro: 'Redarea depinde\nde suportul browserului',
+  ru: 'Воспроизведение зависит\nот поддержки браузера',
+  sk: 'Prehrávanie závisí\nod podpory prehliadača',
+  sl: 'Predvajanje je odvisno\nod podpore brskalnika',
+  sq: 'Riprodhimi varet\nnga mbështetja e shfletuesit',
+  sr: 'Репродукција зависи\nод подршке прегледача',
+  sv: 'Uppspelning beror\npå webbläsarstöd',
+  tr: 'Oynatma, tarayıcı\ndesteğine bağlıdır',
+  uk: 'Відтворення залежить\nвід підтримки браузера',
+  zh: '播放取决于\n浏览器支持',
+};
+
+const playbackSupportNote = computed(() => {
+  const code = props.uiLocaleCode?.trim() || 'en';
+  return PLAYBACK_SUPPORT_NOTE_BY_CODE[code] || PLAYBACK_SUPPORT_NOTE_BY_CODE.en;
+});
+
+const playbackSupportNoteDir = computed<'rtl' | 'ltr'>(() => {
+  const code = props.uiLocaleCode?.trim();
+  if (!code) return 'ltr';
+  const lang = languages.find(l => l.displayCode === code);
+  return lang?.isRTL ? 'rtl' : 'ltr';
+});
 
 // Simulated audio visualization parameters
 const BAR_COUNT = 16;
@@ -359,9 +415,8 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div class="tts-support-note">
-      Playback depends<br />
-      on browser support
+    <div class="tts-support-note" :dir="playbackSupportNoteDir">
+      {{ playbackSupportNote }}
     </div>
 
     <!-- Play/Stop button -->
@@ -395,6 +450,7 @@ onUnmounted(() => {
   line-height: 1.1;
   color: rgba(255, 255, 255, 0.65);
   letter-spacing: 0.2px;
+  white-space: pre-line;
 }
 
 .vu-meter {

@@ -156,6 +156,7 @@ const items = computed(() =>
             :lang="item.language.speechCode"
             :voice-selector-id="item.code"
             :active-voice-selector-id="activeVoiceSelectorId"
+            :ui-locale-code="sourceCode"
             @voice-selector-open="activeVoiceSelectorId = item.code"
             @voice-selector-close="() => { if (activeVoiceSelectorId === item.code) activeVoiceSelectorId = null; }"
           />

@@ -86,3 +86,4 @@ Confirmed decisions:
 | P2-18 | DONE | Label next to muted flag | Added the source language label next to the muted flag on the “Original audio…” notice bubble. |
 | P2-19 | DONE | TTS support note | Added a small “Playback depends on browser support” note next to the TTS play button. |
 | P2-20 | DONE | Localize language labels | Localized the parenthetical language names (e.g. “Greek”) into the detected source language for each utterance (e.g. “Griechisch” when source is German). |
+| P2-21 | DONE | Localize TTS support note | Localized the “Playback depends on browser support” note into the detected source language for that utterance. |
