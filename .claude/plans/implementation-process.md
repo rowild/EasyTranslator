@@ -33,7 +33,7 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 | 02 | DONE | API key UI + gating | Added `SettingsModal` to set/clear the key (stored in IndexedDB); record button is disabled and prompts user when missing; translation calls use saved key with dev-only fallback to `VITE_MISTRAL_API_KEY`. |
 | 03 | DONE | Mode toggle + mode-specific UX | Added mode toggle in Settings; extended mode now clears/hides in-memory history and skips saving conversations to IndexedDB. |
 | 04 | DONE | Fix Simple Mode layout | Removed bottom-up rendering by switching flex layouts to top→bottom; “+” now renders under the translation bubble. |
-| 05 | TODO | Extended mode language picker | Multi-select target languages (max 10) with a clear mobile UX (chips + modal grid); store selection in settings. |
+| 05 | DONE | Extended mode language picker | Added multi-select target language modal (max 10) and wiring in Settings (stored in IndexedDB settings). |
 | 06 | TODO | Voxtral multi-translation request | Send audio once; request JSON schema output containing `sourceText`, `sourceLanguage`, and `translations` for all selected targets; parse robustly and capture `usage`. |
 | 07 | TODO | Swipeable bubbles UI | Render one translation per bubble in a horizontal swipe carousel (scroll-snap); show active language and optional TTS per bubble. |
 | 08 | TODO | Extended mode “New” flow | Add “New” button (no “+” in extended mode) that clears current results and starts a fresh recording. |

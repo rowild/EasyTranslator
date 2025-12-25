@@ -136,7 +136,15 @@ export const useSettingsStore = defineStore('settings', () => {
   const setApiKey = async (key: string | null) => update({ apiKey: key });
   const setSourceLang = async (lang: string | null) => update({ sourceLang: lang });
   const setTargetLang = async (lang: string) => update({ targetLang: lang });
-  const setExtendedTargetLangs = async (langs: string[]) => update({ extendedTargetLangs: langs });
+  const setExtendedTargetLangs = async (langs: string[]) => {
+    const seen = new Set<string>();
+    const unique = langs.filter(code => {
+      if (seen.has(code)) return false;
+      seen.add(code);
+      return true;
+    });
+    await update({ extendedTargetLangs: unique.slice(0, 10) });
+  };
   const setInfoLanguage = async (lang: string | null) => update({ infoLanguage: lang });
   const setHasCompletedLanguageSetup = async (value: boolean) => update({ hasCompletedLanguageSetup: value });
 
@@ -168,4 +176,3 @@ export const useSettingsStore = defineStore('settings', () => {
     setTtsVoice,
   };
 });
-

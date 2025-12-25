@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { X, Eye, EyeOff } from 'lucide-vue-next';
+import { X, Eye, EyeOff, Languages } from 'lucide-vue-next';
 import { useSettingsStore } from '../stores/settings';
+import TargetLanguagesModal from './TargetLanguagesModal.vue';
 
 const props = defineProps<{
   isOpen: boolean;
@@ -16,6 +17,7 @@ const settingsStore = useSettingsStore();
 const apiKeyInput = ref('');
 const showApiKey = ref(false);
 const statusText = ref<string | null>(null);
+const showTargetLanguages = ref(false);
 
 const selectedMode = computed(() => settingsStore.mode);
 
@@ -88,6 +90,16 @@ const clearApiKey = async () => {
                 Extended
               </button>
             </div>
+
+            <div v-if="selectedMode === 'extended'" class="extended-targets">
+              <button class="targets-btn" type="button" @click="showTargetLanguages = true">
+                <Languages :size="16" />
+                <span>Select target languages ({{ settingsStore.extendedTargetLangs.length }}/10)</span>
+              </button>
+              <div v-if="settingsStore.extendedTargetLangs.length > 0" class="targets-hint">
+                Translations will be generated for all selected targets.
+              </div>
+            </div>
           </section>
 
           <section class="settings-section">
@@ -127,6 +139,14 @@ const clearApiKey = async () => {
       </div>
     </div>
   </Transition>
+
+  <TargetLanguagesModal
+    :is-open="showTargetLanguages"
+    :selected="settingsStore.extendedTargetLangs"
+    :max-selected="10"
+    @save="(langs) => { settingsStore.setExtendedTargetLangs(langs); showTargetLanguages = false; }"
+    @close="showTargetLanguages = false"
+  />
 </template>
 
 <style scoped>
@@ -246,6 +266,36 @@ const clearApiKey = async () => {
   background: rgba(66, 184, 131, 0.95);
   border-color: rgba(66, 184, 131, 1);
   color: white;
+}
+
+.extended-targets {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.targets-btn {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 0.7rem 0.85rem;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.targets-btn:hover {
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.targets-hint {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.35;
 }
 
 .api-key-row {
