@@ -12,7 +12,7 @@ import SettingsModal from '../components/SettingsModal.vue';
 import SwipeableTranslations from '../components/SwipeableTranslations.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
-import { Trash2, Plus, Mic, Square, Info, Settings } from 'lucide-vue-next';
+import { Trash2, Plus, Mic, Square, Info, Settings, RotateCcw } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const settingsStore = useSettingsStore();
@@ -218,6 +218,7 @@ watch(recordedBlob, (blob) => {
 watch(isExtendedMode, (extended) => {
   if (extended) {
     conversationHistory.value = [];
+    handleDeleteRecording();
   }
 });
 
@@ -325,12 +326,24 @@ const handleDeleteRecording = () => {
   isTranslated.value = false;
   currentTranslationOutputLang.value = null; // Reset locked language
   store.currentTranslatedText = '';
+  store.currentTranslations = {};
   store.detectedLanguage = null;
+  store.actualTranslatedLanguage = null;
 };
 
 
 const handleNewRecording = async () => {
   // console.log('Starting new recording...');
+
+  if (!hasUsableApiKey.value) {
+    showSettingsModal.value = true;
+    return;
+  }
+
+  if (isExtendedMode.value && settingsStore.extendedTargetLangs.length === 0) {
+    showSettingsModal.value = true;
+    return;
+  }
 
   // Save current conversation pair to history
   if (!isExtendedMode.value && recordedBlob.value && store.detectedLanguage && currentTranslationOutputLang.value) {
@@ -354,7 +367,9 @@ const handleNewRecording = async () => {
   setTranscript('');
   isTranslated.value = false;
   store.currentTranslatedText = '';
+  store.currentTranslations = {};
   store.detectedLanguage = null;
+  store.actualTranslatedLanguage = null;
 
   // Ensure target language is set correctly from the output language selection
   if (outputLanguage.value) {
@@ -514,8 +529,23 @@ const handleNewRecording = async () => {
 
           <!-- Plus button to start new recording (only show AFTER translation) -->
           <div v-if="isTranslated" class="new-recording-section">
-            <button class="plus-btn" @click="handleNewRecording" title="Start new recording">
+            <button
+              v-if="!isExtendedMode"
+              class="plus-btn"
+              @click="handleNewRecording"
+              title="Start new recording"
+            >
               <Plus :size="32" />
+            </button>
+            <button
+              v-else
+              class="new-btn"
+              @click="handleNewRecording"
+              title="Start a new dialog"
+              type="button"
+            >
+              <RotateCcw :size="20" />
+              <span>New</span>
             </button>
           </div>
         </div>

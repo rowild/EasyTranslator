@@ -36,6 +36,6 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 | 05 | DONE | Extended mode language picker | Added multi-select target language modal (max 10) and wiring in Settings (stored in IndexedDB settings). |
 | 06 | DONE | Voxtral multi-translation request | Extended mode now requests structured output for `translations` keyed by selected targets (with json_schema + json_object fallback), parses defensively, stores `currentTranslations`, and captures `usage` for later display. |
 | 07 | DONE | Swipeable bubbles UI | Added `SwipeableTranslations` carousel (scroll-snap) to render one bubble per selected target language in extended mode (with TTS) and a page-dot indicator. |
-| 08 | TODO | Extended mode “New” flow | Add “New” button (no “+” in extended mode) that clears current results and starts a fresh recording. |
+| 08 | DONE | Extended mode “New” flow | Replaced the “+” button with a “New” button in extended mode; entering extended mode clears the current dialog, and “New” resets current results and starts a fresh recording. |
 | 09 | TODO | Usage display (per request) | Display request usage stats returned by API (`prompt_audio_seconds`, token counts). Note: “credits remaining” is not available via public API. |
 | 10 | TODO | Mobile QA + doc refresh | Verify UX on narrow viewports; update `CLAUDE.md` architecture sections to reflect new behavior (BYO key, persistence rules, two modes). |
