@@ -38,4 +38,4 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 | 07 | DONE | Swipeable bubbles UI | Added `SwipeableTranslations` carousel (scroll-snap) to render one bubble per selected target language in extended mode (with TTS) and a page-dot indicator. |
 | 08 | DONE | Extended mode “New” flow | Replaced the “+” button with a “New” button in extended mode; entering extended mode clears the current dialog, and “New” resets current results and starts a fresh recording. |
 | 09 | DONE | Usage display (per request) | Captured and displayed per-request usage stats when available (audio seconds + token counts); added UI note that “credits remaining” is not available via the public API. |
-| 10 | TODO | Mobile QA + doc refresh | Verify UX on narrow viewports; update `CLAUDE.md` architecture sections to reflect new behavior (BYO key, persistence rules, two modes). |
+| 10 | DONE | Mobile QA + doc refresh | Mobile tweaks (extended “New” button sizing) and refreshed `CLAUDE.md` to reflect BYO key, Dexie-backed settings, Voxtral single-call flow, and mode/persistence rules. |
