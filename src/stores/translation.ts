@@ -9,6 +9,8 @@ export const useTranslationStore = defineStore('translation', () => {
     const currentSourceText = ref('');
     const currentSourceLang = ref('en'); // Default, will be updated by STT
     const currentTranslatedText = ref('');
+    const currentTranslations = ref<Record<string, string>>({});
+    const lastUsage = ref<any | null>(null);
     const isProcessing = ref(false);
     const error = ref<string | null>(null);
     const history = ref<Conversation[]>([]);
@@ -125,12 +127,34 @@ export const useTranslationStore = defineStore('translation', () => {
         return new Blob([wavBuffer], { type: 'audio/wav' });
     };
 
+    const parseJsonContent = (content: unknown) => {
+        if (content && typeof content === 'object') return content;
+        if (typeof content !== 'string') throw new Error('Voxtral returned an unexpected response format.');
+
+        const trimmed = content.trim();
+        const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+        const candidate = (fenced?.[1] ?? trimmed).trim();
+
+        try {
+            return JSON.parse(candidate);
+        } catch {
+            const start = candidate.indexOf('{');
+            const end = candidate.lastIndexOf('}');
+            if (start >= 0 && end > start) {
+                return JSON.parse(candidate.slice(start, end + 1));
+            }
+            throw new Error('Failed to parse Voxtral JSON response.');
+        }
+    };
+
     // Combined transcription and translation in one API call
     const transcribeAndTranslate = async (audioBlob: Blob) => {
         isProcessing.value = true;
         error.value = null;
         currentSourceText.value = '';
         currentTranslatedText.value = '';
+        currentTranslations.value = {};
+        lastUsage.value = null;
 
         try {
             await settingsStore.ensureLoaded();
@@ -154,41 +178,109 @@ export const useTranslationStore = defineStore('translation', () => {
             console.log('Converting audio to base64...');
             const audioBase64 = await blobToBase64(wavBlob);
 
-            // Get target language info
-            const targetLanguage = languages.find(lang => lang.displayCode === settingsStore.targetLang);
-            const targetLangCode = targetLanguage?.displayCode || settingsStore.targetLang;
-            const targetLangName = targetLanguage?.name || settingsStore.targetLang;
+            const isExtendedMode = settingsStore.mode === 'extended';
+            let targetLanguage: Language | null = null; // simple mode target (used for UI fallback)
+            const extendedTargetCodes = isExtendedMode ? settingsStore.extendedTargetLangs : [];
 
-            // Get source language hint (if set) - this will be the fallback language
-            const sourceLangHint = settingsStore.sourceLang
-                ? languages.find(l => l.displayCode === settingsStore.sourceLang)
-                : null;
+            const requestBody = isExtendedMode
+                ? (() => {
+                      const targetCodes = extendedTargetCodes;
+                      if (!targetCodes || targetCodes.length === 0) {
+                          throw new Error('No target languages selected for Extended mode. Open Settings and select up to 10 target languages.');
+                      }
 
-            console.log('Sending audio to Voxtral for transcription and translation...');
-            console.log('Target language:', targetLangName, '(' + targetLangCode + ')');
-            if (sourceLangHint) {
-                console.log('Source/fallback language:', sourceLangHint.name, '(' + sourceLangHint.displayCode + ')');
-            }
+                      const targetMeta = targetCodes.map(code => {
+                          const lang = languages.find(l => l.displayCode === code);
+                          return { code, name: lang?.name || code };
+                      });
 
-            // Build the system prompt with fallback logic
-            // Source language is now required, but handle edge case where it might not be set
-            const fallbackInstruction = sourceLangHint
-                ? `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), translate to ${sourceLangHint.name} (${sourceLangHint.displayCode}) instead as the fallback language.`
-                : `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), return the transcribed text as-is (no translation possible).`;
+                      const translationProperties = Object.fromEntries(
+                          targetCodes.map(code => [code, { type: 'string' }])
+                      );
 
-            const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                },
-                body: JSON.stringify({
-                    model: 'voxtral-small-latest',
-                    response_format: { type: 'json_object' },
-                    messages: [
-                        {
-                            role: 'system',
-                            content: `You are a transcription and translation assistant. Listen to the audio and:
+                      console.log('Sending audio to Voxtral (extended mode)...');
+                      console.log('Target languages:', targetMeta.map(t => `${t.name} (${t.code})`).join(', '));
+
+                      return {
+                          model: 'voxtral-small-latest',
+                          response_format: {
+                              type: 'json_schema',
+                              json_schema: {
+                                  name: 'transcribe_and_translate_multi',
+                                  strict: true,
+                                  schema: {
+                                      type: 'object',
+                                      additionalProperties: false,
+                                      required: ['sourceText', 'sourceLanguage', 'translations'],
+                                      properties: {
+                                          sourceText: { type: 'string' },
+                                          sourceLanguage: { type: 'string' },
+                                          translations: {
+                                              type: 'object',
+                                              additionalProperties: false,
+                                              required: targetCodes,
+                                              properties: translationProperties,
+                                          },
+                                      },
+                                  },
+                              },
+                          },
+                          messages: [
+                              {
+                                  role: 'system',
+                                  content: `You are a transcription and translation assistant. Listen to the audio and:
+1. Transcribe exactly what was said
+2. Detect the source language (return ISO 639-1 code like 'en', 'de', 'fr', etc.)
+3. Translate the transcription into EACH of the following target languages and return them under translations.<code> using EXACTLY these keys:
+${targetMeta.map(t => `- ${t.code} (${t.name})`).join('\n')}
+
+If a target language matches the detected source language, return the transcription text unchanged for that key.
+
+Return a JSON object that matches the provided JSON schema.`,
+                              },
+                              {
+                                  role: 'user',
+                                  content: [
+                                      { type: 'input_audio', input_audio: audioBase64 },
+                                      {
+                                          type: 'text',
+                                          text: `Please transcribe this audio, detect the source language, and translate it into: ${targetMeta
+                                              .map(t => `${t.name} (${t.code})`)
+                                              .join(', ')}.`,
+                                      },
+                                  ],
+                              },
+                          ],
+                      };
+                  })()
+                : (() => {
+                      // Simple mode: single target translation (existing behavior)
+                      targetLanguage = languages.find(lang => lang.displayCode === settingsStore.targetLang) || null;
+                      const targetLangCode = targetLanguage?.displayCode || settingsStore.targetLang;
+                      const targetLangName = targetLanguage?.name || settingsStore.targetLang;
+
+                      // Get source language hint (if set) - this will be the fallback language
+                      const sourceLangHint = settingsStore.sourceLang
+                          ? languages.find(l => l.displayCode === settingsStore.sourceLang)
+                          : null;
+
+                      console.log('Sending audio to Voxtral for transcription and translation...');
+                      console.log('Target language:', targetLangName, '(' + targetLangCode + ')');
+                      if (sourceLangHint) {
+                          console.log('Source/fallback language:', sourceLangHint.name, '(' + sourceLangHint.displayCode + ')');
+                      }
+
+                      const fallbackInstruction = sourceLangHint
+                          ? `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), translate to ${sourceLangHint.name} (${sourceLangHint.displayCode}) instead as the fallback language.`
+                          : `\n4. IMPORTANT: If the detected source language matches the target language (${targetLangCode}), return the transcribed text as-is (no translation possible).`;
+
+                      return {
+                          model: 'voxtral-small-latest',
+                          response_format: { type: 'json_object' },
+                          messages: [
+                              {
+                                  role: 'system',
+                                  content: `You are a transcription and translation assistant. Listen to the audio and:
 1. Transcribe exactly what was said
 2. Detect the source language (return ISO 639-1 code like 'en', 'de', 'fr', etc.)
 3. Translate the transcription to ${targetLangName} (language code: ${targetLangCode})${fallbackInstruction}
@@ -199,24 +291,50 @@ Return a JSON object with this exact structure:
   "sourceLanguage": "ISO 639-1 language code of the detected speech",
   "translatedText": "the translation in the appropriate target language",
   "targetLanguage": "ISO 639-1 language code of the actual translation (${targetLangCode} or fallback)"
-}`
-                        },
-                        {
-                            role: 'user',
-                            content: [
-                                {
-                                    type: 'input_audio',
-                                    input_audio: audioBase64
-                                },
-                                {
-                                    type: 'text',
-                                    text: `Please transcribe this audio, detect the source language, and translate it to ${targetLangName} (${targetLangCode}).`
-                                }
-                            ]
-                        }
-                    ]
-                }),
-            });
+}`,
+                              },
+                              {
+                                  role: 'user',
+                                  content: [
+                                      { type: 'input_audio', input_audio: audioBase64 },
+                                      {
+                                          type: 'text',
+                                          text: `Please transcribe this audio, detect the source language, and translate it to ${targetLangName} (${targetLangCode}).`,
+                                      },
+                                  ],
+                              },
+                          ],
+                      };
+                  })();
+
+            const sendRequest = async (body: unknown) => {
+                return fetch('https://api.mistral.ai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify(body),
+                });
+            };
+
+            let res = await sendRequest(requestBody);
+            if (!res.ok && isExtendedMode) {
+                const status = res.status;
+                const errText = await res.text();
+                const mentionsSchema = errText.toLowerCase().includes('json_schema') || errText.toLowerCase().includes('response_format');
+
+                if (status === 400 && mentionsSchema) {
+                    console.warn('Voxtral json_schema response_format rejected; retrying with json_object fallback.');
+                    const fallbackBody = {
+                        ...(requestBody as any),
+                        response_format: { type: 'json_object' },
+                    };
+                    res = await sendRequest(fallbackBody);
+                } else {
+                    throw new Error(`Voxtral API Error: ${errText}`);
+                }
+            }
 
             if (!res.ok) {
                 const errText = await res.text();
@@ -225,13 +343,32 @@ Return a JSON object with this exact structure:
 
             const data = await res.json();
             console.log('Voxtral full response:', data);
+            lastUsage.value = data.usage ?? null;
 
             // Parse the JSON response
-            const result = JSON.parse(data.choices[0]?.message?.content || '{}');
+            const content = data.choices?.[0]?.message?.content;
+            if (!content) throw new Error('Voxtral returned no content.');
+            const result: any = parseJsonContent(content);
             console.log('Parsed result:', result);
 
             currentSourceText.value = result.sourceText || '';
             currentTranslatedText.value = result.translatedText || '';
+
+            if (isExtendedMode) {
+                const translations: Record<string, string> = {};
+                const raw = result.translations;
+                if (!raw || typeof raw !== 'object') {
+                    throw new Error('Voxtral response did not include a translations object. Please try again.');
+                }
+
+                for (const code of extendedTargetCodes) {
+                    const value = (raw as any)[code];
+                    translations[code] = typeof value === 'string' ? value : value == null ? '' : String(value);
+                }
+                currentTranslations.value = translations;
+            } else {
+                currentTranslations.value = {};
+            }
 
             // Match the detected source language code to our language list
             if (result.sourceLanguage) {
@@ -285,6 +422,13 @@ Return a JSON object with this exact structure:
                 actualTranslatedLanguage.value = targetLanguage || null;
             }
 
+            // Extended mode: keep currentTranslatedText in sync with the first selected target (temporary until swipe UI)
+            if (isExtendedMode && extendedTargetCodes.length > 0) {
+                const first = extendedTargetCodes[0];
+                currentTranslatedText.value = currentTranslations.value[first] || '';
+                actualTranslatedLanguage.value = languages.find(lang => lang.displayCode === first) || null;
+            }
+
             // Save to DB
             if (settingsStore.mode !== 'extended') {
                 await addConversation({
@@ -310,6 +454,8 @@ Return a JSON object with this exact structure:
         currentSourceText,
         currentSourceLang,
         currentTranslatedText,
+        currentTranslations,
+        lastUsage,
         isProcessing,
         error,
         history,

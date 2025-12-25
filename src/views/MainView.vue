@@ -222,6 +222,9 @@ watch(isExtendedMode, (extended) => {
 
 // Record button is only enabled when output language is selected (input is auto-detected)
 const canRecord = computed(() => {
+  if (isExtendedMode.value) {
+    return settingsStore.extendedTargetLangs.length > 0;
+  }
   return !!outputLanguage.value;
 });
 
@@ -385,6 +388,12 @@ const handleNewRecording = async () => {
         <!-- API Key Warning -->
         <div v-if="!hasUsableApiKey" class="warning-box api-key-warning">
           <p>Mistral API key is required to translate. Add your key in Settings.</p>
+          <button class="warning-action-btn" @click="showSettingsModal = true">Open Settings</button>
+        </div>
+
+        <!-- Extended Mode Target Languages Warning -->
+        <div v-else-if="isExtendedMode && settingsStore.extendedTargetLangs.length === 0" class="warning-box api-key-warning">
+          <p>Extended mode requires selecting at least 1 target language. Open Settings to choose up to 10.</p>
           <button class="warning-action-btn" @click="showSettingsModal = true">Open Settings</button>
         </div>
 

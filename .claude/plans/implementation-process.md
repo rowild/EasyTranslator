@@ -34,7 +34,7 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 | 03 | DONE | Mode toggle + mode-specific UX | Added mode toggle in Settings; extended mode now clears/hides in-memory history and skips saving conversations to IndexedDB. |
 | 04 | DONE | Fix Simple Mode layout | Removed bottom-up rendering by switching flex layouts to top→bottom; “+” now renders under the translation bubble. |
 | 05 | DONE | Extended mode language picker | Added multi-select target language modal (max 10) and wiring in Settings (stored in IndexedDB settings). |
-| 06 | TODO | Voxtral multi-translation request | Send audio once; request JSON schema output containing `sourceText`, `sourceLanguage`, and `translations` for all selected targets; parse robustly and capture `usage`. |
+| 06 | DONE | Voxtral multi-translation request | Extended mode now requests structured output for `translations` keyed by selected targets (with json_schema + json_object fallback), parses defensively, stores `currentTranslations`, and captures `usage` for later display. |
 | 07 | TODO | Swipeable bubbles UI | Render one translation per bubble in a horizontal swipe carousel (scroll-snap); show active language and optional TTS per bubble. |
 | 08 | TODO | Extended mode “New” flow | Add “New” button (no “+” in extended mode) that clears current results and starts a fresh recording. |
 | 09 | TODO | Usage display (per request) | Display request usage stats returned by API (`prompt_audio_seconds`, token counts). Note: “credits remaining” is not available via public API. |

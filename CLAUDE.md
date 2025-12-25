@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: 05 (Extended mode language picker)
-- Next step: 06 (Voxtral multi-translation request)
+- Last completed step: 06 (Voxtral multi-translation request)
+- Next step: 07 (Swipeable bubbles UI)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 
