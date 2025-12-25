@@ -83,3 +83,4 @@ Confirmed decisions:
 | P2-15 | DONE | Bubble polish + overlays | Styled and localized the “Original audio…” note to match output bubbles, ensured the TTS voice dropdown overlays above other bubbles, and appended English language names in parentheses next to native names. |
 | P2-16 | DONE | Scrollable source note | Moved the “Original audio…” notice bubble inside the translations scroll area and matched the output bubble width (~78%). |
 | P2-17 | DONE | Mute source note accents | Added a muted (35% opacity) source-language flag and muted the magenta border for the “Original audio…” notice bubble. |
+| P2-18 | DONE | Label next to muted flag | Added the source language label next to the muted flag on the “Original audio…” notice bubble. |

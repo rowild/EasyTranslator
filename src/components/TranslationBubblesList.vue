@@ -92,6 +92,11 @@ const formatLanguageLabel = (language: Language | undefined, fallbackCode: strin
   return `${native} (${english})`;
 };
 
+const sourceLanguageLabel = computed(() => {
+  if (!props.sourceCode) return '';
+  return formatLanguageLabel(sourceLanguage.value ?? undefined, props.sourceCode);
+});
+
 const items = computed(() =>
   displayTargetCodes.value.map(code => {
     const language = languages.find(l => l.displayCode === code) as Language | undefined;
@@ -111,6 +116,7 @@ const items = computed(() =>
       <div v-if="shouldShowSourceNotice" class="translation-item source-notice-item">
         <div class="language-indicator">
           <span class="lang-flag muted-flag">{{ sourceLanguage?.flag || '🌐' }}</span>
+          <span class="lang-name">{{ sourceLanguageLabel }}</span>
         </div>
         <div class="transcript-field output-field source-notice-bubble">
           <div class="transcript-content" :dir="sourceLanguage?.isRTL ? 'rtl' : 'ltr'">
