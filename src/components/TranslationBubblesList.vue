@@ -108,8 +108,11 @@ const items = computed(() =>
 <template>
   <div class="translations-wrapper">
     <div class="translations-scroll" aria-label="Translations">
-      <div v-if="shouldShowSourceNotice" class="translation-item">
-        <div class="transcript-field output-field">
+      <div v-if="shouldShowSourceNotice" class="translation-item source-notice-item">
+        <div class="language-indicator">
+          <span class="lang-flag muted-flag">{{ sourceLanguage?.flag || '🌐' }}</span>
+        </div>
+        <div class="transcript-field output-field source-notice-bubble">
           <div class="transcript-content" :dir="sourceLanguage?.isRTL ? 'rtl' : 'ltr'">
             {{ sourceNoticeText }}
           </div>
@@ -171,6 +174,14 @@ const items = computed(() =>
   flex-direction: column;
   align-items: flex-end;
   gap: 0.25rem;
+}
+
+.muted-flag {
+  opacity: 0.35;
+}
+
+.source-notice-bubble {
+  border-color: rgba(255, 45, 119, 0.35);
 }
 
 .translation-item.voice-open {

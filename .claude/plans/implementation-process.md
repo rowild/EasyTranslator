@@ -82,3 +82,4 @@ Confirmed decisions:
 | P2-14 | DONE | Hide source-language target | When the detected source language is included in the selected targets, hide that redundant bubble and show an “Original audio was in …” note; also updated Saved headers to use “Transcribed”. |
 | P2-15 | DONE | Bubble polish + overlays | Styled and localized the “Original audio…” note to match output bubbles, ensured the TTS voice dropdown overlays above other bubbles, and appended English language names in parentheses next to native names. |
 | P2-16 | DONE | Scrollable source note | Moved the “Original audio…” notice bubble inside the translations scroll area and matched the output bubble width (~78%). |
+| P2-17 | DONE | Mute source note accents | Added a muted (35% opacity) source-language flag and muted the magenta border for the “Original audio…” notice bubble. |

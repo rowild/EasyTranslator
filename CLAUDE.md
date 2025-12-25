@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-16 (Scrollable source note)
+- Last completed step: P2-17 (Mute source note accents)
 - Next step: — (All Phase 2 steps complete)
 
 Process source of truth: `.claude/plans/implementation-process.md`
