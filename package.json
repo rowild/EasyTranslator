@@ -21,6 +21,7 @@
     "vite": "^7.2.4",
     "vite-plugin-pwa": "^1.1.0",
     "vue": "^3.5.25",
+    "vue-router": "^4.6.4",
     "vue-tsc": "^3.1.5",
     "wavesurfer.js": "^7.11.1"
   },

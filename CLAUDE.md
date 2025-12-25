@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-05 (“Save transcript” in main flow)
-- Next step: P2-06 (Add router + routes)
+- Last completed step: P2-06 (Add router + routes)
+- Next step: P2-07 (Saved transcripts list UI)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 

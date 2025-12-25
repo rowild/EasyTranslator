@@ -70,7 +70,7 @@ Confirmed decisions:
 | P2-03 | DONE | Vertical translations list + scroll | Replaced swipe carousel with a stacked translation-bubbles list; switched layout so only the translations list scrolls; tightened bubble spacing/padding. |
 | P2-04 | DONE | Dexie `transcriptions` table + store | Added Dexie v3 `transcriptions` table with variant linkage (`variantGroupId`, `variantOfId`) and a `useTranscriptionsStore` helper for add/list/get/delete. |
 | P2-05 | DONE | “Save transcript” in main flow | Added a “Save” button after translation that persists the current utterance to IndexedDB and disables after saving; resets on New/Delete/Start recording. |
-| P2-06 | TODO | Add router + routes | Add `vue-router` and implement `/` (main), `/saved` (list), `/saved/:id` (detail). |
+| P2-06 | DONE | Add router + routes | Added `vue-router` with routes for `/` (main), `/saved` (list), and `/saved/:id` (detail), plus placeholder views. |
 | P2-07 | TODO | Saved transcripts list UI | List saved items with timestamp + transcript snippet; support delete; navigate to detail. |
 | P2-08 | TODO | Saved transcript detail + re-translate | Show saved transcript using the same layout; allow re-translate with current target selection; allow saving as a new entry linked as a variant/related record. |
 | P2-09 | TODO | QA + docs | Verify mobile layout, scroll behavior, and persistence; update `CLAUDE.md` architecture notes for Phase 2. |
