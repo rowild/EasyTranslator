@@ -359,6 +359,11 @@ onUnmounted(() => {
       </div>
     </div>
 
+    <div class="tts-support-note">
+      Playback depends<br />
+      on browser support
+    </div>
+
     <!-- Play/Stop button -->
     <button
       class="tts-button"
@@ -381,6 +386,15 @@ onUnmounted(() => {
   width: 100%;
   margin-top: 0.75rem;
   position: relative;
+}
+
+.tts-support-note {
+  margin-left: auto;
+  text-align: right;
+  font-size: 0.7rem;
+  line-height: 1.1;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.2px;
 }
 
 .vu-meter {

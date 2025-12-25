@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-18 (Label next to muted flag)
+- Last completed step: P2-19 (TTS support note)
 - Next step: — (All Phase 2 steps complete)
 
 Process source of truth: `.claude/plans/implementation-process.md`
