@@ -78,3 +78,4 @@ Confirmed decisions:
 | P2-10 | DONE | Mute API key Save button | Disabled the API key “Save” button when the input matches the stored key (becomes “mute” immediately after saving). |
 | P2-11 | DONE | Archive legacy picker UI | Removed the footer two-flag picker button + modal wiring, and moved unused legacy components (`LanguageWheel*`, `SwipeableTranslations`, etc.) into `/_BU` for backup. |
 | P2-12 | DONE | Target picker prompt + settings scope | Updated the “no targets selected” prompt to open the target-language modal (not Settings), moved “Saved” to footer-right, and simplified Settings to API-key-only. |
+| P2-13 | DONE | Add API key URL hint | Added a direct link in Settings to `https://console.mistral.ai/` for obtaining a Mistral API key. |

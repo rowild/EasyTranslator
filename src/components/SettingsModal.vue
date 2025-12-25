@@ -70,6 +70,12 @@ const clearApiKey = async () => {
             <div class="section-title">Mistral API Key</div>
             <div class="section-subtitle">
               Stored locally in this browser (IndexedDB). Required for translations.
+              <br />
+              Go to this URL:
+              <a class="api-key-link" href="https://console.mistral.ai/" target="_blank" rel="noopener noreferrer">
+                https://console.mistral.ai/
+              </a>
+              to obtain your API Key.
             </div>
 
             <div class="api-key-row">
@@ -194,6 +200,13 @@ const clearApiKey = async () => {
   color: rgba(0, 0, 0, 0.65);
   margin-bottom: 0.75rem;
   line-height: 1.35;
+}
+
+.api-key-link {
+  color: rgba(0, 0, 0, 0.82);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .api-key-row {
