@@ -13,10 +13,12 @@ import UsageStats from '../components/UsageStats.vue';
 import TargetLanguagesModal from '../components/TargetLanguagesModal.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
-import { Trash2, Mic, Square, Info, Settings, RotateCcw, Flag } from 'lucide-vue-next';
+import { useTranscriptionsStore } from '../stores/transcriptions';
+import { Trash2, Mic, Square, Info, Settings, RotateCcw, Flag, Save, Check } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const settingsStore = useSettingsStore();
+const transcriptionsStore = useTranscriptionsStore();
 const {
   isRecording,
   startRecording,
@@ -35,6 +37,8 @@ const inputLanguage = ref<Language | null>(null);
 const outputLanguage = ref<Language | null>(null);
 const sourceLang = ref<Language | null>(null);
 const isTranslated = ref(false); // Track if current recording has been translated
+
+const saveState = ref<'idle' | 'saving' | 'saved'>('idle');
 
 // Language picker state
 const showLanguagePicker = ref(false);
@@ -279,6 +283,7 @@ const handleRecordToggle = async () => {
       store.currentTranslations = {};
       store.detectedLanguage = null;
       store.actualTranslatedLanguage = null;
+      saveState.value = 'idle';
 
       await startRecording();
     } catch (e) {
@@ -298,6 +303,7 @@ const handleDeleteRecording = () => {
   store.lastUsage = null;
   store.detectedLanguage = null;
   store.actualTranslatedLanguage = null;
+  saveState.value = 'idle';
 };
 
 
@@ -323,6 +329,7 @@ const handleNewRecording = async () => {
   store.lastUsage = null;
   store.detectedLanguage = null;
   store.actualTranslatedLanguage = null;
+  saveState.value = 'idle';
 
   // Ensure target language is set correctly from the output language selection
   if (outputLanguage.value) {
@@ -338,6 +345,28 @@ const handleNewRecording = async () => {
     // console.log('Auto-started new recording');
   } catch (error) {
     console.error('Failed to auto-start recording:', error);
+  }
+};
+
+const handleSaveTranscription = async () => {
+  if (saveState.value !== 'idle') return;
+  if (!recordedBlob.value) return;
+  if (!isTranslated.value) return;
+
+  saveState.value = 'saving';
+  try {
+    await transcriptionsStore.addNew({
+      audioBlob: recordedBlob.value,
+      sourceText: store.currentSourceText,
+      sourceLang: store.currentSourceLang,
+      targetCodes: [...settingsStore.extendedTargetLangs],
+      translations: { ...store.currentTranslations },
+    });
+    saveState.value = 'saved';
+  } catch (error) {
+    console.error('Failed to save transcription:', error);
+    saveState.value = 'idle';
+    alert('Could not save transcript. Please try again.');
   }
 };
 </script>
@@ -442,8 +471,19 @@ const handleNewRecording = async () => {
 
           <UsageStats v-if="isTranslated" :usage="store.lastUsage" />
 
-          <!-- New button (only show AFTER translation) -->
+          <!-- Save + New (only show AFTER translation) -->
           <div v-if="isTranslated" class="new-recording-section">
+            <button
+              class="save-transcript-btn"
+              :disabled="saveState !== 'idle'"
+              @click="handleSaveTranscription"
+              title="Save this transcript"
+              type="button"
+            >
+              <Check v-if="saveState === 'saved'" :size="20" />
+              <Save v-else :size="20" />
+              <span>{{ saveState === 'saved' ? 'Saved' : saveState === 'saving' ? 'Saving…' : 'Save' }}</span>
+            </button>
             <button
               class="new-btn"
               @click="handleNewRecording"
