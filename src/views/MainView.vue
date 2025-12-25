@@ -46,6 +46,7 @@ const hasCompletedSetup = ref(false);
 const showInfoModal = ref(false);
 const showSettingsModal = ref(false);
 const showTargetLanguagesModal = ref(false);
+const hasPromptedForTargetLanguages = ref(false);
 
 // Load app-info.json for UI translations
 interface AppInfoData {
@@ -76,6 +77,16 @@ const isExtendedMode = computed(() => settingsStore.mode === 'extended');
 
 window.addEventListener('online', () => isOffline.value = false);
 window.addEventListener('offline', () => isOffline.value = true);
+
+const maybePromptForTargetLanguages = () => {
+  if (hasPromptedForTargetLanguages.value) return;
+  if (!settingsStore.isLoaded) return;
+  if (!hasUsableApiKey.value) return;
+  if (settingsStore.extendedTargetLangs.length > 0) return;
+  if (showSettingsModal.value) return;
+  showTargetLanguagesModal.value = true;
+  hasPromptedForTargetLanguages.value = true;
+};
 
 // Load saved language preferences from IndexedDB (Dexie settings)
 onMounted(async () => {
@@ -118,6 +129,8 @@ onMounted(async () => {
       void settingsStore.setTargetLang(defaultTarget.displayCode);
     }
   }
+
+  maybePromptForTargetLanguages();
 });
 
 // Watch output language changes and persist to IndexedDB settings
@@ -126,6 +139,17 @@ watch(outputLanguage, (newLang) => {
     void settingsStore.setTargetLang(newLang.displayCode);
   }
 });
+
+watch(
+  [
+    () => settingsStore.isLoaded,
+    () => hasUsableApiKey.value,
+    () => settingsStore.extendedTargetLangs.length,
+    () => showSettingsModal.value,
+  ],
+  () => maybePromptForTargetLanguages(),
+  { immediate: true }
+);
 
 // Ref for main container to control scrolling
 const mainContainerRef = ref<HTMLElement | null>(null);
@@ -288,7 +312,7 @@ const handleNewRecording = async () => {
   }
 
   if (settingsStore.extendedTargetLangs.length === 0) {
-    showSettingsModal.value = true;
+    showTargetLanguagesModal.value = true;
     return;
   }
 
@@ -363,8 +387,8 @@ const handleSaveTranscription = async () => {
 
         <!-- Extended Mode Target Languages Warning -->
         <div v-else-if="isExtendedMode && settingsStore.extendedTargetLangs.length === 0" class="warning-box api-key-warning">
-          <p>Extended mode requires selecting at least 1 target language. Open Settings to choose up to 10.</p>
-          <button class="warning-action-btn" @click="showSettingsModal = true">Open Settings</button>
+          <p>Please select up to 10 languages you want to transcribe your spoken text to.</p>
+          <button class="warning-action-btn" @click="showTargetLanguagesModal = true" type="button">Select target languages</button>
         </div>
 
         <!-- Permission Warnings -->
@@ -512,7 +536,9 @@ const handleSaveTranscription = async () => {
           <Settings :size="20" />
           <span class="info-label">Settings</span>
         </button>
+      </div>
 
+      <div class="footer-right">
         <!-- Saved Transcripts -->
         <button
           v-if="hasCompletedSetup"
@@ -524,9 +550,7 @@ const handleSaveTranscription = async () => {
           <Bookmark :size="20" />
           <span class="info-label">Saved</span>
         </button>
-      </div>
 
-      <div class="footer-right">
         <!-- Target Languages Button -->
         <button
           v-if="hasCompletedSetup"

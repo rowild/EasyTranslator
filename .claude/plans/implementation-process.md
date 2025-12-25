@@ -48,7 +48,7 @@ Scope for this phase:
 
 - Remove “Simple mode” from the product UX (extended-style multi-target translation only)
 - Keep the existing two-flag language picker **unchanged** initially (later removed; see P2-11)
-- Add a new “targets” language picker button (generic flag) in the footer (initially next to the two-flag button)
+- Add a new “targets” language picker button (generic flag) in the footer
 - Replace swipe UI with a vertically stacked translation-bubbles list where **only the translations list scrolls**
 - Add “Save transcript” → persist to IndexedDB (Dexie)
 - Add “Saved transcripts” route with list + delete + detail view
@@ -77,3 +77,4 @@ Confirmed decisions:
 | P2-09 | DONE | QA + docs | Ran TypeScript/build checks and refreshed `CLAUDE.md` to reflect the extended-only flow, saved transcripts routes, and Dexie persistence model. |
 | P2-10 | DONE | Mute API key Save button | Disabled the API key “Save” button when the input matches the stored key (becomes “mute” immediately after saving). |
 | P2-11 | DONE | Archive legacy picker UI | Removed the footer two-flag picker button + modal wiring, and moved unused legacy components (`LanguageWheel*`, `SwipeableTranslations`, etc.) into `/_BU` for backup. |
+| P2-12 | DONE | Target picker prompt + settings scope | Updated the “no targets selected” prompt to open the target-language modal (not Settings), moved “Saved” to footer-right, and simplified Settings to API-key-only. |

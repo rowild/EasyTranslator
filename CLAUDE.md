@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-11 (Archive legacy picker UI)
+- Last completed step: P2-12 (Target picker prompt + settings scope)
 - Next step: — (All Phase 2 steps complete)
 
 Process source of truth: `.claude/plans/implementation-process.md`
@@ -87,7 +87,7 @@ Optional: “Save” → IndexedDB `transcriptions` (audio + transcript + transl
 App.vue
 └─ RouterView
    ├─ MainView.vue
-   │  ├─ SettingsModal.vue (API key + targets)
+   │  ├─ SettingsModal.vue (API key)
    │  ├─ TargetLanguagesModal.vue (multi-select, max 10)
    │  ├─ TranslationBubblesList.vue (scrollable stacked output)
    │  ├─ UsageStats.vue (per-request usage)
@@ -174,9 +174,9 @@ Strict mode enabled in `tsconfig.json`. All Vue components use `<script setup la
 ## Supported Languages
 
 - Languages come from `src/config/languages.ts` (some entries share the same 2-letter `displayCode`).
-- Select up to 10 unique target `displayCode`s via the “targets” flag button (or Settings).
+- Select up to 10 unique target `displayCode`s via the “targets” flag button.
 - Source language is auto-detected by Voxtral.
-- The legacy two-flag picker UI has been removed; target selection happens via the “targets” flag button (or Settings).
+- The legacy two-flag picker UI has been removed; target selection happens via the “targets” flag button.
 
 ## Build Output
 

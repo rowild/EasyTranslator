@@ -170,7 +170,7 @@ export const useTranslationStore = defineStore('translation', () => {
 
             const targetCodes = settingsStore.extendedTargetLangs;
             if (!targetCodes || targetCodes.length === 0) {
-                throw new Error('No target languages selected. Open Settings and select up to 10 target languages.');
+                throw new Error('No target languages selected. Select up to 10 target languages and try again.');
             }
 
             const targetMeta = targetCodes.map(code => {
