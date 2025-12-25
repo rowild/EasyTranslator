@@ -68,7 +68,7 @@ Confirmed decisions:
 | P2-01 | DONE | Remove simple mode UX | Forced extended behavior (settings default/migration + removed mode toggle), removed Simple-mode-only history/output UI, and kept the existing two-flag picker unchanged. |
 | P2-02 | DONE | Footer “targets” picker button | Added a generic-flag footer button next to the existing two-flag button to open `TargetLanguagesModal` (max 10) and persist selection via Dexie settings. |
 | P2-03 | DONE | Vertical translations list + scroll | Replaced swipe carousel with a stacked translation-bubbles list; switched layout so only the translations list scrolls; tightened bubble spacing/padding. |
-| P2-04 | TODO | Dexie `transcriptions` table + store | Add a new table for saved transcripts including audio blob, transcript, translations, and metadata like detected source language + selected target codes/order; include `variantOfId` (or similar) to link re-translation variants. |
+| P2-04 | DONE | Dexie `transcriptions` table + store | Added Dexie v3 `transcriptions` table with variant linkage (`variantGroupId`, `variantOfId`) and a `useTranscriptionsStore` helper for add/list/get/delete. |
 | P2-05 | TODO | “Save transcript” in main flow | Add Save button after translation; save current utterance; disable once saved; reset saved state on “New” or new recording. |
 | P2-06 | TODO | Add router + routes | Add `vue-router` and implement `/` (main), `/saved` (list), `/saved/:id` (detail). |
 | P2-07 | TODO | Saved transcripts list UI | List saved items with timestamp + transcript snippet; support delete; navigate to detail. |

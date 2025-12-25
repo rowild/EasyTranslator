@@ -9,6 +9,18 @@ export interface Conversation {
     targetLang: string;
 }
 
+export interface Transcription {
+    id?: number;
+    createdAt: number;
+    audioBlob: Blob;
+    sourceText: string;
+    sourceLang: string;
+    targetCodes: string[];
+    translations: Record<string, string>;
+    variantGroupId: string;
+    variantOfId: number | null;
+}
+
 export type AppMode = 'simple' | 'extended';
 
 export interface AppSettings {
@@ -27,6 +39,7 @@ export interface AppSettings {
 export class EasyTranslatorDB extends Dexie {
     conversations!: Table<Conversation>;
     settings!: Table<AppSettings>;
+    transcriptions!: Table<Transcription>;
 
     constructor() {
         super('EasyTranslatorDB');
@@ -36,6 +49,11 @@ export class EasyTranslatorDB extends Dexie {
         this.version(2).stores({
             conversations: '++id, createdAt, sourceLang, targetLang',
             settings: '&id'
+        });
+        this.version(3).stores({
+            conversations: '++id, createdAt, sourceLang, targetLang',
+            settings: '&id',
+            transcriptions: '++id, createdAt, variantGroupId, variantOfId'
         });
     }
 }
