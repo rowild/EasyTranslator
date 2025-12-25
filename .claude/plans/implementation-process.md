@@ -39,3 +39,38 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 | 08 | DONE | Extended mode “New” flow | Replaced the “+” button with a “New” button in extended mode; entering extended mode clears the current dialog, and “New” resets current results and starts a fresh recording. |
 | 09 | DONE | Usage display (per request) | Captured and displayed per-request usage stats when available (audio seconds + token counts); added UI note that “credits remaining” is not available via the public API. |
 | 10 | DONE | Mobile QA + doc refresh | Mobile tweaks (extended “New” button sizing) and refreshed `CLAUDE.md` to reflect BYO key, Dexie-backed settings, Voxtral single-call flow, and mode/persistence rules. |
+
+---
+
+## Phase 2: Extended-only + Saved transcripts
+
+Scope for this phase:
+
+- Remove “Simple mode” from the product UX (extended-style multi-target translation only)
+- Keep the existing two-flag language picker **unchanged** for now
+- Add a new “targets” language picker button (generic flag) next to the two-flag button
+- Replace swipe UI with a vertically stacked translation-bubbles list where **only the translations list scrolls**
+- Add “Save transcript” → persist to IndexedDB (Dexie)
+- Add “Saved transcripts” route with list + delete + detail view
+- Saved transcript detail supports **re-translate** (and can be saved again if changed)
+
+Open decisions (proposed defaults for implementation):
+
+1. Entry point to “Saved transcripts” route:
+   - Proposed: add a new footer button on the left (next to Info/Settings).
+2. When re-translating an already-saved transcript, “Save” behavior:
+   - Proposed: overwrite/update the existing record (not “save as new”).
+
+### Tracker
+
+| ID | Status | Deliverable | Completion notes |
+|---:|:------:|-------------|------------------|
+| P2-01 | TODO | Remove simple mode UX | Force extended behavior; remove mode toggle; remove any Simple-mode-only UI/persistence paths, while keeping the existing two-flag picker untouched. |
+| P2-02 | TODO | Footer “targets” picker button | Add generic-flag footer button that opens `TargetLanguagesModal` (max 10) and persists via Dexie settings. |
+| P2-03 | TODO | Vertical translations list + scroll | Replace swipe carousel with stacked translation bubbles; make only that list scroll; tighten bubble padding/margins. |
+| P2-04 | TODO | Dexie `transcriptions` table + store | Add a new table for saved transcripts including audio blob, transcript, translations, and (recommended) metadata like detected source language + selected target codes/order. |
+| P2-05 | TODO | “Save transcript” in main flow | Add Save button after translation; save current utterance; disable once saved; reset saved state on “New” or new recording. |
+| P2-06 | TODO | Add router + routes | Add `vue-router` and implement `/` (main), `/saved` (list), `/saved/:id` (detail). |
+| P2-07 | TODO | Saved transcripts list UI | List saved items with timestamp + transcript snippet; support delete; navigate to detail. |
+| P2-08 | TODO | Saved transcript detail + re-translate | Show saved transcript using the same layout; allow re-translate with current target selection; enable Save when results differ. |
+| P2-09 | TODO | QA + docs | Verify mobile layout, scroll behavior, and persistence; update `CLAUDE.md` architecture notes for Phase 2. |
