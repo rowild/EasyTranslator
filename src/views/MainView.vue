@@ -147,14 +147,14 @@ const scrollToTop = () => {
     // Try scrollIntoView on the recording visualizer (when recording)
     if (recordingVisualizerRef.value) {
       console.log('Scrolling recording visualizer into view');
-      recordingVisualizerRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      recordingVisualizerRef.value.scrollIntoView({ behavior: 'smooth', block: 'end' });
       return;
     }
 
     // Try scrollIntoView on the current pair element
     if (currentPairRef.value) {
       // console.log('Scrolling current pair into view');
-      currentPairRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      currentPairRef.value.scrollIntoView({ behavior: 'smooth', block: 'end' });
       return;
     }
 

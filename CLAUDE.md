@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: 03 (Mode toggle + mode-specific UX)
-- Next step: 04 (Fix Simple Mode layout)
+- Last completed step: 04 (Fix Simple Mode layout)
+- Next step: 05 (Extended mode language picker)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 
