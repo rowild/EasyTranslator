@@ -133,8 +133,11 @@ export const useTranslationStore = defineStore('translation', () => {
         currentTranslatedText.value = '';
 
         try {
-            const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
-            if (!apiKey) throw new Error('Missing VITE_MISTRAL_API_KEY');
+            await settingsStore.ensureLoaded();
+
+            const devFallbackKey = import.meta.env.DEV ? import.meta.env.VITE_MISTRAL_API_KEY : undefined;
+            const apiKey = settingsStore.apiKey || devFallbackKey;
+            if (!apiKey) throw new Error('Missing Mistral API key. Open Settings and add your key.');
 
             // Convert audio blob to WAV format if needed
             let wavBlob: Blob;

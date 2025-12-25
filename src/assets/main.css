@@ -229,6 +229,27 @@ main {
   margin: 0;
 }
 
+.api-key-warning {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.warning-action-btn {
+  align-self: center;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(66, 184, 131, 0.9);
+  color: white;
+}
+
+.warning-action-btn:hover {
+  background: rgba(66, 184, 131, 1);
+}
+
 .language-prompt {
   text-align: center;
   padding: 3rem 2rem;
@@ -525,6 +546,12 @@ main {
   z-index: 100;
 }
 
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .footer-info-btn {
   display: flex;
   align-items: center;
@@ -682,6 +709,10 @@ main {
 
   .footer-info-btn .info-label {
     font-size: 0.85rem;
+  }
+
+  .footer-left {
+    gap: 0.5rem;
   }
 
   .footer-flag {

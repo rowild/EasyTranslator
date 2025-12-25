@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: 01 (Move all settings to IndexedDB)
-- Next step: 02 (API key UI + gating)
+- Last completed step: 02 (API key UI + gating)
+- Next step: 03 (Mode toggle + mode-specific UX)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 

@@ -8,9 +8,10 @@ import InfoModal from '../components/InfoModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import TextToSpeech from '../components/TextToSpeech.vue';
+import SettingsModal from '../components/SettingsModal.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
-import { Trash2, Plus, Mic, Square, Info } from 'lucide-vue-next';
+import { Trash2, Plus, Mic, Square, Info, Settings } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const settingsStore = useSettingsStore();
@@ -41,6 +42,7 @@ const hasCompletedSetup = ref(false);
 
 // Info modal state
 const showInfoModal = ref(false);
+const showSettingsModal = ref(false);
 
 // Conversation history
 interface ConversationPair {
@@ -70,6 +72,12 @@ const uiText = computed(() => {
   const langCode = sourceLang.value?.displayCode || 'en';
   const data = appInfoData.value[langCode] || appInfoData.value['en'];
   return data?.ui || { allowMic: 'Please allow microphone access when prompted.' };
+});
+
+const hasUsableApiKey = computed(() => {
+  const hasSavedKey = Boolean(settingsStore.apiKey);
+  const hasDevKey = Boolean(import.meta.env.DEV && import.meta.env.VITE_MISTRAL_API_KEY);
+  return hasSavedKey || hasDevKey;
 });
 
 window.addEventListener('online', () => isOffline.value = false);
@@ -279,6 +287,10 @@ const handleRecordToggle = async () => {
     }
   } else {
     try {
+      if (!hasUsableApiKey.value) {
+        showSettingsModal.value = true;
+        return;
+      }
       // console.log('Starting recording...');
       recordedBlob.value = null;
       setTranscript('');
@@ -350,7 +362,7 @@ const handleNewRecording = async () => {
 </script>
 
 <template>
-  <div class="main-view" :class="{ 'modal-open': showLanguagePicker || showInfoModal }">
+  <div class="main-view" :class="{ 'modal-open': showLanguagePicker || showInfoModal || showSettingsModal }">
     <!-- Header (Always Visible) -->
     <header>
       <h1><span>Speak</span><span>&</span><span>Translate</span></h1>
@@ -361,6 +373,12 @@ const handleNewRecording = async () => {
     <div class="center-content">
       <!-- Main Content Area -->
       <main v-if="hasCompletedSetup" ref="mainContainerRef">
+        <!-- API Key Warning -->
+        <div v-if="!hasUsableApiKey" class="warning-box api-key-warning">
+          <p>Mistral API key is required to translate. Add your key in Settings.</p>
+          <button class="warning-action-btn" @click="showSettingsModal = true">Open Settings</button>
+        </div>
+
         <!-- Permission Warnings -->
         <div v-if="permissionStatus === 'denied'" class="warning-box">
           <p>Microphone access is denied. Please enable it in your browser settings.</p>
@@ -419,7 +437,7 @@ const handleNewRecording = async () => {
                 class="inline-record-btn"
                 :class="{ recording: isRecording }"
                 @click="handleRecordToggle"
-                :disabled="isOffline || permissionStatus === 'denied'"
+                :disabled="isOffline || permissionStatus === 'denied' || !hasUsableApiKey"
                 :title="isRecording ? 'Stop recording' : 'Start recording'"
               >
                 <Square v-if="isRecording" :size="24" />
@@ -497,18 +515,36 @@ const handleNewRecording = async () => {
       @close="showInfoModal = false"
     />
 
+    <SettingsModal
+      :is-open="showSettingsModal"
+      @close="showSettingsModal = false"
+    />
+
     <!-- Fixed Footer with Controls (Always Visible) -->
     <footer class="app-footer">
-      <!-- Info Button (only show after setup) -->
-      <button
-        v-if="hasCompletedSetup"
-        class="footer-info-btn"
-        @click="showInfoModal = true"
-        title="App information and help"
-      >
-        <Info :size="20" />
-        <span class="info-label">Info</span>
-      </button>
+      <div class="footer-left">
+        <!-- Info Button (only show after setup) -->
+        <button
+          v-if="hasCompletedSetup"
+          class="footer-info-btn"
+          @click="showInfoModal = true"
+          title="App information and help"
+        >
+          <Info :size="20" />
+          <span class="info-label">Info</span>
+        </button>
+
+        <!-- Settings Button -->
+        <button
+          v-if="hasCompletedSetup"
+          class="footer-info-btn"
+          @click="showSettingsModal = true"
+          title="Settings"
+        >
+          <Settings :size="20" />
+          <span class="info-label">Settings</span>
+        </button>
+      </div>
 
       <!-- Dual Language Button (only show after setup) -->
       <button
