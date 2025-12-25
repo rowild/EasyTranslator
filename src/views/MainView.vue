@@ -2,6 +2,7 @@
 import { onMounted, ref, computed, watch, nextTick } from 'vue';
 import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
+import { useRouter } from 'vue-router';
 import Background from '../components/Background.vue'
 import LanguageWheelPicker from '../components/LanguageWheelPicker.vue';
 import InfoModal from '../components/InfoModal.vue';
@@ -14,11 +15,12 @@ import TargetLanguagesModal from '../components/TargetLanguagesModal.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
 import { useTranscriptionsStore } from '../stores/transcriptions';
-import { Trash2, Mic, Square, Info, Settings, RotateCcw, Flag, Save, Check } from 'lucide-vue-next';
+import { Trash2, Mic, Square, Info, Settings, RotateCcw, Flag, Save, Check, Bookmark } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const settingsStore = useSettingsStore();
 const transcriptionsStore = useTranscriptionsStore();
+const router = useRouter();
 const {
   isRecording,
   startRecording,
@@ -553,6 +555,18 @@ const handleSaveTranscription = async () => {
         >
           <Settings :size="20" />
           <span class="info-label">Settings</span>
+        </button>
+
+        <!-- Saved Transcripts -->
+        <button
+          v-if="hasCompletedSetup"
+          class="footer-info-btn"
+          @click="router.push('/saved')"
+          title="Saved transcripts"
+          type="button"
+        >
+          <Bookmark :size="20" />
+          <span class="info-label">Saved</span>
         </button>
       </div>
 
