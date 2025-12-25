@@ -31,7 +31,7 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 | 00 | DONE | Add process tracker + progress block | Create `.claude/plans/implementation-process.md` and add progress tracking section to `CLAUDE.md`. |
 | 01 | DONE | Move all settings to IndexedDB | Added Dexie `settings` table + `useSettingsStore`, migrated legacy `localStorage` keys once (then clears them), and removed direct `localStorage` usage from app code (languages, info modal, TTS voice prefs). |
 | 02 | DONE | API key UI + gating | Added `SettingsModal` to set/clear the key (stored in IndexedDB); record button is disabled and prompts user when missing; translation calls use saved key with dev-only fallback to `VITE_MISTRAL_API_KEY`. |
-| 03 | TODO | Mode toggle + mode-specific UX | Add the Simple/Extended mode toggle UI and wire mode-specific behavior: simple uses existing history/persistence; extended is single-turn with “New” and no saved history. |
+| 03 | DONE | Mode toggle + mode-specific UX | Added mode toggle in Settings; extended mode now clears/hides in-memory history and skips saving conversations to IndexedDB. |
 | 04 | TODO | Fix Simple Mode layout | Switch bubbles to top→bottom order; place “+” (next recording) **under** translation; keep simple mode behavior otherwise unchanged. |
 | 05 | TODO | Extended mode language picker | Multi-select target languages (max 10) with a clear mobile UX (chips + modal grid); store selection in settings. |
 | 06 | TODO | Voxtral multi-translation request | Send audio once; request JSON schema output containing `sourceText`, `sourceLanguage`, and `translations` for all selected targets; parse robustly and capture `usage`. |

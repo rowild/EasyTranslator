@@ -80,6 +80,8 @@ const hasUsableApiKey = computed(() => {
   return hasSavedKey || hasDevKey;
 });
 
+const isExtendedMode = computed(() => settingsStore.mode === 'extended');
+
 window.addEventListener('online', () => isOffline.value = false);
 window.addEventListener('offline', () => isOffline.value = true);
 
@@ -211,6 +213,13 @@ watch(recordedBlob, (blob) => {
   }
 });
 
+// Extended mode is delete-and-forget: clear in-memory history when switching into it
+watch(isExtendedMode, (extended) => {
+  if (extended) {
+    conversationHistory.value = [];
+  }
+});
+
 // Record button is only enabled when output language is selected (input is auto-detected)
 const canRecord = computed(() => {
   return !!outputLanguage.value;
@@ -320,7 +329,7 @@ const handleNewRecording = async () => {
   // console.log('Starting new recording...');
 
   // Save current conversation pair to history
-  if (recordedBlob.value && store.detectedLanguage && currentTranslationOutputLang.value) {
+  if (!isExtendedMode.value && recordedBlob.value && store.detectedLanguage && currentTranslationOutputLang.value) {
     // Use detected language from Voxtral
     const actualInputLang = store.detectedLanguage;
 
@@ -394,7 +403,7 @@ const handleNewRecording = async () => {
 
 
         <!-- Conversation History -->
-        <div v-if="conversationHistory.length > 0" class="conversation-history">
+        <div v-if="!isExtendedMode && conversationHistory.length > 0" class="conversation-history">
           <div v-for="(pair, index) in conversationHistory" :key="index" class="conversation-pair history-pair">
             <!-- Input (Source) -->
             <div class="input-output-row">

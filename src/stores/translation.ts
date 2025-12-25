@@ -286,13 +286,15 @@ Return a JSON object with this exact structure:
             }
 
             // Save to DB
-            await addConversation({
-                createdAt: Date.now(),
-                sourceText: currentSourceText.value,
-                sourceLang: currentSourceLang.value,
-                translatedText: currentTranslatedText.value,
-                targetLang: settingsStore.targetLang,
-            });
+            if (settingsStore.mode !== 'extended') {
+                await addConversation({
+                    createdAt: Date.now(),
+                    sourceText: currentSourceText.value,
+                    sourceLang: currentSourceLang.value,
+                    translatedText: currentTranslatedText.value,
+                    targetLang: settingsStore.targetLang,
+                });
+            }
 
             return result;
         } catch (e: any) {

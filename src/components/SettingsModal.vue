@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { X, Eye, EyeOff } from 'lucide-vue-next';
 import { useSettingsStore } from '../stores/settings';
 
@@ -16,6 +16,8 @@ const settingsStore = useSettingsStore();
 const apiKeyInput = ref('');
 const showApiKey = ref(false);
 const statusText = ref<string | null>(null);
+
+const selectedMode = computed(() => settingsStore.mode);
 
 watch(() => props.isOpen, (open) => {
   if (!open) return;
@@ -62,6 +64,32 @@ const clearApiKey = async () => {
         </div>
 
         <div class="settings-content">
+          <section class="settings-section">
+            <div class="section-title">Mode</div>
+            <div class="section-subtitle">
+              Simple mode uses one target language. Extended mode will support up to 10.
+            </div>
+
+            <div class="mode-toggle">
+              <button
+                class="mode-btn"
+                :class="{ active: selectedMode === 'simple' }"
+                @click="settingsStore.setMode('simple')"
+                type="button"
+              >
+                Simple
+              </button>
+              <button
+                class="mode-btn"
+                :class="{ active: selectedMode === 'extended' }"
+                @click="settingsStore.setMode('extended')"
+                type="button"
+              >
+                Extended
+              </button>
+            </div>
+          </section>
+
           <section class="settings-section">
             <div class="section-title">Mistral API Key</div>
             <div class="section-subtitle">
@@ -175,6 +203,10 @@ const clearApiKey = async () => {
   padding: 1rem;
 }
 
+.settings-section + .settings-section {
+  margin-top: 0.9rem;
+}
+
 .section-title {
   font-weight: 700;
   color: #222;
@@ -186,6 +218,34 @@ const clearApiKey = async () => {
   color: rgba(0, 0, 0, 0.65);
   margin-bottom: 0.75rem;
   line-height: 1.35;
+}
+
+.mode-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.mode-btn {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.8);
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.mode-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.mode-btn.active {
+  background: rgba(66, 184, 131, 0.95);
+  border-color: rgba(66, 184, 131, 1);
+  color: white;
 }
 
 .api-key-row {
@@ -278,4 +338,3 @@ const clearApiKey = async () => {
   }
 }
 </style>
-
