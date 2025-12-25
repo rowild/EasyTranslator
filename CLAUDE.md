@@ -6,14 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-08 (Saved transcript detail + re-translate)
-- Next step: P2-09 (QA + docs)
+- Last completed step: P2-09 (QA + docs)
+- Next step: — (All Phase 2 steps complete)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 
 ## Project Overview
 
-EasyTranslator is a Progressive Web App (PWA) for real-time speech translation using Mistral AI. Built with Vue 3, TypeScript, and Vite, it enables users to record audio, transcribe speech, translate it to target languages (Simple/Extended modes), and (in Simple mode) store conversation history offline using IndexedDB.
+EasyTranslator is a Progressive Web App (PWA) for real-time speech translation using Mistral AI. Built with Vue 3, TypeScript, and Vite, it records audio, transcribes + translates it in one Voxtral call into **up to 10 target languages**, and can optionally **save transcripts** locally (IndexedDB via Dexie).
 
 ## Development Commands
 
@@ -51,16 +51,18 @@ Audio + Prompt → Mistral Chat Completions (Voxtral model)
     ↓
 Structured JSON → UI state
     ↓
-Simple Mode: save conversation to IndexedDB (Dexie)
-Extended Mode: delete-and-forget (no persistence)
+Optional: “Save” → IndexedDB `transcriptions` (audio + transcript + translations)
 ```
 
 ### Key Components
 
 **State Management (Pinia):**
-- `/src/stores/settings.ts` - Dexie-backed settings store (mode, API key, language prefs, extended targets, TTS prefs)
-- `/src/stores/translation.ts` - Voxtral request/parse flow + in-memory state + Simple-mode conversation persistence
-- Exposes per-request `lastUsage` and (extended mode) `currentTranslations`
+- `/src/stores/settings.ts` - Dexie-backed settings store (API key, language prefs, target list, TTS prefs)
+- `/src/stores/translation.ts` - Voxtral request/parse flow + in-memory state; exposes `currentTranslations` + per-request `lastUsage`
+- `/src/stores/transcriptions.ts` - Saved transcripts CRUD (IndexedDB) + variant linkage
+
+**Routing:**
+- `/src/router/index.ts` - `/` (main), `/saved` (saved list), `/saved/:id` (detail + re-translate)
 
 **Audio Recording:**
 - `/src/composables/useAudioRecorder.ts` - Encapsulates microphone access, recording, and real-time volume visualization
@@ -70,8 +72,9 @@ Extended Mode: delete-and-forget (no persistence)
 
 **Database Layer:**
 - `/src/db/db.ts` - Dexie wrapper for IndexedDB
-- `conversations` table: `++id, createdAt, sourceLang, targetLang`
 - `settings` table: `&id` (single row: `id='app'`)
+- `transcriptions` table: `++id, createdAt, variantGroupId, variantOfId` (audio + transcript + translations)
+- `conversations` table still exists from earlier iterations but is no longer part of the primary UX
 
 **Main View:**
 - `/src/views/MainView.vue` - Orchestrates entire translation workflow
@@ -82,15 +85,16 @@ Extended Mode: delete-and-forget (no persistence)
 
 ```
 App.vue
-└─ MainView.vue
-   ├─ LanguageWheelPicker.vue (source + Simple-mode target selection)
-   ├─ SettingsModal.vue (mode toggle + API key + extended targets)
-   ├─ TargetLanguagesModal.vue (extended multi-select, max 10)
-   ├─ SwipeableTranslations.vue (extended output carousel)
-   ├─ UsageStats.vue (per-request usage)
-   ├─ RecordingVisualizer.vue (live mic visualization)
-   ├─ AudioPlayer.vue (recording playback)
-   └─ TextToSpeech.vue (speech synthesis)
+└─ RouterView
+   ├─ MainView.vue
+   │  ├─ SettingsModal.vue (API key + targets)
+   │  ├─ TargetLanguagesModal.vue (multi-select, max 10)
+   │  ├─ TranslationBubblesList.vue (scrollable stacked output)
+   │  ├─ UsageStats.vue (per-request usage)
+   │  ├─ RecordingVisualizer.vue
+   │  └─ AudioPlayer.vue / TextToSpeech.vue
+   ├─ SavedTranscriptsView.vue
+   └─ SavedTranscriptDetailView.vue
 ```
 
 ## Mistral AI Integration
@@ -111,8 +115,7 @@ Body: {
 }
 ```
 
-- **Simple mode** expects: `sourceText`, `sourceLanguage`, `translatedText`, `targetLanguage`
-- **Extended mode** expects: `sourceText`, `sourceLanguage`, `translations` keyed by selected target codes (max 10)
+- The app expects: `sourceText`, `sourceLanguage`, `translations` keyed by selected target codes (max 10)
 
 **Optional Backend:** The `/api/` directory contains serverless edge functions (`transcribe.ts`, `translate.ts`) that can proxy these calls if you want to hide the API key from the frontend.
 
@@ -129,7 +132,7 @@ Service worker automatically generated during build and handles offline asset ca
 ## Offline Capabilities
 
 **Works Offline:**
-- View conversation history (Simple mode, from IndexedDB)
+- View saved transcripts (from IndexedDB)
 - Record audio locally
 - Change settings (from IndexedDB)
 - Play translations via Web Speech API
@@ -153,8 +156,8 @@ Strict mode enabled in `tsconfig.json`. All Vue components use `<script setup la
 
 ### State Persistence
 - **IndexedDB (Dexie)**:
-  - `settings` row (`id='app'`) stores mode, API key, language prefs, extended targets, and TTS preferences
-  - `conversations` stores Simple-mode conversation history
+  - `settings` row (`id='app'`) stores API key, language prefs, target selection, and TTS preferences
+  - `transcriptions` stores saved utterances (audio + transcript + translations) and variant links
 - **Legacy migration**: some older `localStorage` keys are migrated once into IndexedDB, then removed
 
 ### API Key Security
@@ -171,9 +174,9 @@ Strict mode enabled in `tsconfig.json`. All Vue components use `<script setup la
 ## Supported Languages
 
 - Languages come from `src/config/languages.ts` (some entries share the same 2-letter `displayCode`).
-- **Simple mode**: select 1 target language (by `displayCode`) via the language picker.
-- **Extended mode**: select up to 10 unique target `displayCode`s in Settings.
-- Source language is auto-detected by Voxtral (with an optional user-selected fallback in Settings).
+- Select up to 10 unique target `displayCode`s via the “targets” flag button (or Settings).
+- Source language is auto-detected by Voxtral.
+- The existing two-flag picker remains in the UI for now (kept unchanged as requested).
 
 ## Build Output
 
