@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: 06 (Voxtral multi-translation request)
-- Next step: 07 (Swipeable bubbles UI)
+- Last completed step: 07 (Swipeable bubbles UI)
+- Next step: 08 (Extended mode “New” flow)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 

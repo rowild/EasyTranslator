@@ -9,6 +9,7 @@ import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import TextToSpeech from '../components/TextToSpeech.vue';
 import SettingsModal from '../components/SettingsModal.vue';
+import SwipeableTranslations from '../components/SwipeableTranslations.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
 import { Trash2, Plus, Mic, Square, Info, Settings } from 'lucide-vue-next';
@@ -492,16 +493,23 @@ const handleNewRecording = async () => {
 
           <!-- Output (Translation) Section (only show AFTER translation) -->
           <div v-if="isTranslated" class="input-output-row output-row">
-            <div class="language-indicator" v-if="currentTranslationOutputLang">
-              <span class="lang-flag">{{ currentTranslationOutputLang.flag }}</span>
-              <span class="lang-name">{{ currentTranslationOutputLang.nativeName }}</span>
-            </div>
-            <div class="transcript-field output-field">
-              <div class="transcript-content" :dir="currentTranslationOutputLang?.isRTL ? 'rtl' : 'ltr'">
-                {{ store.currentTranslatedText || 'Translation...' }}
+            <SwipeableTranslations
+              v-if="isExtendedMode"
+              :target-codes="settingsStore.extendedTargetLangs"
+              :translations="store.currentTranslations"
+            />
+            <template v-else>
+              <div class="language-indicator" v-if="currentTranslationOutputLang">
+                <span class="lang-flag">{{ currentTranslationOutputLang.flag }}</span>
+                <span class="lang-name">{{ currentTranslationOutputLang.nativeName }}</span>
               </div>
-              <TextToSpeech v-if="currentTranslationOutputLang" :text="store.currentTranslatedText" :lang="currentTranslationOutputLang.speechCode" />
-            </div>
+              <div class="transcript-field output-field">
+                <div class="transcript-content" :dir="currentTranslationOutputLang?.isRTL ? 'rtl' : 'ltr'">
+                  {{ store.currentTranslatedText || 'Translation...' }}
+                </div>
+                <TextToSpeech v-if="currentTranslationOutputLang" :text="store.currentTranslatedText" :lang="currentTranslationOutputLang.speechCode" />
+              </div>
+            </template>
           </div>
 
           <!-- Plus button to start new recording (only show AFTER translation) -->
