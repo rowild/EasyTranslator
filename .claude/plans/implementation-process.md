@@ -66,7 +66,7 @@ Confirmed decisions:
 | ID | Status | Deliverable | Completion notes |
 |---:|:------:|-------------|------------------|
 | P2-01 | DONE | Remove simple mode UX | Forced extended behavior (settings default/migration + removed mode toggle), removed Simple-mode-only history/output UI, and kept the existing two-flag picker unchanged. |
-| P2-02 | TODO | Footer “targets” picker button | Add generic-flag footer button that opens `TargetLanguagesModal` (max 10) and persists via Dexie settings. |
+| P2-02 | DONE | Footer “targets” picker button | Added a generic-flag footer button next to the existing two-flag button to open `TargetLanguagesModal` (max 10) and persist selection via Dexie settings. |
 | P2-03 | TODO | Vertical translations list + scroll | Replace swipe carousel with stacked translation bubbles; make only that list scroll; tighten bubble padding/margins. |
 | P2-04 | TODO | Dexie `transcriptions` table + store | Add a new table for saved transcripts including audio blob, transcript, translations, and metadata like detected source language + selected target codes/order; include `variantOfId` (or similar) to link re-translation variants. |
 | P2-05 | TODO | “Save transcript” in main flow | Add Save button after translation; save current utterance; disable once saved; reset saved state on “New” or new recording. |

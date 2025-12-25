@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-01 (Remove simple mode UX)
-- Next step: P2-02 (Footer “targets” picker button)
+- Last completed step: P2-02 (Footer “targets” picker button)
+- Next step: P2-03 (Vertical translations list + scroll)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 

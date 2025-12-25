@@ -10,9 +10,10 @@ import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import SettingsModal from '../components/SettingsModal.vue';
 import SwipeableTranslations from '../components/SwipeableTranslations.vue';
 import UsageStats from '../components/UsageStats.vue';
+import TargetLanguagesModal from '../components/TargetLanguagesModal.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
-import { Trash2, Mic, Square, Info, Settings, RotateCcw } from 'lucide-vue-next';
+import { Trash2, Mic, Square, Info, Settings, RotateCcw, Flag } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const settingsStore = useSettingsStore();
@@ -43,6 +44,7 @@ const hasCompletedSetup = ref(false);
 // Info modal state
 const showInfoModal = ref(false);
 const showSettingsModal = ref(false);
+const showTargetLanguagesModal = ref(false);
 
 // Load app-info.json for UI translations
 interface AppInfoData {
@@ -341,7 +343,7 @@ const handleNewRecording = async () => {
 </script>
 
 <template>
-  <div class="main-view" :class="{ 'modal-open': showLanguagePicker || showInfoModal || showSettingsModal }">
+  <div class="main-view" :class="{ 'modal-open': showLanguagePicker || showInfoModal || showSettingsModal || showTargetLanguagesModal }">
     <!-- Header (Always Visible) -->
     <header>
       <h1><span>Speak</span><span>&</span><span>Translate</span></h1>
@@ -480,6 +482,14 @@ const handleNewRecording = async () => {
       @close="showSettingsModal = false"
     />
 
+    <TargetLanguagesModal
+      :is-open="showTargetLanguagesModal"
+      :selected="settingsStore.extendedTargetLangs"
+      :max-selected="10"
+      @save="(langs) => { settingsStore.setExtendedTargetLangs(langs); showTargetLanguagesModal = false; }"
+      @close="showTargetLanguagesModal = false"
+    />
+
     <!-- Fixed Footer with Controls (Always Visible) -->
     <footer class="app-footer">
       <div class="footer-left">
@@ -506,17 +516,30 @@ const handleNewRecording = async () => {
         </button>
       </div>
 
-      <!-- Dual Language Button (only show after setup) -->
-      <button
-        v-if="hasCompletedSetup"
-        class="footer-lang-btn dual-lang-btn"
-        @click="showLanguagePicker = true"
-        :title="`Change languages: ${sourceLang?.nativeName || 'Select'} → ${outputLanguage?.nativeName || 'Select'}`"
-      >
-        <span class="footer-flag source-flag">{{ sourceLang?.flag || '❓' }}</span>
-        <span class="footer-arrow">→</span>
-        <span class="footer-flag target-flag">{{ outputLanguage?.flag || '❓' }}</span>
-      </button>
+      <div class="footer-right">
+        <!-- Dual Language Button (keep unchanged for now) -->
+        <button
+          v-if="hasCompletedSetup"
+          class="footer-lang-btn dual-lang-btn"
+          @click="showLanguagePicker = true"
+          :title="`Change languages: ${sourceLang?.nativeName || 'Select'} → ${outputLanguage?.nativeName || 'Select'}`"
+        >
+          <span class="footer-flag source-flag">{{ sourceLang?.flag || '❓' }}</span>
+          <span class="footer-arrow">→</span>
+          <span class="footer-flag target-flag">{{ outputLanguage?.flag || '❓' }}</span>
+        </button>
+
+        <!-- Target Languages Button -->
+        <button
+          v-if="hasCompletedSetup"
+          class="footer-lang-btn targets-lang-btn"
+          @click="showTargetLanguagesModal = true"
+          title="Select target languages"
+          type="button"
+        >
+          <Flag :size="20" />
+        </button>
+      </div>
     </footer>
 
 
