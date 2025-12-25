@@ -365,6 +365,15 @@ const handleSaveTranscription = async () => {
     alert('Could not save transcript. Please try again.');
   }
 };
+
+const formatLanguageLabel = (language: Language | null) => {
+  if (!language) return '';
+  const native = language.nativeName;
+  const english = language.name;
+  if (!english) return native;
+  if (native.trim().toLowerCase() === english.trim().toLowerCase()) return native;
+  return `${native} (${english})`;
+};
 </script>
 
 <template>
@@ -434,7 +443,7 @@ const handleSaveTranscription = async () => {
           <div class="input-output-row">
             <div class="language-indicator" v-if="store.detectedLanguage">
               <span class="lang-flag">{{ store.detectedLanguage.flag }}</span>
-              <span class="lang-name">{{ store.detectedLanguage.nativeName }}</span>
+              <span class="lang-name">{{ formatLanguageLabel(store.detectedLanguage) }}</span>
             </div>
             <div class="field-with-actions">
               <div class="transcript-field input-field">

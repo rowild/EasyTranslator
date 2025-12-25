@@ -72,6 +72,15 @@ const sourceLanguage = computed<Language | null>(() => {
   return languages.find(l => l.displayCode === code) || null;
 });
 
+const formatLanguageLabel = (language: Language | null) => {
+  if (!language) return '';
+  const native = language.nativeName;
+  const english = language.name;
+  if (!english) return native;
+  if (native.trim().toLowerCase() === english.trim().toLowerCase()) return native;
+  return `${native} (${english})`;
+};
+
 const load = async () => {
   isLoading.value = true;
   loadError.value = null;
@@ -218,10 +227,10 @@ const handleSaveVariant = async () => {
           <div class="conversation-pair current-pair">
             <!-- Input -->
             <div class="input-output-row">
-              <div class="language-indicator">
-                <span class="lang-flag">{{ sourceLanguage?.flag || '🌐' }}</span>
-                <span class="lang-name">{{ sourceLanguage?.nativeName || displayedSourceLang }}</span>
-              </div>
+            <div class="language-indicator">
+              <span class="lang-flag">{{ sourceLanguage?.flag || '🌐' }}</span>
+              <span class="lang-name">{{ sourceLanguage ? formatLanguageLabel(sourceLanguage) : displayedSourceLang }}</span>
+            </div>
               <div class="field-with-actions">
                 <div class="transcript-field input-field">
                   <div class="transcript-content" :dir="sourceLanguage?.isRTL ? 'rtl' : 'ltr'">

@@ -80,3 +80,4 @@ Confirmed decisions:
 | P2-12 | DONE | Target picker prompt + settings scope | Updated the “no targets selected” prompt to open the target-language modal (not Settings), moved “Saved” to footer-right, and simplified Settings to API-key-only. |
 | P2-13 | DONE | Add API key URL hint | Added a direct link in Settings to `https://console.mistral.ai/` for obtaining a Mistral API key. |
 | P2-14 | DONE | Hide source-language target | When the detected source language is included in the selected targets, hide that redundant bubble and show an “Original audio was in …” note; also updated Saved headers to use “Transcribed”. |
+| P2-15 | DONE | Bubble polish + overlays | Styled and localized the “Original audio…” note to match output bubbles, ensured the TTS voice dropdown overlays above other bubbles, and appended English language names in parentheses next to native names. |

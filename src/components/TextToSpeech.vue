@@ -6,6 +6,13 @@ import { useSettingsStore } from '../stores/settings';
 const props = defineProps<{
   text: string;
   lang: string;
+  voiceSelectorId?: string;
+  activeVoiceSelectorId?: string | null;
+}>();
+
+const emit = defineEmits<{
+  (e: 'voice-selector-open', id?: string): void;
+  (e: 'voice-selector-close', id?: string): void;
 }>();
 
 const isSpeaking = ref(false);
@@ -102,10 +109,27 @@ const selectedVoice = computed(() =>
   availableVoices.value.find(v => v.voiceURI === selectedVoiceURI.value)
 );
 
+watch(
+  () => props.activeVoiceSelectorId,
+  (active) => {
+    if (!showVoiceSelector.value) return;
+    if (!props.voiceSelectorId) return;
+    if (active !== props.voiceSelectorId) showVoiceSelector.value = false;
+  }
+);
+
+const toggleVoiceSelector = () => {
+  const next = !showVoiceSelector.value;
+  showVoiceSelector.value = next;
+  if (next) emit('voice-selector-open', props.voiceSelectorId);
+  else emit('voice-selector-close', props.voiceSelectorId);
+};
+
 const selectVoice = (voiceURI: string) => {
   selectedVoiceURI.value = voiceURI;
   void settingsStore.setTtsVoice(props.lang, voiceURI);
   showVoiceSelector.value = false;
+  emit('voice-selector-close', props.voiceSelectorId);
 };
 
 // Generate random-ish audio levels that look natural
@@ -279,7 +303,7 @@ onUnmounted(() => {
     <div v-if="!isSpeaking && availableVoices.length > 0" class="voice-controls">
       <button
         class="voice-settings-btn"
-        @click="showVoiceSelector = !showVoiceSelector"
+        @click="toggleVoiceSelector"
         :title="selectedVoice ? `Voice: ${selectedVoice.name}` : 'Select voice'"
       >
         <Settings :size="14" />
