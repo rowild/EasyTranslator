@@ -74,6 +74,16 @@ const displayTargetCodes = computed(() => {
   return props.targetCodes.filter(code => code !== props.sourceCode);
 });
 
+const labelLocale = computed(() => sourceLanguage.value?.code ?? props.sourceCode ?? 'en');
+
+const languageDisplayNames = computed(() => {
+  try {
+    return new Intl.DisplayNames([labelLocale.value, 'en'], { type: 'language', fallback: 'none' });
+  } catch {
+    return null;
+  }
+});
+
 const activeVoiceSelectorId = ref<string | null>(null);
 
 watch(
@@ -86,10 +96,11 @@ watch(
 const formatLanguageLabel = (language: Language | undefined, fallbackCode: string) => {
   if (!language) return fallbackCode;
   const native = language.nativeName;
-  const english = language.name;
-  if (!english) return native;
-  if (native.trim().toLowerCase() === english.trim().toLowerCase()) return native;
-  return `${native} (${english})`;
+  const localized = languageDisplayNames.value?.of(language.displayCode);
+  const localizedName = localized && localized !== language.displayCode ? localized : language.name;
+  if (!localizedName) return native;
+  if (native.trim().toLowerCase() === localizedName.trim().toLowerCase()) return native;
+  return `${native} (${localizedName})`;
 };
 
 const sourceLanguageLabel = computed(() => {

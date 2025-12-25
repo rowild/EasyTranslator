@@ -75,10 +75,17 @@ const sourceLanguage = computed<Language | null>(() => {
 const formatLanguageLabel = (language: Language | null) => {
   if (!language) return '';
   const native = language.nativeName;
-  const english = language.name;
-  if (!english) return native;
-  if (native.trim().toLowerCase() === english.trim().toLowerCase()) return native;
-  return `${native} (${english})`;
+  let localizedName = language.name;
+  try {
+    const dn = new Intl.DisplayNames([language.code, 'en'], { type: 'language', fallback: 'none' });
+    const value = dn.of(language.displayCode);
+    if (value && value !== language.displayCode) localizedName = value;
+  } catch {
+    // Intl.DisplayNames might not be available in all browsers; fallback to English name.
+  }
+  if (!localizedName) return native;
+  if (native.trim().toLowerCase() === localizedName.trim().toLowerCase()) return native;
+  return `${native} (${localizedName})`;
 };
 
 const load = async () => {
