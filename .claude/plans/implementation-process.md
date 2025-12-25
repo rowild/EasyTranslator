@@ -58,7 +58,7 @@ Scope for this phase:
 Confirmed decisions:
 
 1. Entry point to “Saved transcripts” route:
-   - Add a new footer button on the left (next to Info/Settings).
+   - Add a footer “Saved” button on the right (left of the targets flag).
 2. When re-translating an already-saved transcript:
    - Create a new entry and link it back to the original (variant/related).
 
