@@ -107,13 +107,15 @@ const items = computed(() =>
 
 <template>
   <div class="translations-wrapper">
-    <div v-if="shouldShowSourceNotice" class="transcript-field output-field source-notice-field">
-      <div class="transcript-content" :dir="sourceLanguage?.isRTL ? 'rtl' : 'ltr'">
-        {{ sourceNoticeText }}
-      </div>
-    </div>
-
     <div class="translations-scroll" aria-label="Translations">
+      <div v-if="shouldShowSourceNotice" class="translation-item">
+        <div class="transcript-field output-field">
+          <div class="transcript-content" :dir="sourceLanguage?.isRTL ? 'rtl' : 'ltr'">
+            {{ sourceNoticeText }}
+          </div>
+        </div>
+      </div>
+
       <div
         v-for="item in items"
         :key="item.code"
@@ -151,10 +153,6 @@ const items = computed(() =>
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-}
-
-.source-notice-field {
-  width: 75%;
 }
 
 .translations-scroll {
