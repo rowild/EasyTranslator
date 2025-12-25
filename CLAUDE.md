@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-07 (Saved transcripts list UI)
-- Next step: P2-08 (Saved transcript detail + re-translate)
+- Last completed step: P2-08 (Saved transcript detail + re-translate)
+- Next step: P2-09 (QA + docs)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 

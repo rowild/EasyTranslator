@@ -72,5 +72,5 @@ Confirmed decisions:
 | P2-05 | DONE | “Save transcript” in main flow | Added a “Save” button after translation that persists the current utterance to IndexedDB and disables after saving; resets on New/Delete/Start recording. |
 | P2-06 | DONE | Add router + routes | Added `vue-router` with routes for `/` (main), `/saved` (list), and `/saved/:id` (detail), plus placeholder views. |
 | P2-07 | DONE | Saved transcripts list UI | Implemented `/saved` list UI backed by IndexedDB with delete + navigation to detail; added a “Saved” footer entry point from the main view. |
-| P2-08 | TODO | Saved transcript detail + re-translate | Show saved transcript using the same layout; allow re-translate with current target selection; allow saving as a new entry linked as a variant/related record. |
+| P2-08 | DONE | Saved transcript detail + re-translate | Implemented `/saved/:id` detail view using the same bubble layout, added re-translate (Voxtral) using current target selection, and “Save variant” which creates a new linked entry (variant group + parent reference) plus a related-versions navigator. |
 | P2-09 | TODO | QA + docs | Verify mobile layout, scroll behavior, and persistence; update `CLAUDE.md` architecture notes for Phase 2. |
