@@ -84,6 +84,8 @@ body {
 
 .main-view {
   position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100dvh;
   width: 100vw;
   overflow: hidden;
@@ -101,7 +103,8 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  height: calc(100dvh - 70px); /* Account for footer height using dynamic viewport */
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
   padding-bottom: 0;
 }
@@ -200,13 +203,13 @@ h1 span:nth-child(3) {
 
 main {
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
   padding: 2rem;
-  padding-bottom: calc(70px + 2rem); /* Space for footer (70px) + extra spacing */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 2rem;
+  gap: 1.25rem;
   /* Don't center items - allow left alignment for transcript */
   align-items: stretch;
   background: transparent;
@@ -282,11 +285,16 @@ main {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .history-pair {
   opacity: 0.8;
+}
+
+.current-pair {
+  flex: 1;
+  min-height: 0;
 }
 
 .input-output-row {
@@ -316,6 +324,11 @@ main {
   justify-content: flex-end;
 }
 
+.translations-row {
+  flex: 1;
+  min-height: 0;
+}
+
 .language-indicator {
   display: flex;
   align-items: center;
@@ -339,7 +352,7 @@ main {
 .transcript-field {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
@@ -423,33 +436,6 @@ main {
   margin-bottom: 2rem;
 }
 
-.plus-btn {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: 3px solid var(--primary-color);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(157, 23, 68, 0.3);
-}
-
-.plus-btn:hover {
-  background: var(--primary-color);
-  color: white;
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(157, 23, 68, 0.4);
-}
-
-.plus-btn:active {
-  transform: scale(0.95);
-}
-
 .new-btn {
   display: inline-flex;
   align-items: center;
@@ -482,8 +468,8 @@ main {
   font-size: 1.4rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.95);
-  min-height: 60px;
-  margin-bottom: 1rem;
+  min-height: 40px;
+  margin-bottom: 0.75rem;
 }
 
 .transcript-content[dir="rtl"] {
@@ -559,10 +545,8 @@ main {
 
 /* Fixed Footer */
 .app-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  flex-shrink: 0;
   height: 70px;
   background: var(--secondary-color);
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
@@ -725,7 +709,6 @@ main {
   .center-content {
     width: 100%;
     max-width: 100%;
-    height: calc(100dvh - 60px); /* Account for mobile footer height using dynamic viewport */
   }
 
   header {
@@ -742,7 +725,6 @@ main {
 
   main {
     padding: 1rem;
-    padding-bottom: calc(60px + 1.5rem); /* Space for footer (60px) + extra spacing */
     gap: 1rem;
   }
 
@@ -821,12 +803,6 @@ main {
     height: 44px;
   }
 
-  .plus-btn {
-    width: 56px;
-    height: 56px;
-    border-width: 2px;
-  }
-
   .new-btn {
     border-width: 2px;
     padding: 0.65rem 1rem;
@@ -856,7 +832,6 @@ main {
   .center-content {
     width: 100%;
     max-width: 100%;
-    height: calc(100dvh - 55px); /* Account for smallest footer height using dynamic viewport */
   }
 
   header {
@@ -873,7 +848,6 @@ main {
 
   main {
     padding: 0.75rem;
-    padding-bottom: calc(55px + 1rem); /* Space for footer (55px) + extra spacing */
     gap: 0.75rem;
   }
 
@@ -946,11 +920,6 @@ main {
   .send-btn {
     width: 38px;
     height: 38px;
-  }
-
-  .plus-btn {
-    width: 48px;
-    height: 48px;
   }
 
   .new-btn {

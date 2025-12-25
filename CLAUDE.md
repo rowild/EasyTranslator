@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-02 (Footer “targets” picker button)
-- Next step: P2-03 (Vertical translations list + scroll)
+- Last completed step: P2-03 (Vertical translations list + scroll)
+- Next step: P2-04 (Dexie `transcriptions` table + store)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 

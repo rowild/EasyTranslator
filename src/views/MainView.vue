@@ -8,7 +8,7 @@ import InfoModal from '../components/InfoModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import SettingsModal from '../components/SettingsModal.vue';
-import SwipeableTranslations from '../components/SwipeableTranslations.vue';
+import TranslationBubblesList from '../components/TranslationBubblesList.vue';
 import UsageStats from '../components/UsageStats.vue';
 import TargetLanguagesModal from '../components/TargetLanguagesModal.vue';
 import { languages, type Language } from '../config/languages';
@@ -408,7 +408,7 @@ const handleNewRecording = async () => {
         </div>
 
         <!-- Current Input/Output Pair (only show AFTER recording has stopped) -->
-        <div v-if="canRecord && recordedBlob" class="conversation-pair" ref="currentPairRef">
+        <div v-if="canRecord && recordedBlob" class="conversation-pair current-pair" ref="currentPairRef">
           <!-- Input (Source) Section -->
           <div class="input-output-row">
             <div class="language-indicator" v-if="store.detectedLanguage || inputLanguage">
@@ -433,8 +433,8 @@ const handleNewRecording = async () => {
           </div>
 
           <!-- Output (Translation) Section (only show AFTER translation) -->
-          <div v-if="isTranslated" class="input-output-row output-row">
-            <SwipeableTranslations
+          <div v-if="isTranslated" class="input-output-row output-row translations-row">
+            <TranslationBubblesList
               :target-codes="settingsStore.extendedTargetLangs"
               :translations="store.currentTranslations"
             />
