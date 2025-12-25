@@ -29,7 +29,7 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 | ID | Status | Deliverable | Completion notes |
 |---:|:------:|-------------|------------------|
 | 00 | DONE | Add process tracker + progress block | Create `.claude/plans/implementation-process.md` and add progress tracking section to `CLAUDE.md`. |
-| 01 | TODO | Define settings state (IndexedDB) | Add a Pinia store for: `mode` (simple/extended), `apiKey`, `simpleTargetLang`, `extendedTargetLangs[]` (max 10), and UX prefs; persist via IndexedDB (Dexie settings table). Keep existing localStorage usage where already present unless migration is necessary. |
+| 01 | DONE | Move all settings to IndexedDB | Added Dexie `settings` table + `useSettingsStore`, migrated legacy `localStorage` keys once (then clears them), and removed direct `localStorage` usage from app code (languages, info modal, TTS voice prefs). |
 | 02 | TODO | API key UI + gating | Add UI to set/clear API key; block recording when missing; allow dev fallback to `VITE_MISTRAL_API_KEY` only in dev builds. |
 | 03 | TODO | Mode toggle + mode-specific UX | Add the Simple/Extended mode toggle UI and wire mode-specific behavior: simple uses existing history/persistence; extended is single-turn with “New” and no saved history. |
 | 04 | TODO | Fix Simple Mode layout | Switch bubbles to top→bottom order; place “+” (next recording) **under** translation; keep simple mode behavior otherwise unchanged. |

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onUnmounted, onMounted, computed } from 'vue';
 import { Volume2, Square, Settings } from 'lucide-vue-next';
+import { useSettingsStore } from '../stores/settings';
 
 const props = defineProps<{
   text: string;
@@ -14,6 +15,8 @@ const availableVoices = ref<SpeechSynthesisVoice[]>([]);
 const selectedVoiceURI = ref<string>('');
 let animationId: number | null = null;
 let simulatedBars: number[] = [];
+
+const settingsStore = useSettingsStore();
 
 // Simulated audio visualization parameters
 const BAR_COUNT = 16;
@@ -30,8 +33,8 @@ const loadVoices = () => {
   );
   console.log(`Voices for ${props.lang}:`, availableVoices.value.length, availableVoices.value.map(v => v.name));
 
-  // Load saved voice preference from localStorage
-  const savedVoiceURI = localStorage.getItem(`tts-voice-${props.lang}`);
+  // Load saved voice preference from IndexedDB settings
+  const savedVoiceURI = settingsStore.getTtsVoice(props.lang);
   if (savedVoiceURI && availableVoices.value.some(v => v.voiceURI === savedVoiceURI)) {
     selectedVoiceURI.value = savedVoiceURI;
   } else if (availableVoices.value.length > 0) {
@@ -101,7 +104,7 @@ const selectedVoice = computed(() =>
 
 const selectVoice = (voiceURI: string) => {
   selectedVoiceURI.value = voiceURI;
-  localStorage.setItem(`tts-voice-${props.lang}`, voiceURI);
+  void settingsStore.setTtsVoice(props.lang, voiceURI);
   showVoiceSelector.value = false;
 };
 
@@ -243,8 +246,10 @@ watch(() => props.lang, () => {
 });
 
 onMounted(() => {
-  // Load voices on mount
-  loadVoices();
+  void (async () => {
+    await settingsStore.ensureLoaded();
+    loadVoices();
+  })();
 
   // Some browsers need this event to load voices
   if (speechSynthesis.onvoiceschanged !== undefined) {

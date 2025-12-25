@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: 00 (Add process tracker + progress block)
-- Next step: 01 (Define settings state (IndexedDB))
+- Last completed step: 01 (Move all settings to IndexedDB)
+- Next step: 02 (API key UI + gating)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 

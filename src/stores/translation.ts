@@ -2,13 +2,13 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { db, type Conversation } from '../db/db';
 import { languages, type Language } from '../config/languages';
+import { useSettingsStore } from './settings';
 
 export const useTranslationStore = defineStore('translation', () => {
+    const settingsStore = useSettingsStore();
     const currentSourceText = ref('');
     const currentSourceLang = ref('en'); // Default, will be updated by STT
     const currentTranslatedText = ref('');
-    const targetLang = ref(localStorage.getItem('targetLang') || 'it'); // Default Italian
-    const sourceLang = ref<string | null>(localStorage.getItem('sourceLang') || null); // Source language (required for fallback)
     const isProcessing = ref(false);
     const error = ref<string | null>(null);
     const history = ref<Conversation[]>([]);
@@ -16,17 +16,11 @@ export const useTranslationStore = defineStore('translation', () => {
     const actualTranslatedLanguage = ref<Language | null>(null); // Actual language of translation (might be fallback)
 
     const setTargetLang = (lang: string) => {
-        targetLang.value = lang;
-        localStorage.setItem('targetLang', lang);
+        void settingsStore.setTargetLang(lang);
     };
 
     const setSourceLang = (lang: string | null) => {
-        sourceLang.value = lang;
-        if (lang) {
-            localStorage.setItem('sourceLang', lang);
-        } else {
-            localStorage.removeItem('sourceLang');
-        }
+        void settingsStore.setSourceLang(lang);
     };
 
     const loadHistory = async () => {
@@ -158,13 +152,13 @@ export const useTranslationStore = defineStore('translation', () => {
             const audioBase64 = await blobToBase64(wavBlob);
 
             // Get target language info
-            const targetLanguage = languages.find(lang => lang.displayCode === targetLang.value);
-            const targetLangCode = targetLanguage?.displayCode || targetLang.value;
-            const targetLangName = targetLanguage?.name || targetLang.value;
+            const targetLanguage = languages.find(lang => lang.displayCode === settingsStore.targetLang);
+            const targetLangCode = targetLanguage?.displayCode || settingsStore.targetLang;
+            const targetLangName = targetLanguage?.name || settingsStore.targetLang;
 
             // Get source language hint (if set) - this will be the fallback language
-            const sourceLangHint = sourceLang.value
-                ? languages.find(l => l.displayCode === sourceLang.value)
+            const sourceLangHint = settingsStore.sourceLang
+                ? languages.find(l => l.displayCode === settingsStore.sourceLang)
                 : null;
 
             console.log('Sending audio to Voxtral for transcription and translation...');
@@ -294,7 +288,7 @@ Return a JSON object with this exact structure:
                 sourceText: currentSourceText.value,
                 sourceLang: currentSourceLang.value,
                 translatedText: currentTranslatedText.value,
-                targetLang: targetLang.value,
+                targetLang: settingsStore.targetLang,
             });
 
             return result;
@@ -311,8 +305,6 @@ Return a JSON object with this exact structure:
         currentSourceText,
         currentSourceLang,
         currentTranslatedText,
-        targetLang,
-        sourceLang,
         isProcessing,
         error,
         history,

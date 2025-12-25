@@ -3,6 +3,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { X } from 'lucide-vue-next';
 import LanguageGridModal from './LanguageGridModal.vue';
 import { languages, type Language } from '../config/languages';
+import { useSettingsStore } from '../stores/settings';
 
 const props = defineProps<{
   isOpen: boolean;
@@ -13,6 +14,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'close'): void;
 }>();
+
+const settingsStore = useSettingsStore();
 
 interface AppInfoSection {
   header: string;
@@ -39,25 +42,30 @@ onMounted(async () => {
     console.error('Failed to load app-info.json:', error);
   }
 
+  await settingsStore.ensureLoaded();
+
   // Load persisted info language preference
-  const savedInfoLang = localStorage.getItem('infoLanguage');
-  if (savedInfoLang) {
-    selectedInfoLang.value = savedInfoLang;
+  if (settingsStore.infoLanguage) {
+    selectedInfoLang.value = settingsStore.infoLanguage;
   } else if (props.sourceLang) {
     // Initialize to input (source) language
     selectedInfoLang.value = props.sourceLang.displayCode;
+    void settingsStore.setInfoLanguage(selectedInfoLang.value);
   }
 });
 
 // Watch for modal opening and set initial language from source
 watch(() => props.isOpen, (isOpen) => {
   if (isOpen) {
-    const savedInfoLang = localStorage.getItem('infoLanguage');
-    if (savedInfoLang) {
-      selectedInfoLang.value = savedInfoLang;
-    } else if (props.sourceLang) {
-      selectedInfoLang.value = props.sourceLang.displayCode;
-    }
+    void (async () => {
+      await settingsStore.ensureLoaded();
+      if (settingsStore.infoLanguage) {
+        selectedInfoLang.value = settingsStore.infoLanguage;
+      } else if (props.sourceLang) {
+        selectedInfoLang.value = props.sourceLang.displayCode;
+        void settingsStore.setInfoLanguage(selectedInfoLang.value);
+      }
+    })();
   }
 });
 
@@ -85,7 +93,7 @@ const shouldShowOtherLangFlag = computed(() => {
 const handleSourceLangClick = () => {
   if (props.sourceLang) {
     selectedInfoLang.value = props.sourceLang.displayCode;
-    localStorage.setItem('infoLanguage', selectedInfoLang.value);
+    void settingsStore.setInfoLanguage(selectedInfoLang.value);
     lastSelectedOtherLang.value = null; // Clear other language selection
   }
 };
@@ -93,7 +101,7 @@ const handleSourceLangClick = () => {
 const handleTargetLangClick = () => {
   if (props.targetLang) {
     selectedInfoLang.value = props.targetLang.displayCode;
-    localStorage.setItem('infoLanguage', selectedInfoLang.value);
+    void settingsStore.setInfoLanguage(selectedInfoLang.value);
     lastSelectedOtherLang.value = null; // Clear other language selection
   }
 };
@@ -104,7 +112,7 @@ const handleOtherLanguagesClick = () => {
 
 const handleLanguageGridSelect = (language: Language) => {
   selectedInfoLang.value = language.displayCode;
-  localStorage.setItem('infoLanguage', selectedInfoLang.value);
+  void settingsStore.setInfoLanguage(selectedInfoLang.value);
 
   // Track this as "other language" only if it's not source or target
   if (language.displayCode !== props.sourceLang?.displayCode &&

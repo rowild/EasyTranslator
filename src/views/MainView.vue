@@ -9,9 +9,11 @@ import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import TextToSpeech from '../components/TextToSpeech.vue';
 import { languages, type Language } from '../config/languages';
+import { useSettingsStore } from '../stores/settings';
 import { Trash2, Plus, Mic, Square, Info } from 'lucide-vue-next';
 
 const store = useTranslationStore();
+const settingsStore = useSettingsStore();
 const {
   isRecording,
   startRecording,
@@ -73,7 +75,7 @@ const uiText = computed(() => {
 window.addEventListener('online', () => isOffline.value = false);
 window.addEventListener('offline', () => isOffline.value = true);
 
-// Load saved language preferences from localStorage
+// Load saved language preferences from IndexedDB (Dexie settings)
 onMounted(async () => {
   // Load app-info.json for UI translations
   try {
@@ -88,8 +90,10 @@ onMounted(async () => {
   store.loadHistory();
   checkPermission();
 
-  // Load saved source language or set German as default
-  const savedSourceCode = localStorage.getItem('sourceLang');
+  await settingsStore.ensureLoaded();
+
+  // Load saved source language (fallback language)
+  const savedSourceCode = settingsStore.sourceLang;
   if (savedSourceCode) {
     sourceLang.value = languages.find(lang => lang.displayCode === savedSourceCode) || null;
   } else {
@@ -97,33 +101,28 @@ onMounted(async () => {
     const defaultSource = languages.find(lang => lang.code === 'de-DE');
     if (defaultSource) {
       sourceLang.value = defaultSource;
-      localStorage.setItem('sourceLang', defaultSource.displayCode);
-      store.setSourceLang(defaultSource.displayCode);
+      void settingsStore.setSourceLang(defaultSource.displayCode);
     }
   }
 
   // Load saved output language or set French as default
-  const savedOutputCode = localStorage.getItem('targetLang');
+  const savedOutputCode = settingsStore.targetLang;
   if (savedOutputCode) {
     outputLanguage.value = languages.find(lang => lang.displayCode === savedOutputCode) || null;
-    if (outputLanguage.value) {
-      store.setTargetLang(outputLanguage.value.displayCode);
-    }
   } else {
     // Set French as default target
     const defaultTarget = languages.find(lang => lang.code === 'fr-FR');
     if (defaultTarget) {
       outputLanguage.value = defaultTarget;
-      store.setTargetLang(defaultTarget.displayCode);
+      void settingsStore.setTargetLang(defaultTarget.displayCode);
     }
   }
 });
 
-// Watch output language changes and sync with store and localStorage
+// Watch output language changes and persist to IndexedDB settings
 watch(outputLanguage, (newLang) => {
   if (newLang) {
-    // This will also save to localStorage as 'targetLang'
-    store.setTargetLang(newLang.displayCode);
+    void settingsStore.setTargetLang(newLang.displayCode);
   }
 });
 
@@ -220,13 +219,13 @@ const handleLanguageConfirm = (payload: { source: Language | null; target: Langu
   sourceLang.value = payload.source;
   outputLanguage.value = payload.target;
 
-  // Update store
-  store.setSourceLang(payload.source.displayCode);
-  store.setTargetLang(payload.target.displayCode);
+  // Persist settings
+  void settingsStore.setSourceLang(payload.source.displayCode);
+  void settingsStore.setTargetLang(payload.target.displayCode);
 
   if (isFirstRun.value) {
     // Mark as completed
-    localStorage.setItem('hasCompletedLanguageSetup', 'true');
+    void settingsStore.setHasCompletedLanguageSetup(true);
     isFirstRun.value = false;
     hasCompletedSetup.value = true;
 
@@ -334,7 +333,7 @@ const handleNewRecording = async () => {
 
   // Ensure target language is set correctly from the output language selection
   if (outputLanguage.value) {
-    store.setTargetLang(outputLanguage.value.displayCode);
+    void settingsStore.setTargetLang(outputLanguage.value.displayCode);
     // console.log('Target language confirmed:', outputLanguage.value.nativeName, outputLanguage.value.displayCode);
   } else {
     console.warn('No output language selected!');
