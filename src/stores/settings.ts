@@ -6,7 +6,7 @@ const SETTINGS_ID = 'app' as const;
 
 const createDefaultSettings = (): AppSettings => ({
   id: SETTINGS_ID,
-  mode: 'simple',
+  mode: 'extended',
   apiKey: null,
   sourceLang: 'de',
   targetLang: 'fr',
@@ -84,7 +84,13 @@ export const useSettingsStore = defineStore('settings', () => {
       try {
         const existing = await db.settings.get(SETTINGS_ID);
         if (existing) {
-          settings.value = existing;
+          const next: AppSettings =
+            existing.mode === 'extended'
+              ? existing
+              : { ...existing, mode: 'extended', updatedAt: Date.now() };
+
+          settings.value = next;
+          if (next !== existing) await db.settings.put(next);
           return;
         }
 

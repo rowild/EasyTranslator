@@ -7,13 +7,12 @@ import LanguageWheelPicker from '../components/LanguageWheelPicker.vue';
 import InfoModal from '../components/InfoModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
-import TextToSpeech from '../components/TextToSpeech.vue';
 import SettingsModal from '../components/SettingsModal.vue';
 import SwipeableTranslations from '../components/SwipeableTranslations.vue';
 import UsageStats from '../components/UsageStats.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
-import { Trash2, Plus, Mic, Square, Info, Settings, RotateCcw } from 'lucide-vue-next';
+import { Trash2, Mic, Square, Info, Settings, RotateCcw } from 'lucide-vue-next';
 
 const store = useTranslationStore();
 const settingsStore = useSettingsStore();
@@ -35,7 +34,6 @@ const inputLanguage = ref<Language | null>(null);
 const outputLanguage = ref<Language | null>(null);
 const sourceLang = ref<Language | null>(null);
 const isTranslated = ref(false); // Track if current recording has been translated
-const currentTranslationOutputLang = ref<Language | null>(null); // Locked output language for current translation
 
 // Language picker state
 const showLanguagePicker = ref(false);
@@ -45,17 +43,6 @@ const hasCompletedSetup = ref(false);
 // Info modal state
 const showInfoModal = ref(false);
 const showSettingsModal = ref(false);
-
-// Conversation history
-interface ConversationPair {
-  sourceText: string;
-  translatedText: string;
-  audioBlob: Blob;
-  inputLang: Language;
-  outputLang: Language;
-}
-
-const conversationHistory = ref<ConversationPair[]>([]);
 
 // Load app-info.json for UI translations
 interface AppInfoData {
@@ -99,7 +86,6 @@ onMounted(async () => {
 
   // Always initialize app
   hasCompletedSetup.value = true;
-  store.loadHistory();
   checkPermission();
 
   await settingsStore.ensureLoaded();
@@ -203,11 +189,6 @@ watch(isTranslated, (translated) => {
   }
 });
 
-// Auto-scroll to top when conversation history changes (new translation added)
-watch(() => conversationHistory.value.length, () => {
-  scrollToTop();
-});
-
 // Also scroll when recordedBlob changes (new recording available)
 watch(recordedBlob, (blob) => {
   if (blob) {
@@ -215,20 +196,9 @@ watch(recordedBlob, (blob) => {
   }
 });
 
-// Extended mode is delete-and-forget: clear in-memory history when switching into it
-watch(isExtendedMode, (extended) => {
-  if (extended) {
-    conversationHistory.value = [];
-    handleDeleteRecording();
-  }
-});
-
 // Record button is only enabled when output language is selected (input is auto-detected)
 const canRecord = computed(() => {
-  if (isExtendedMode.value) {
-    return settingsStore.extendedTargetLangs.length > 0;
-  }
-  return !!outputLanguage.value;
+  return settingsStore.extendedTargetLangs.length > 0;
 });
 
 // Handle language picker confirmation
@@ -251,10 +221,6 @@ const handleLanguageConfirm = (payload: { source: Language | null; target: Langu
     void settingsStore.setHasCompletedLanguageSetup(true);
     isFirstRun.value = false;
     hasCompletedSetup.value = true;
-
-    // Now initialize app
-    store.loadHistory();
-    checkPermission();
   }
 
   showLanguagePicker.value = false;
@@ -286,14 +252,10 @@ const handleRecordToggle = async () => {
       // Mark as translated since we got both in one call
       isTranslated.value = true;
 
-      // Use the actual translated language from the store (might be fallback)
-      currentTranslationOutputLang.value = store.actualTranslatedLanguage ? { ...store.actualTranslatedLanguage } : null;
-
       // console.log('After transcription & translation:');
       // console.log('- Source text:', store.currentSourceText);
       // console.log('- Detected language:', store.detectedLanguage);
       // console.log('- Translated text:', store.currentTranslatedText);
-      // console.log('- Locked output language:', currentTranslationOutputLang.value?.nativeName);
 
     } catch (e) {
       console.error('Error during processing:', e);
@@ -310,7 +272,11 @@ const handleRecordToggle = async () => {
       recordedBlob.value = null;
       setTranscript('');
       isTranslated.value = false;
-      currentTranslationOutputLang.value = null; // Reset locked language
+      store.lastUsage = null;
+      store.currentTranslatedText = '';
+      store.currentTranslations = {};
+      store.detectedLanguage = null;
+      store.actualTranslatedLanguage = null;
 
       await startRecording();
     } catch (e) {
@@ -325,9 +291,9 @@ const handleDeleteRecording = () => {
   recordedBlob.value = null;
   setTranscript('');
   isTranslated.value = false;
-  currentTranslationOutputLang.value = null; // Reset locked language
   store.currentTranslatedText = '';
   store.currentTranslations = {};
+  store.lastUsage = null;
   store.detectedLanguage = null;
   store.actualTranslatedLanguage = null;
 };
@@ -341,34 +307,18 @@ const handleNewRecording = async () => {
     return;
   }
 
-  if (isExtendedMode.value && settingsStore.extendedTargetLangs.length === 0) {
+  if (settingsStore.extendedTargetLangs.length === 0) {
     showSettingsModal.value = true;
     return;
   }
 
-  // Save current conversation pair to history
-  if (!isExtendedMode.value && recordedBlob.value && store.detectedLanguage && currentTranslationOutputLang.value) {
-    // Use detected language from Voxtral
-    const actualInputLang = store.detectedLanguage;
-
-    // Use the locked output language (already a copy, no need to spread again)
-    conversationHistory.value.push({
-      sourceText: transcript.value,
-      translatedText: store.currentTranslatedText,
-      audioBlob: recordedBlob.value,
-      inputLang: { ...actualInputLang },
-      outputLang: currentTranslationOutputLang.value,
-    });
-    console.log('Saved to history. Total pairs:', conversationHistory.value.length);
-  }
-
   // Reset for new recording
   recordedBlob.value = null;
-  currentTranslationOutputLang.value = null; // Reset locked language
   setTranscript('');
   isTranslated.value = false;
   store.currentTranslatedText = '';
   store.currentTranslations = {};
+  store.lastUsage = null;
   store.detectedLanguage = null;
   store.actualTranslatedLanguage = null;
 
@@ -428,34 +378,7 @@ const handleNewRecording = async () => {
         </div>
 
 
-        <!-- Conversation History -->
-        <div v-if="!isExtendedMode && conversationHistory.length > 0" class="conversation-history">
-          <div v-for="(pair, index) in conversationHistory" :key="index" class="conversation-pair history-pair">
-            <!-- Input (Source) -->
-            <div class="input-output-row">
-              <div class="language-indicator">
-                <span class="lang-flag">{{ pair.inputLang.flag }}</span>
-                <span class="lang-name">{{ pair.inputLang.nativeName }}</span>
-              </div>
-              <div class="transcript-field input-field">
-                <div class="transcript-content" :dir="pair.inputLang.isRTL ? 'rtl' : 'ltr'">{{ pair.sourceText }}</div>
-                <AudioPlayer :audio-blob="pair.audioBlob" />
-              </div>
-            </div>
-
-            <!-- Output (Translation) -->
-            <div class="input-output-row output-row">
-              <div class="language-indicator">
-                <span class="lang-flag">{{ pair.outputLang.flag }}</span>
-                <span class="lang-name">{{ pair.outputLang.nativeName }}</span>
-              </div>
-              <div class="transcript-field output-field">
-                <div class="transcript-content" :dir="pair.outputLang.isRTL ? 'rtl' : 'ltr'">{{ pair.translatedText }}</div>
-                <TextToSpeech :text="pair.translatedText" :lang="pair.outputLang.speechCode" />
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Conversation history removed (extended-only). -->
 
         <!-- Recording Visualizer with inline record button (show while recording OR ready to record and no result) -->
         <div v-if="(isRecording || (canRecord && !recordedBlob)) && !store.isProcessing" class="conversation-pair" ref="recordingVisualizerRef">
@@ -510,38 +433,16 @@ const handleNewRecording = async () => {
           <!-- Output (Translation) Section (only show AFTER translation) -->
           <div v-if="isTranslated" class="input-output-row output-row">
             <SwipeableTranslations
-              v-if="isExtendedMode"
               :target-codes="settingsStore.extendedTargetLangs"
               :translations="store.currentTranslations"
             />
-            <template v-else>
-              <div class="language-indicator" v-if="currentTranslationOutputLang">
-                <span class="lang-flag">{{ currentTranslationOutputLang.flag }}</span>
-                <span class="lang-name">{{ currentTranslationOutputLang.nativeName }}</span>
-              </div>
-              <div class="transcript-field output-field">
-                <div class="transcript-content" :dir="currentTranslationOutputLang?.isRTL ? 'rtl' : 'ltr'">
-                  {{ store.currentTranslatedText || 'Translation...' }}
-                </div>
-                <TextToSpeech v-if="currentTranslationOutputLang" :text="store.currentTranslatedText" :lang="currentTranslationOutputLang.speechCode" />
-              </div>
-            </template>
           </div>
 
           <UsageStats v-if="isTranslated" :usage="store.lastUsage" />
 
-          <!-- Plus button to start new recording (only show AFTER translation) -->
+          <!-- New button (only show AFTER translation) -->
           <div v-if="isTranslated" class="new-recording-section">
             <button
-              v-if="!isExtendedMode"
-              class="plus-btn"
-              @click="handleNewRecording"
-              title="Start new recording"
-            >
-              <Plus :size="32" />
-            </button>
-            <button
-              v-else
               class="new-btn"
               @click="handleNewRecording"
               title="Start a new dialog"

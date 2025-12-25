@@ -54,23 +54,23 @@ Scope for this phase:
 - Add “Saved transcripts” route with list + delete + detail view
 - Saved transcript detail supports **re-translate** (and can be saved again if changed)
 
-Open decisions (proposed defaults for implementation):
+Confirmed decisions:
 
 1. Entry point to “Saved transcripts” route:
-   - Proposed: add a new footer button on the left (next to Info/Settings).
-2. When re-translating an already-saved transcript, “Save” behavior:
-   - Proposed: overwrite/update the existing record (not “save as new”).
+   - Add a new footer button on the left (next to Info/Settings).
+2. When re-translating an already-saved transcript:
+   - Create a new entry and link it back to the original (variant/related).
 
 ### Tracker
 
 | ID | Status | Deliverable | Completion notes |
 |---:|:------:|-------------|------------------|
-| P2-01 | TODO | Remove simple mode UX | Force extended behavior; remove mode toggle; remove any Simple-mode-only UI/persistence paths, while keeping the existing two-flag picker untouched. |
+| P2-01 | DONE | Remove simple mode UX | Forced extended behavior (settings default/migration + removed mode toggle), removed Simple-mode-only history/output UI, and kept the existing two-flag picker unchanged. |
 | P2-02 | TODO | Footer “targets” picker button | Add generic-flag footer button that opens `TargetLanguagesModal` (max 10) and persists via Dexie settings. |
 | P2-03 | TODO | Vertical translations list + scroll | Replace swipe carousel with stacked translation bubbles; make only that list scroll; tighten bubble padding/margins. |
-| P2-04 | TODO | Dexie `transcriptions` table + store | Add a new table for saved transcripts including audio blob, transcript, translations, and (recommended) metadata like detected source language + selected target codes/order. |
+| P2-04 | TODO | Dexie `transcriptions` table + store | Add a new table for saved transcripts including audio blob, transcript, translations, and metadata like detected source language + selected target codes/order; include `variantOfId` (or similar) to link re-translation variants. |
 | P2-05 | TODO | “Save transcript” in main flow | Add Save button after translation; save current utterance; disable once saved; reset saved state on “New” or new recording. |
 | P2-06 | TODO | Add router + routes | Add `vue-router` and implement `/` (main), `/saved` (list), `/saved/:id` (detail). |
 | P2-07 | TODO | Saved transcripts list UI | List saved items with timestamp + transcript snippet; support delete; navigate to detail. |
-| P2-08 | TODO | Saved transcript detail + re-translate | Show saved transcript using the same layout; allow re-translate with current target selection; enable Save when results differ. |
+| P2-08 | TODO | Saved transcript detail + re-translate | Show saved transcript using the same layout; allow re-translate with current target selection; allow saving as a new entry linked as a variant/related record. |
 | P2-09 | TODO | QA + docs | Verify mobile layout, scroll behavior, and persistence; update `CLAUDE.md` architecture notes for Phase 2. |
