@@ -4,7 +4,6 @@ import { useTranslationStore } from '../stores/translation';
 import { useAudioRecorder } from '../composables/useAudioRecorder';
 import { useRouter } from 'vue-router';
 import Background from '../components/Background.vue'
-import LanguageWheelPicker from '../components/LanguageWheelPicker.vue';
 import InfoModal from '../components/InfoModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import RecordingVisualizer from '../components/RecordingVisualizer.vue';
@@ -35,16 +34,12 @@ const {
 
 const isOffline = ref(!navigator.onLine);
 const recordedBlob = ref<Blob | null>(null);
-const inputLanguage = ref<Language | null>(null);
 const outputLanguage = ref<Language | null>(null);
 const sourceLang = ref<Language | null>(null);
 const isTranslated = ref(false); // Track if current recording has been translated
 
 const saveState = ref<'idle' | 'saving' | 'saved'>('idle');
 
-// Language picker state
-const showLanguagePicker = ref(false);
-const isFirstRun = ref(false);
 const hasCompletedSetup = ref(false);
 
 // Info modal state
@@ -209,31 +204,6 @@ const canRecord = computed(() => {
   return settingsStore.extendedTargetLangs.length > 0;
 });
 
-// Handle language picker confirmation
-const handleLanguageConfirm = (payload: { source: Language | null; target: Language }) => {
-  // Both languages are now required
-  if (!payload.source || !payload.target) {
-    console.error('Both source and target languages are required');
-    return;
-  }
-
-  sourceLang.value = payload.source;
-  outputLanguage.value = payload.target;
-
-  // Persist settings
-  void settingsStore.setSourceLang(payload.source.displayCode);
-  void settingsStore.setTargetLang(payload.target.displayCode);
-
-  if (isFirstRun.value) {
-    // Mark as completed
-    void settingsStore.setHasCompletedLanguageSetup(true);
-    isFirstRun.value = false;
-    hasCompletedSetup.value = true;
-  }
-
-  showLanguagePicker.value = false;
-};
-
 const handleRecordToggle = async () => {
   if (isRecording.value) {
     try {
@@ -374,7 +344,7 @@ const handleSaveTranscription = async () => {
 </script>
 
 <template>
-  <div class="main-view" :class="{ 'modal-open': showLanguagePicker || showInfoModal || showSettingsModal || showTargetLanguagesModal }">
+  <div class="main-view" :class="{ 'modal-open': showInfoModal || showSettingsModal || showTargetLanguagesModal }">
     <!-- Header (Always Visible) -->
     <header>
       <h1><span>Speak</span><span>&</span><span>Translate</span></h1>
@@ -416,10 +386,6 @@ const handleSaveTranscription = async () => {
         <!-- Recording Visualizer with inline record button (show while recording OR ready to record and no result) -->
         <div v-if="(isRecording || (canRecord && !recordedBlob)) && !store.isProcessing" class="conversation-pair" ref="recordingVisualizerRef">
           <div class="input-output-row">
-            <div class="language-indicator" v-if="inputLanguage">
-              <span class="lang-flag">{{ inputLanguage.flag }}</span>
-              <span class="lang-name">{{ inputLanguage.nativeName }}</span>
-            </div>
             <div class="visualizer-with-button">
               <div class="visualizer-container">
                 <RecordingVisualizer :is-recording="isRecording" :analyser="analyserNode" />
@@ -442,13 +408,13 @@ const handleSaveTranscription = async () => {
         <div v-if="canRecord && recordedBlob" class="conversation-pair current-pair" ref="currentPairRef">
           <!-- Input (Source) Section -->
           <div class="input-output-row">
-            <div class="language-indicator" v-if="store.detectedLanguage || inputLanguage">
-              <span class="lang-flag">{{ (store.detectedLanguage || inputLanguage)?.flag }}</span>
-              <span class="lang-name">{{ (store.detectedLanguage || inputLanguage)?.nativeName }}</span>
+            <div class="language-indicator" v-if="store.detectedLanguage">
+              <span class="lang-flag">{{ store.detectedLanguage.flag }}</span>
+              <span class="lang-name">{{ store.detectedLanguage.nativeName }}</span>
             </div>
             <div class="field-with-actions">
               <div class="transcript-field input-field">
-                <div class="transcript-content" :class="{ placeholder: !transcript && !store.isProcessing }" :dir="(store.detectedLanguage || inputLanguage)?.isRTL ? 'rtl' : 'ltr'">
+                <div class="transcript-content" :class="{ placeholder: !transcript && !store.isProcessing }" :dir="store.detectedLanguage?.isRTL ? 'rtl' : 'ltr'">
                   {{ transcript || (store.isProcessing ? 'Processing...' : 'Transcription will appear here...') }}
                 </div>
                 <AudioPlayer :audio-blob="recordedBlob" />
@@ -500,16 +466,6 @@ const handleSaveTranscription = async () => {
 
       </main>
     </div>
-
-    <!-- Language Picker Modal -->
-    <LanguageWheelPicker
-      :is-open="showLanguagePicker"
-      :is-first-run="isFirstRun"
-      :initial-source="sourceLang || undefined"
-      :initial-target="outputLanguage || undefined"
-      @confirm="handleLanguageConfirm"
-      @close="showLanguagePicker = false"
-    />
 
     <!-- Info Modal -->
     <InfoModal
@@ -571,18 +527,6 @@ const handleSaveTranscription = async () => {
       </div>
 
       <div class="footer-right">
-        <!-- Dual Language Button (keep unchanged for now) -->
-        <button
-          v-if="hasCompletedSetup"
-          class="footer-lang-btn dual-lang-btn"
-          @click="showLanguagePicker = true"
-          :title="`Change languages: ${sourceLang?.nativeName || 'Select'} → ${outputLanguage?.nativeName || 'Select'}`"
-        >
-          <span class="footer-flag source-flag">{{ sourceLang?.flag || '❓' }}</span>
-          <span class="footer-arrow">→</span>
-          <span class="footer-flag target-flag">{{ outputLanguage?.flag || '❓' }}</span>
-        </button>
-
         <!-- Target Languages Button -->
         <button
           v-if="hasCompletedSetup"

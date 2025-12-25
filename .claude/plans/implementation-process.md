@@ -47,12 +47,13 @@ This is the canonical step-by-step implementation plan **and** tracker for the w
 Scope for this phase:
 
 - Remove “Simple mode” from the product UX (extended-style multi-target translation only)
-- Keep the existing two-flag language picker **unchanged** for now
-- Add a new “targets” language picker button (generic flag) next to the two-flag button
+- Keep the existing two-flag language picker **unchanged** initially (later removed; see P2-11)
+- Add a new “targets” language picker button (generic flag) in the footer (initially next to the two-flag button)
 - Replace swipe UI with a vertically stacked translation-bubbles list where **only the translations list scrolls**
 - Add “Save transcript” → persist to IndexedDB (Dexie)
 - Add “Saved transcripts” route with list + delete + detail view
 - Saved transcript detail supports **re-translate** (and can be saved again if changed)
+- Archive/remove legacy picker + swipe components from `/src` into `/_BU` for backup (P2-11)
 
 Confirmed decisions:
 
@@ -75,3 +76,4 @@ Confirmed decisions:
 | P2-08 | DONE | Saved transcript detail + re-translate | Implemented `/saved/:id` detail view using the same bubble layout, added re-translate (Voxtral) using current target selection, and “Save variant” which creates a new linked entry (variant group + parent reference) plus a related-versions navigator. |
 | P2-09 | DONE | QA + docs | Ran TypeScript/build checks and refreshed `CLAUDE.md` to reflect the extended-only flow, saved transcripts routes, and Dexie persistence model. |
 | P2-10 | DONE | Mute API key Save button | Disabled the API key “Save” button when the input matches the stored key (becomes “mute” immediately after saving). |
+| P2-11 | DONE | Archive legacy picker UI | Removed the footer two-flag picker button + modal wiring, and moved unused legacy components (`LanguageWheel*`, `SwipeableTranslations`, etc.) into `/_BU` for backup. |

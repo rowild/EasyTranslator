@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-10 (Mute API key Save button)
+- Last completed step: P2-11 (Archive legacy picker UI)
 - Next step: — (All Phase 2 steps complete)
 
 Process source of truth: `.claude/plans/implementation-process.md`
@@ -176,7 +176,7 @@ Strict mode enabled in `tsconfig.json`. All Vue components use `<script setup la
 - Languages come from `src/config/languages.ts` (some entries share the same 2-letter `displayCode`).
 - Select up to 10 unique target `displayCode`s via the “targets” flag button (or Settings).
 - Source language is auto-detected by Voxtral.
-- The existing two-flag picker remains in the UI for now (kept unchanged as requested).
+- The legacy two-flag picker UI has been removed; target selection happens via the “targets” flag button (or Settings).
 
 ## Build Output
 
