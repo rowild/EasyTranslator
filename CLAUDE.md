@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Implementation Progress (must show at chat start)
+
+At the start of every new chat/session, present the following to the user before doing any work:
+
+- Last completed step: 00 (Add process tracker + progress block)
+- Next step: 01 (Define settings state)
+
+Process source of truth: `.claude/plans/implementation-process.md`
+
 ## Project Overview
 
 EasyTranslator is a Progressive Web App (PWA) for real-time speech translation using Mistral AI. Built with Vue 3, TypeScript, and Vite, it enables users to record audio, transcribe speech, translate it to target languages, and store conversations offline using IndexedDB.
