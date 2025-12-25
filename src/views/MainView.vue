@@ -10,6 +10,7 @@ import RecordingVisualizer from '../components/RecordingVisualizer.vue';
 import TextToSpeech from '../components/TextToSpeech.vue';
 import SettingsModal from '../components/SettingsModal.vue';
 import SwipeableTranslations from '../components/SwipeableTranslations.vue';
+import UsageStats from '../components/UsageStats.vue';
 import { languages, type Language } from '../config/languages';
 import { useSettingsStore } from '../stores/settings';
 import { Trash2, Plus, Mic, Square, Info, Settings, RotateCcw } from 'lucide-vue-next';
@@ -526,6 +527,8 @@ const handleNewRecording = async () => {
               </div>
             </template>
           </div>
+
+          <UsageStats v-if="isTranslated" :usage="store.lastUsage" />
 
           <!-- Plus button to start new recording (only show AFTER translation) -->
           <div v-if="isTranslated" class="new-recording-section">

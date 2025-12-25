@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: 08 (Extended mode “New” flow)
-- Next step: 09 (Usage display (per request))
+- Last completed step: 09 (Usage display (per request))
+- Next step: 10 (Mobile QA + doc refresh)
 
 Process source of truth: `.claude/plans/implementation-process.md`
 
