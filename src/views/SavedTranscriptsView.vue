@@ -37,7 +37,7 @@ const deleteItem = async (id?: number) => {
 <template>
   <div class="main-view">
     <header>
-      <h1><span>Saved</span><span>&</span><span>Transcripts</span></h1>
+      <h1><span>Saved</span><span>&</span><span>Transcribed</span></h1>
     </header>
 
     <div class="center-content">

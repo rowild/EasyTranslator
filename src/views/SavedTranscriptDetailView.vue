@@ -185,7 +185,7 @@ const handleSaveVariant = async () => {
 <template>
   <div class="main-view" :class="{ 'modal-open': showSettingsModal || showTargetLanguagesModal }">
     <header>
-      <h1><span>Saved</span><span>&</span><span>Transcript</span></h1>
+      <h1><span>Saved</span><span>&</span><span>Transcribed</span></h1>
     </header>
 
     <div class="center-content">
@@ -236,6 +236,7 @@ const handleSaveVariant = async () => {
             <div class="input-output-row output-row translations-row">
               <TranslationBubblesList
                 :target-codes="displayedTargetCodes"
+                :source-code="displayedSourceLang"
                 :translations="displayedTranslations"
               />
             </div>

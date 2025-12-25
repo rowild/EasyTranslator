@@ -457,6 +457,7 @@ const handleSaveTranscription = async () => {
           <div v-if="isTranslated" class="input-output-row output-row translations-row">
             <TranslationBubblesList
               :target-codes="settingsStore.extendedTargetLangs"
+              :source-code="store.currentSourceLang"
               :translations="store.currentTranslations"
             />
           </div>
