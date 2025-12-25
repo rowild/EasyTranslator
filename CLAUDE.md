@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 At the start of every new chat/session, present the following to the user before doing any work:
 
-- Last completed step: P2-09 (QA + docs)
+- Last completed step: P2-10 (Mute API key Save button)
 - Next step: — (All Phase 2 steps complete)
 
 Process source of truth: `.claude/plans/implementation-process.md`

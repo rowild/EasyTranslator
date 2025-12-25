@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { X, Eye, EyeOff, Languages } from 'lucide-vue-next';
 import { useSettingsStore } from '../stores/settings';
 import TargetLanguagesModal from './TargetLanguagesModal.vue';
@@ -18,6 +18,10 @@ const apiKeyInput = ref('');
 const showApiKey = ref(false);
 const statusText = ref<string | null>(null);
 const showTargetLanguages = ref(false);
+
+const trimmedApiKeyInput = computed(() => apiKeyInput.value.trim());
+const trimmedStoredApiKey = computed(() => (settingsStore.apiKey || '').trim());
+const isApiKeySaveDisabled = computed(() => trimmedApiKeyInput.value === trimmedStoredApiKey.value);
 
 watch(() => props.isOpen, (open) => {
   if (!open) return;
@@ -109,7 +113,7 @@ const clearApiKey = async () => {
             </div>
 
             <div class="api-key-actions">
-              <button class="primary-btn" @click="saveApiKey">Save</button>
+              <button class="primary-btn" @click="saveApiKey" :disabled="isApiKeySaveDisabled">Save</button>
               <button class="secondary-btn" @click="clearApiKey">Clear</button>
               <span v-if="statusText" class="status-text">{{ statusText }}</span>
             </div>
@@ -296,6 +300,12 @@ const clearApiKey = async () => {
   padding: 0.6rem 0.9rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+.primary-btn:disabled,
+.secondary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .primary-btn {
