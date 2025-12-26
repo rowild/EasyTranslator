@@ -187,3 +187,28 @@ Strict mode enabled in `tsconfig.json`. All Vue components use `<script setup la
 - Optimized chunks with code splitting
 
 Deploy `/dist/` to any static hosting (Vercel, Netlify, etc.).
+
+## Branch Strategy & Vercel Deployment
+
+This repository maintains two versions of the app:
+
+| Branch | Description | Vercel Domain |
+|--------|-------------|---------------|
+| `main` | Extended version - multi-language translation (up to 10 targets), saved transcripts, re-translate | `speak-and-translate.vercel.app` |
+| `simple` | Simple version - single target language, conversation history, minimal UI | `speak-and-translate-simple.vercel.app` |
+
+**Git tag:** `simple-version` marks the commit (`98088ec`) used as the base for the `simple` branch.
+
+### Vercel Configuration
+
+Each branch deploys to its own domain via Vercel's branch-to-domain assignment:
+
+1. In Vercel Dashboard → Project Settings → Domains
+2. Add domain and assign it to the specific Git branch
+3. Pushes to each branch trigger deployments to their respective domains
+
+### Maintaining Both Versions
+
+- Bug fixes that apply to both versions should be cherry-picked between branches
+- The `simple` branch is intentionally frozen at a feature level; only bug fixes should be added
+- The `main` branch continues active development
