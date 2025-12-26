@@ -212,3 +212,45 @@ Each branch deploys to its own domain via Vercel's branch-to-domain assignment:
 - Bug fixes that apply to both versions should be cherry-picked between branches
 - The `simple` branch is intentionally frozen at a feature level; only bug fixes should be added
 - The `main` branch continues active development
+
+## Monetization Plan (Phase 3)
+
+A detailed monetization plan exists at `.claude/plans/monetization-plan.md`.
+
+### Key Findings
+
+- **Voxtral pricing:** $0.004/minute (Small) - the app already tracks `lastUsage` with `prompt_audio_seconds`
+- **Billing basis:** Audio duration (not tokens) is the primary cost driver
+- **Recommended tiers:** Free (5 translations), Basic (€4.99/mo), Pro (€9.99/mo)
+
+### Tech Stack Decision
+
+| Component | Choice | Reason |
+|-----------|--------|--------|
+| Auth & User Data | Supabase | Hosted, easy auth, generous free tier |
+| Subscriptions | Stripe | Best for recurring payments, EU support |
+| EU Payments | Mollie | Native iDEAL/EPS support, lower EU fees |
+
+### Implementation Phases
+
+1. **Usage Tracking** - Log `audio_seconds` per translation to Supabase
+2. **Authentication** - Supabase Auth (email + Google OAuth)
+3. **Free Tier Quota** - 5 translations for new users
+4. **Stripe Subscriptions** - Basic/Pro tiers with EUR pricing
+5. **Mollie Integration** - iDEAL (NL), EPS (AT), Bancontact (BE)
+
+### Still Missing / To Decide
+
+- [ ] **Business setup:** EU business registration required for Mollie
+- [ ] **VAT handling:** Strategy for B2C sales across EU countries
+- [ ] **Final pricing:** Confirm €4.99/€9.99 tiers
+- [ ] **Overage policy:** What happens when quota exceeded? Block or charge extra?
+- [ ] **Anonymous demo:** Allow 1 free translation without signup?
+- [ ] **Legal docs:** Privacy policy, Terms of Service
+- [ ] **Email provider:** For welcome emails, quota warnings, payment failures
+
+### Accounts to Create
+
+- [ ] Supabase project (EU region recommended)
+- [ ] Stripe account (with EU payment methods enabled)
+- [ ] Mollie account (requires EU business verification)
